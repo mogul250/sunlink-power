@@ -17,7 +17,7 @@ const pool = mysql.createPool({
   enableKeepAlive: true,
   keepAliveInitialDelay: 0,
   ssl: {
-    ca: fs.readFileSync('./cert.pem')
+    ca: fs.readFileSync('./config/cert.pem')
   }
 });
 
