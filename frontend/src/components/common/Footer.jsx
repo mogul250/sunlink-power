@@ -7,10 +7,10 @@ const Footer = () => {
 
   const footerLinks = {
     products: [
-      { name: 'Solar Panels', path: '/browse?category=solar-panels' },
-      { name: 'Inverters', path: '/browse?category=inverters' },
-      { name: 'Batteries', path: '/browse?category=batteries' },
-      { name: 'Solar Kits', path: '/browse?category=solar-kits' },
+      { name: 'Solar Panels', path: '/category/solar-panels' },
+      { name: 'Inverters', path: '/category/inverters' },
+      { name: 'Batteries', path: '/category/batteries' },
+      { name: 'Solar Kits', path: '/category/solar-kits' },
     ],
     company: [
       { name: 'About Us', path: '/about' },

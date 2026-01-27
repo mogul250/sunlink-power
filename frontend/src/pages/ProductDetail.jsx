@@ -69,9 +69,7 @@ const ProductDetail = () => {
             {product.category_name && (
               <>
                 <span className="text-gray-400">/</span>
-                <Link to={`/category/${product.category_slug}`} className="hover:text-primary transition-colors">
-                  {product.category_name}
-                </Link>
+                <span className="text-gray-600">{product.category_name}</span>
               </>
             )}
             <span className="text-gray-400">/</span>
@@ -166,7 +164,7 @@ const ProductDetail = () => {
                   </a>
                   {product.manual_pdf_url && (
                     <a 
-                      href={getImageUrl(product.manual_pdf_url)}
+                      href={product.manual_pdf_url}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="btn bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 flex-1 flex items-center justify-center gap-2"

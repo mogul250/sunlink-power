@@ -22,10 +22,10 @@ const TrustSection = () => {
   };
 
   const logisticsPartners = [
-    { name: 'DHL', logo: 'https://via.placeholder.com/120x60?text=DHL' },
-    { name: 'FedEx', logo: 'https://via.placeholder.com/120x60?text=FedEx' },
-    { name: 'Maersk', logo: 'https://via.placeholder.com/120x60?text=Maersk' },
-    { name: 'UPS', logo: 'https://via.placeholder.com/120x60?text=UPS' },
+    { name: 'DHL', logo: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/DHL_Logo.svg' },
+    { name: 'FedEx', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/FedEx_Corporation_-_2016_Logo.svg/1280px-FedEx_Corporation_-_2016_Logo.svg.png' },
+    { name: 'Maersk', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Maersk_Line_Logo%2C_July_2021.svg/3840px-Maersk_Line_Logo%2C_July_2021.svg.png' },
+    { name: 'UPS', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/UPS_Logo_Shield_2017.svg/1920px-UPS_Logo_Shield_2017.svg.png' },
   ];
 
   return (
@@ -117,12 +117,12 @@ const TrustSection = () => {
             {logisticsPartners.map((partner) => (
               <div
                 key={partner.name}
-                className="flex items-center justify-center grayscale hover:grayscale-0 transition-all opacity-60 hover:opacity-100"
+                className="flex items-center justify-center hover:grayscale-0 transition-all hover:opacity-100"
               >
                 <img
                   src={partner.logo}
                   alt={partner.name}
-                  className="h-12 w-auto object-contain"
+                  className="h-[120px] w-auto object-contain"
                 />
               </div>
             ))}
