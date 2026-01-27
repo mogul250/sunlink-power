@@ -5,6 +5,7 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 const adminApi = axios.create({
   baseURL: API_URL,
+  timeout: 60000, // 1 minute timeout
 });
 
 // Add auth token to requests
@@ -44,6 +45,12 @@ export const categoryAPI = {
     headers: { 'Content-Type': 'multipart/form-data' },
   }),
   delete: (id) => adminApi.delete(`/categories/${id}`),
+};
+
+export const testimonialAPI = {
+  getAll: () => adminApi.get('/testimonials/all'),
+  approve: (id) => adminApi.put(`/testimonials/${id}/approve`),
+  delete: (id) => adminApi.delete(`/testimonials/${id}`),
 };
 
 export default adminApi;
