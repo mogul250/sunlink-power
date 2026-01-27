@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { FiCheck, FiX, FiEye, FiTrash2 } from 'react-icons/fi';
-import adminApi from '../../services/adminApi';
+import { testimonialAPI } from '../../services/adminApi';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import ErrorMessage from '../../components/common/ErrorMessage';
 
@@ -17,8 +17,8 @@ const TestimonialQueue = () => {
   const fetchTestimonials = async () => {
     try {
       setLoading(true);
-      const response = await adminApi.getTestimonials();
-      setTestimonials(response.data);
+      const response = await testimonialAPI.getAll();
+      setTestimonials(response.data.data || []);
     } catch (err) {
       setError('Failed to load testimonials');
       console.error('Testimonials error:', err);
@@ -29,7 +29,7 @@ const TestimonialQueue = () => {
 
   const handleApprove = async (id) => {
     try {
-      await adminApi.approveTestimonial(id);
+      await testimonialAPI.approve(id);
       setTestimonials(testimonials.map(t =>
         t.id === id ? { ...t, is_approved: true } : t
       ));
@@ -43,12 +43,20 @@ const TestimonialQueue = () => {
     if (!confirm('Are you sure you want to delete this testimonial?')) return;
 
     try {
-      await adminApi.deleteTestimonial(id);
+      await testimonialAPI.delete(id);
       setTestimonials(testimonials.filter(t => t.id !== id));
     } catch (err) {
       console.error('Error deleting testimonial:', err);
       alert('Failed to delete testimonial');
     }
+  };
+
+  // Helper to get full image URL
+  const getImageUrl = (url) => {
+    if (!url) return '';
+    if (url.startsWith('http')) return url;
+    const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace(/\/api$/, '');
+    return `${baseUrl}${url}`;
   };
 
   const pendingTestimonials = testimonials.filter(t => !t.is_approved);
@@ -105,24 +113,28 @@ const TestimonialQueue = () => {
 
                     <p className="text-gray-600 mb-4">{testimonial.content}</p>
 
-                    {testimonial.before_image_url && testimonial.after_image_url && (
+                    {(testimonial.before_image_url || testimonial.after_image_url) && (
                       <div className="flex gap-4 mb-4">
-                        <div className="flex-1">
-                          <p className="text-sm text-gray-500 mb-2">Before</p>
-                          <img
-                            src={testimonial.before_image_url}
-                            alt="Before"
-                            className="w-full h-32 object-cover rounded-lg"
-                          />
-                        </div>
-                        <div className="flex-1">
-                          <p className="text-sm text-gray-500 mb-2">After</p>
-                          <img
-                            src={testimonial.after_image_url}
-                            alt="After"
-                            className="w-full h-32 object-cover rounded-lg"
-                          />
-                        </div>
+                        {testimonial.before_image_url && (
+                          <div className="flex-1">
+                            <p className="text-sm text-gray-500 mb-2">Before</p>
+                            <img
+                              src={getImageUrl(testimonial.before_image_url)}
+                              alt="Before"
+                              className="w-full h-32 object-cover rounded-lg"
+                            />
+                          </div>
+                        )}
+                        {testimonial.after_image_url && (
+                          <div className="flex-1">
+                            <p className="text-sm text-gray-500 mb-2">After</p>
+                            <img
+                              src={getImageUrl(testimonial.after_image_url)}
+                              alt="After"
+                              className="w-full h-32 object-cover rounded-lg"
+                            />
+                          </div>
+                        )}
                       </div>
                     )}
 

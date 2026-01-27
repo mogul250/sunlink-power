@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { FiBox, FiList, FiUsers, FiTrendingUp, FiTrendingDown } from 'react-icons/fi';
-import adminApi from '../../services/adminApi';
+import { productAPI, categoryAPI, testimonialAPI } from '../../services/adminApi';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import ErrorMessage from '../../components/common/ErrorMessage';
 
@@ -22,17 +22,18 @@ const Dashboard = () => {
     try {
       setLoading(true);
       const [productsRes, categoriesRes, testimonialsRes] = await Promise.all([
-        adminApi.getProducts(),
-        adminApi.getCategories(),
-        adminApi.getTestimonials()
+        productAPI.getAll(),
+        categoryAPI.getAll(),
+        testimonialAPI.getAll()
       ]);
 
-      const pendingTestimonials = testimonialsRes.data.filter(t => !t.is_approved).length;
+      const testimonialsData = testimonialsRes.data.data || [];
+      const pendingTestimonials = testimonialsData.filter(t => !t.is_approved).length;
 
       setStats({
-        products: productsRes.data.length,
-        categories: categoriesRes.data.length,
-        testimonials: testimonialsRes.data.length,
+        products: productsRes.data.data ? productsRes.data.data.length : productsRes.data.count,
+        categories: categoriesRes.data.data ? categoriesRes.data.data.length : categoriesRes.data.length,
+        testimonials: testimonialsData.length,
         pendingTestimonials
       });
     } catch (err) {
