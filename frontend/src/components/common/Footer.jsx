@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
-import { FiSun, FiMail, FiPhone, FiMapPin, FiFacebook, FiTwitter, FiInstagram, FiLinkedin } from 'react-icons/fi';
+import { FiMail, FiPhone, FiMapPin, FiFacebook, FiTwitter, FiInstagram, FiLinkedin } from 'react-icons/fi';
+import logo from '../../assets/logo.png';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -40,17 +41,7 @@ const Footer = () => {
           {/* Company Info */}
           <div className="lg:col-span-2">
             <Link to="/" className="flex items-center gap-2 mb-4 group">
-              <div className="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-                <FiSun className="w-7 h-7 text-white" />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-2xl font-heading font-bold text-white">
-                  Sunlink Power
-                </span>
-                <span className="text-sm text-gray-400 -mt-1">
-                  Powering Tomorrow
-                </span>
-              </div>
+              <img className="w-[180px] h-auto object-contain group-hover:scale-105 transition-transform bg-white rounded-lg px-2 py-1" src={logo} alt="Sunlink Power" />
             </Link>
             <p className="text-gray-400 mb-6 leading-relaxed">
               Leading supplier of high-quality solar products across Africa. 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { FiPlus, FiTrash2, FiSave, FiUpload } from 'react-icons/fi';
+import { FiPlus, FiTrash2, FiSave } from 'react-icons/fi';
 import { categoryAPI, productAPI } from '../../services/adminApi';
 
 const ProductForm = () => {
@@ -22,15 +22,26 @@ const ProductForm = () => {
     warranty_info: '',
     stock_status: 'in_stock',
     is_featured: false,
+    video_url: '',
   });
 
   // File States
   const [imageFile, setImageFile] = useState(null);
   const [manualFile, setManualFile] = useState(null);
+  const [galleryFiles, setGalleryFiles] = useState([]);
   const [currentImage, setCurrentImage] = useState(null);
+  const [currentGallery, setCurrentGallery] = useState([]);
 
   // Metadata State (for JSON field)
   const [metadata, setMetadata] = useState([{ key: '', value: '' }]);
+
+  // Helper to get full image URL
+  const getImageUrl = (url) => {
+    if (!url) return '';
+    if (url.startsWith('http')) return url;
+    const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace(/\/api$/, '');
+    return `${baseUrl}${url}`;
+  };
 
   useEffect(() => {
     fetchCategories();
@@ -65,12 +76,15 @@ const ProductForm = () => {
         warranty_info: data.warranty_info || '',
         stock_status: data.stock_status,
         is_featured: Boolean(data.is_featured),
+        video_url: data.video_url || '',
       });
 
       if (data.image_url) setCurrentImage(data.image_url);
+      if (data.gallery_images) setCurrentGallery(data.gallery_images);
 
       // Parse metadata object to array for form
       if (data.metadata && typeof data.metadata === 'object') {
+        // @ts-ignore
         const metaArray = Object.entries(data.metadata).map(([key, value]) => ({
           key,
           value
@@ -115,6 +129,11 @@ const ProductForm = () => {
       // Append files
       if (imageFile) formData.append('image', imageFile);
       if (manualFile) formData.append('manual', manualFile);
+      if (galleryFiles.length > 0) {
+        for (const file of galleryFiles) {
+          formData.append('gallery_images', file);
+        }
+      }
 
       // Process and append metadata as JSON string
       const metadataObject = metadata.reduce((acc, curr) => {
@@ -137,6 +156,17 @@ const ProductForm = () => {
       setMessage({ type: 'error', text: err.response?.data?.message || 'Operation failed' });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDeleteGalleryImage = async (imageId) => {
+    if (!window.confirm('Delete this image?')) return;
+    try {
+      await productAPI.deleteImage(imageId);
+      setCurrentGallery(currentGallery.filter(img => img.id !== imageId));
+      setMessage({ type: 'success', text: 'Image deleted' });
+    } catch (err) {
+      setMessage({ type: 'error', text: 'Failed to delete image' });
     }
   };
 
@@ -265,6 +295,21 @@ const ProductForm = () => {
           </div>
         </div>
 
+        {/* Video URL */}
+        <div className="border-t pt-6">
+          <h3 className="text-lg font-semibold mb-4">Product Video</h3>
+          <div>
+            <label className="label">YouTube Video URL</label>
+            <input
+              type="url"
+              className="input-field w-full border p-2 rounded"
+              placeholder="https://www.youtube.com/watch?v=..."
+              value={product.video_url}
+              onChange={(e) => setProduct({ ...product, video_url: e.target.value })}
+            />
+          </div>
+        </div>
+
         {/* Description */}
         <div>
           <label className="label">Description</label>
@@ -311,14 +356,32 @@ const ProductForm = () => {
 
         {/* File Uploads */}
         <div className="border-t pt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Main Image */}
           <div>
-            <label className="label mb-2 block">Product Image</label>
+            <label className="label mb-2 block">Main Product Image (Thumbnail)</label>
             {currentImage && (
               <div className="mb-2">
-                <img src={currentImage} alt="Current" className="h-20 w-20 object-cover rounded border" />
+                <img src={getImageUrl(currentImage)} alt="Current" className="h-20 w-20 object-cover rounded border" />
               </div>
             )}
             <input type="file" accept="image/*" onChange={(e) => setImageFile(e.target.files[0])} className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary hover:file:bg-primary-100"/>
+          </div>
+          {/* Gallery Images */}
+          <div>
+            <label className="label mb-2 block">Additional Gallery Images</label>
+            {currentGallery.length > 0 && (
+              <div className="flex gap-2 mb-2">
+                {currentGallery.map((img) => (
+                  <div key={img.id} className="relative group">
+                    <img src={getImageUrl(img.image_url)} alt="Gallery" className="h-20 w-20 object-cover rounded border" />
+                    <button type="button" onClick={() => handleDeleteGalleryImage(img.id)} className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-sm opacity-0 group-hover:opacity-100 transition-opacity">
+                      <FiTrash2 className="w-3 h-3" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+            <input type="file" accept="image/*" multiple onChange={(e) => setGalleryFiles(Array.from(e.target.files))} className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary hover:file:bg-primary-100"/>
           </div>
           <div>
             <label className="label mb-2 block">Manual (PDF)</label>

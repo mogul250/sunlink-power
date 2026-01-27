@@ -31,6 +31,7 @@ export const productAPI = {
     headers: { 'Content-Type': 'multipart/form-data' },
   }),
   delete: (id) => adminApi.delete(`/products/${id}`),
+  deleteImage: (id) => adminApi.delete(`/products/images/${id}`),
 };
 
 export const categoryAPI = {

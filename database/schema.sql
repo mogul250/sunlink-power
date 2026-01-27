@@ -36,6 +36,7 @@ CREATE TABLE Products (
     warranty_info VARCHAR(200),
     image_url VARCHAR(500),
     manual_pdf_url VARCHAR(500),
+    video_url VARCHAR(500),
     metadata JSON COMMENT 'Additional technical specifications in JSON format',
     is_featured BOOLEAN DEFAULT FALSE,
     stock_status ENUM('in_stock', 'out_of_stock', 'pre_order') DEFAULT 'in_stock',
@@ -46,6 +47,20 @@ CREATE TABLE Products (
     INDEX idx_featured (is_featured),
     INDEX idx_price (price),
     FULLTEXT INDEX idx_search (name, description)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ============================================
+-- 2.1. ProductImages Table
+-- ============================================
+CREATE TABLE ProductImages (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    product_id INT NOT NULL,
+    image_url VARCHAR(500) NOT NULL,
+    alt_text VARCHAR(255),
+    sort_order INT DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (product_id) REFERENCES Products(id) ON DELETE CASCADE,
+    INDEX idx_product_images_product_id (product_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================

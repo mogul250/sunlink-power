@@ -95,7 +95,8 @@ const uploadMultipleImages = upload.array('images', 5);
 // Middleware for product with image and manual
 const uploadProductFiles = upload.fields([
   { name: 'image', maxCount: 1 },
-  { name: 'manual', maxCount: 1 }
+  { name: 'manual', maxCount: 1 },
+  { name: 'gallery_images', maxCount: 10 }
 ]);
 
 // Middleware for testimonial with images and video

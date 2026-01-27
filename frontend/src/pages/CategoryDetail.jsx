@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { FiArrowLeft } from 'react-icons/fi';
 import { categoryAPI } from '../services/api';
 import ProductCard from '../components/browse/ProductCard';
 import LoadingSpinner from '../components/common/LoadingSpinner';
@@ -84,10 +83,13 @@ const CategoryDetail = () => {
             <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/50" />
           )}
           <div className="container-custom relative">
-            <Link to="/browse" className="inline-flex items-center gap-2 text-white hover:text-primary-200 mb-6">
-              <FiArrowLeft />
-              Back to Browse
-            </Link>
+            <nav className={`flex items-center gap-2 text-sm mb-6 ${category.image_url ? 'text-white/80' : 'text-gray-500'}`}>
+              <Link to="/" className={`transition-colors ${category.image_url ? 'hover:text-white' : 'hover:text-primary'}`}>Home</Link>
+              <span>/</span>
+              <Link to="/browse" className={`transition-colors ${category.image_url ? 'hover:text-white' : 'hover:text-primary'}`}>Products</Link>
+              <span>/</span>
+              <span className={`font-medium ${category.image_url ? 'text-white' : 'text-gray-900'}`}>{category.name}</span>
+            </nav>
             <h1 className={`text-4xl md:text-5xl font-heading font-bold mb-4 ${category.image_url ? 'text-white' : 'text-gray-900'}`}>
               {category.name}
             </h1>

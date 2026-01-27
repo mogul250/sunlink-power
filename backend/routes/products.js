@@ -5,7 +5,8 @@ import {
   getProductsByCategory,
   createProduct,
   updateProduct,
-  deleteProduct
+  deleteProduct,
+  deleteProductImage
 } from '../controllers/productController.js';
 import { authenticateToken } from '../middleware/auth.js';
 import { uploadProductFiles, handleUploadError } from '../middleware/upload.js';
@@ -35,5 +36,7 @@ router.put(
 );
 
 router.delete('/:id', authenticateToken, deleteProduct);
+
+router.delete('/images/:imageId', authenticateToken, deleteProductImage);
 
 export default router;

@@ -10,6 +10,7 @@ import Home from './pages/Home';
 import Browse from './pages/Browse';
 import CategoryDetail from './pages/CategoryDetail';
 import ProductDetail from './pages/ProductDetail';
+import About from './pages/About';
 import Contact from './pages/Contact';
 import NotFound from './pages/NotFound';
 
@@ -45,6 +46,7 @@ function App() {
             <Route path="/browse" element={<Browse />} />
             <Route path="/category/:slug" element={<CategoryDetail />} />
             <Route path="/product/:id" element={<ProductDetail />} />
+            <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
             {/* Catch all for 404 inside public layout */}
             <Route path="*" element={<NotFound />} />

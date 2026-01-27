@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FiMenu, FiX, FiSun } from 'react-icons/fi';
+import logo from '../../assets/logo.png';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -18,7 +19,8 @@ const Header = () => {
 
   const navigation = [
     { name: 'Home', path: '/' },
-    { name: 'Browse', path: '/browse' },
+    { name: 'Products', path: '/browse' },
+    { name: 'About Us', path: '/about' },
     { name: 'Contact', path: '/contact' },
   ];
 
@@ -32,17 +34,7 @@ const Header = () => {
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group">
-            <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-              <FiSun className="w-6 h-6 md:w-7 md:h-7 text-white" />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-xl md:text-2xl font-heading font-bold text-gray-900">
-                Sunlink Power
-              </span>
-              <span className="text-xs text-gray-600 -mt-1">
-                Powering Tomorrow
-              </span>
-            </div>
+            <img className="w-[180px] h-auto object-contain group-hover:scale-105 transition-transform" src={logo} alt="Sunlink Power" />
           </Link>
 
           {/* Desktop Navigation */}
