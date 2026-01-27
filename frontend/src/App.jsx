@@ -20,6 +20,8 @@ import ProductForm from './pages/admin/ProductForm';
 import ProductList from './pages/admin/ProductList';
 import CategoryList from './pages/admin/CategoryList';
 import CategoryForm from './pages/admin/CategoryForm';
+import TestimonialQueue from './pages/admin/TestimonialQueue';
+import Dashboard from './pages/admin/Dashboard';
 
 function App() {
   return (
@@ -30,14 +32,15 @@ function App() {
           <Route path="/admin/login" element={<AdminLogin />} />
           
           <Route path="/admin" element={<AdminLayout />}>
-            <Route index element={<div className="p-6">Dashboard Coming Soon</div>} />
-            <Route path="dashboard" element={<div className="p-6">Dashboard Coming Soon</div>} />
+            <Route index element={<Dashboard />} />
+            <Route path="dashboard" element={<Dashboard />} />
             <Route path="products" element={<ProductList />} />
             <Route path="products/new" element={<ProductForm />} />
             <Route path="products/edit/:id" element={<ProductForm />} />
             <Route path="categories" element={<CategoryList />} />
             <Route path="categories/new" element={<CategoryForm />} />
             <Route path="categories/edit/:id" element={<CategoryForm />} />
+            <Route path="testimonials" element={<TestimonialQueue />} />
           </Route>
 
           {/* Public Routes */}

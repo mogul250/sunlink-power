@@ -1,6 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { FiMail, FiPhone, FiMapPin, FiClock } from 'react-icons/fi';
 import { FaWhatsapp } from 'react-icons/fa';
+import TestimonialForm from '../components/common/TestimonialForm';
 
 const Contact = () => {
   const contactInfo = [
@@ -210,6 +211,14 @@ const Contact = () => {
                 </form>
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* Testimonial Submission Section */}
+        <section className="py-16 bg-white">
+          <div className="container-custom max-w-4xl">
+            <div className="text-center mb-10"><h2 className="text-3xl font-heading font-bold text-gray-900">Happy with our service?</h2><p className="text-gray-600">Share your story with the world!</p></div>
+            <TestimonialForm />
           </div>
         </section>
 

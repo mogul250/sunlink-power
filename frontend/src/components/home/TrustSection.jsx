@@ -21,6 +21,14 @@ const TrustSection = () => {
     }
   };
 
+  // Helper to get full image URL
+  const getImageUrl = (url) => {
+    if (!url) return '';
+    if (url.startsWith('http')) return url;
+    const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace(/\/api$/, '');
+    return `${baseUrl}${url}`;
+  };
+
   const logisticsPartners = [
     { name: 'DHL', logo: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/DHL_Logo.svg' },
     { name: 'FedEx', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/FedEx_Corporation_-_2016_Logo.svg/1280px-FedEx_Corporation_-_2016_Logo.svg.png' },
@@ -80,7 +88,7 @@ const TrustSection = () => {
                     {testimonial.before_image_url && (
                       <div className="relative">
                         <img
-                          src={testimonial.before_image_url}
+                          src={getImageUrl(testimonial.before_image_url)}
                           alt="Before"
                           className="w-full h-24 object-cover rounded-lg"
                         />
@@ -92,7 +100,7 @@ const TrustSection = () => {
                     {testimonial.after_image_url && (
                       <div className="relative">
                         <img
-                          src={testimonial.after_image_url}
+                          src={getImageUrl(testimonial.after_image_url)}
                           alt="After"
                           className="w-full h-24 object-cover rounded-lg"
                         />

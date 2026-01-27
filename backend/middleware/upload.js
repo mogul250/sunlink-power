@@ -33,9 +33,9 @@ const storage = multer.diskStorage({
     let folder = 'products';
     
     // Determine folder based on file type or request path
-    if (req.path.includes('category')) {
+    if (req.originalUrl.includes('category')) {
       folder = 'categories';
-    } else if (req.path.includes('testimonial')) {
+    } else if (req.originalUrl.includes('testimonial')) {
       folder = 'testimonials';
     } else if (file.mimetype === 'application/pdf') {
       folder = 'manuals';
