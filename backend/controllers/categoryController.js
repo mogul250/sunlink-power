@@ -28,8 +28,8 @@ const getCategoryBySlug = async (req, res, next) => {
 
     // Get category
     const [categories] = await promisePool.query(
-      'SELECT * FROM Categories WHERE slug = ?',
-      [slug]
+      'SELECT * FROM Categories WHERE slug = ? or id = ?',
+      [slug, slug]
     );
 
     if (categories.length === 0) {

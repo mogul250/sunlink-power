@@ -2,6 +2,7 @@ import axios from 'axios';
 
 // Use environment variable or default to localhost
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const BACKEND_BASE_URL = API_URL.replace('/api', '');
 
 const adminApi = axios.create({
   baseURL: API_URL,
@@ -16,6 +17,8 @@ adminApi.interceptors.request.use((config) => {
   }
   return config;
 });
+
+export { BACKEND_BASE_URL };
 
 export const authAPI = {
   login: (credentials) => adminApi.post('/admin/login', credentials),
@@ -51,6 +54,18 @@ export const testimonialAPI = {
   getAll: () => adminApi.get('/testimonials/all'),
   approve: (id) => adminApi.put(`/testimonials/${id}/approve`),
   delete: (id) => adminApi.delete(`/testimonials/${id}`),
+};
+
+export const kitAPI = {
+  getAll: () => adminApi.get('/kits'),
+  getById: (id) => adminApi.get(`/kits/${id}`),
+  create: (formData) => adminApi.post('/kits', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  }),
+  update: (id, formData) => adminApi.put(`/kits/${id}`, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  }),
+  delete: (id) => adminApi.delete(`/kits/${id}`),
 };
 
 export default adminApi;

@@ -20,6 +20,7 @@ const Header = () => {
   const navigation = [
     { name: 'Home', path: '/' },
     { name: 'Products', path: '/browse' },
+    { name: 'Kits', path: '/kits' },
     { name: 'About Us', path: '/about' },
     { name: 'Contact', path: '/contact' },
   ];
@@ -62,7 +63,7 @@ const Header = () => {
           {/* CTA Button - Desktop */}
           <div className="hidden md:block">
             <a
-              href="https://wa.me/+8613800000000?text=Hi%20Sunlink%2C%20I%27m%20interested%20in%20your%20solar%20products"
+              href="https://wa.me/+8618617384878?text=Hi%20Sunlink%2C%20I%27m%20interested%20in%20your%20solar%20products"
               target="_blank"
               rel="noopener noreferrer"
               className="btn btn-primary"
@@ -104,7 +105,7 @@ const Header = () => {
                 </Link>
               ))}
               <a
-                href="https://wa.me/+8613800000000?text=Hi%20Sunlink%2C%20I%27m%20interested%20in%20your%20solar%20products"
+                href="https://wa.me/+8618617384878?text=Hi%20Sunlink%2C%20I%27m%20interested%20in%20your%20solar%20products"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn btn-primary w-full"

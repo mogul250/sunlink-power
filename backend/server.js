@@ -14,6 +14,7 @@ import { errorHandler, notFound } from './middleware/errorHandler.js';
 // Import routes
 import categoryRoutes from './routes/categories.js';
 import productRoutes from './routes/products.js';
+import kitRoutes from './routes/kits.js';
 import testimonialRoutes from './routes/testimonials.js';
 import adminRoutes from './routes/admin.js';
 
@@ -66,6 +67,7 @@ app.get('/health', (req, res) => {
 // API Routes
 app.use('/api/categories', categoryRoutes);
 app.use('/api/products', productRoutes);
+app.use('/api/kits', kitRoutes);
 app.use('/api/testimonials', testimonialRoutes);
 app.use('/api/admin', adminRoutes);
 

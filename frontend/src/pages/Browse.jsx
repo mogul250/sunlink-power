@@ -95,7 +95,7 @@ const Browse = () => {
               Our solar experts are here to help you find the perfect solution for your needs
             </p>
             <a
-              href="https://wa.me/+8613800000000?text=Hi%20Sunlink%2C%20I%20need%20help%20choosing%20the%20right%20solar%20products"
+              href="https://wa.me/+8618617384878?text=Hi%20Sunlink%2C%20I%20need%20help%20choosing%20the%20right%20solar%20products"
               target="_blank"
               rel="noopener noreferrer"
               className="btn bg-white text-primary hover:bg-gray-100 text-lg"

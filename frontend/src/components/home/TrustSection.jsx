@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { FiStar, FiMapPin } from 'react-icons/fi';
 import { testimonialAPI } from '../../services/api';
+import { getImageUrl } from '../../services/imageUtils';
 
 const TrustSection = () => {
   const [testimonials, setTestimonials] = useState([]);
@@ -19,14 +20,6 @@ const TrustSection = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  // Helper to get full image URL
-  const getImageUrl = (url) => {
-    if (!url) return '';
-    if (url.startsWith('http')) return url;
-    const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace(/\/api$/, '');
-    return `${baseUrl}${url}`;
   };
 
   const logisticsPartners = [

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FiArrowRight } from 'react-icons/fi';
 import { categoryAPI } from '../../services/api';
+import { getImageUrl } from '../../services/imageUtils';
 import LoadingSpinner from '../common/LoadingSpinner';
 import ErrorMessage from '../common/ErrorMessage';
 
@@ -71,7 +72,7 @@ const CategoryGrid = () => {
               {/* Image */}
               <div className="relative h-48 overflow-hidden">
                 <img
-                  src={category.image_url || 'https://images.unsplash.com/photo-1509391366360-2e959784a276?w=400'}
+                  src={getImageUrl(category.image_url) || 'https://images.unsplash.com/photo-1509391366360-2e959784a276?w=400'}
                   alt={category.name}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />

@@ -10,6 +10,7 @@ import Home from './pages/Home';
 import Browse from './pages/Browse';
 import CategoryDetail from './pages/CategoryDetail';
 import ProductDetail from './pages/ProductDetail';
+import KitDetail from './pages/KitDetail';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import NotFound from './pages/NotFound';
@@ -20,6 +21,9 @@ import ProductForm from './pages/admin/ProductForm';
 import ProductList from './pages/admin/ProductList';
 import CategoryList from './pages/admin/CategoryList';
 import CategoryForm from './pages/admin/CategoryForm';
+import KitList from './pages/admin/KitList';
+import KitForm from './pages/admin/KitForm';
+import Kits from './pages/Kits';
 import TestimonialQueue from './pages/admin/TestimonialQueue';
 import Dashboard from './pages/admin/Dashboard';
 
@@ -40,6 +44,9 @@ function App() {
             <Route path="categories" element={<CategoryList />} />
             <Route path="categories/new" element={<CategoryForm />} />
             <Route path="categories/edit/:id" element={<CategoryForm />} />
+            <Route path="kits" element={<KitList />} />
+            <Route path="kits/new" element={<KitForm />} />
+            <Route path="kits/edit/:id" element={<KitForm />} />
             <Route path="testimonials" element={<TestimonialQueue />} />
           </Route>
 
@@ -49,6 +56,8 @@ function App() {
             <Route path="/browse" element={<Browse />} />
             <Route path="/category/:slug" element={<CategoryDetail />} />
             <Route path="/product/:id" element={<ProductDetail />} />
+            <Route path="/kits" element={<Kits />} />
+            <Route path="/kit/:slug" element={<KitDetail />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
             {/* Catch all for 404 inside public layout */}

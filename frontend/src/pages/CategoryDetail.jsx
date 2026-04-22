@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { categoryAPI } from '../services/api';
+import { getImageUrl } from '../services/imageUtils';
 import ProductCard from '../components/browse/ProductCard';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import ErrorMessage from '../components/common/ErrorMessage';
@@ -74,7 +75,7 @@ const CategoryDetail = () => {
         <section 
           className="relative bg-gradient-to-br from-primary-50 to-secondary-50 py-20"
           style={{
-            backgroundImage: category.image_url ? `url(${category.image_url})` : 'none',
+            backgroundImage: category.image_url ? `url(${getImageUrl(category.image_url)})` : 'none',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}

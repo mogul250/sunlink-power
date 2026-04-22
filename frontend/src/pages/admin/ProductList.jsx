@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FiPlus, FiEdit2, FiTrash2, FiSearch } from 'react-icons/fi';
 import { productAPI } from '../../services/adminApi';
+import { getImageUrl } from '../../services/imageUtils';
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
@@ -85,14 +86,14 @@ const ProductList = () => {
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-lg bg-gray-100 overflow-hidden">
                           {product.image_url && (
-                            <img src={product.image_url} alt="" className="w-full h-full object-cover" />
+                            <img src={getImageUrl(product.image_url)} alt="" className="w-full h-full object-cover" />
                           )}
                         </div>
                         <span className="font-medium text-gray-900">{product.name}</span>
                       </div>
                     </td>
                     <td className="px-6 py-4 text-gray-600">{product.category_name}</td>
-                    <td className="px-6 py-4 text-gray-900 font-medium">${product.price}</td>
+                    <td className="px-6 py-4 text-gray-900 font-medium">{product.price ? `$${product.price}` : 'N/A'}</td>
                     <td className="px-6 py-4">
                       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                         product.stock_status === 'in_stock' ? 'bg-green-100 text-green-800' :

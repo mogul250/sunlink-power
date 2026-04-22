@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { FiShoppingCart, FiZap, FiAward } from 'react-icons/fi';
 import { FaWhatsapp } from 'react-icons/fa';
 import { generateWhatsAppLink } from '../../services/api';
+import { getImageUrl } from '../../services/imageUtils';
 
 const ProductCard = ({ product }) => {
   const handleWhatsAppClick = (e) => {
@@ -15,7 +16,7 @@ const ProductCard = ({ product }) => {
       {/* Image */}
       <Link to={`/product/${product.id}`} className="block relative h-56 overflow-hidden">
         <img
-          src={product.image_url || 'https://images.unsplash.com/photo-1509391366360-2e959784a276?w=400'}
+          src={getImageUrl(product.image_url) || 'https://images.unsplash.com/photo-1509391366360-2e959784a276?w=400'}
           alt={product.name}
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
           loading="lazy"
@@ -74,13 +75,11 @@ const ProductCard = ({ product }) => {
           )}
         </div>
 
-        {/* Price & Actions */}
+        {/* Price & Actions - Pricing hidden, contact for quotes */}
         <div className="flex items-center justify-between pt-4 border-t border-gray-200">
           <div>
-            <div className="text-2xl font-bold text-gray-900">
-              ${product.price}
-            </div>
-            <div className="text-xs text-gray-500">USD</div>
+            {/* Pricing available only through contact/WhatsApp */}
+            <div className="text-sm text-gray-500">Contact for pricing</div>
           </div>
 
           <div className="flex items-center gap-2">

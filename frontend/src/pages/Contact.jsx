@@ -14,8 +14,8 @@ const Contact = () => {
     {
       icon: FiPhone,
       title: 'Phone',
-      content: '+86 138 0000 0000',
-      link: 'tel:+8613800000000',
+      content: '+86-186-1738-4878',
+      link: 'tel:+8618617384878',
       color: 'text-secondary',
     },
     {
@@ -111,7 +111,7 @@ const Contact = () => {
                     </div>
                   </div>
                   <a
-                    href="https://wa.me/+8613800000000?text=Hi%20Sunlink%2C%20I%20have%20a%20question"
+                    href="https://wa.me/+8618617384878?text=Hi%20Sunlink%2C%20I%20have%20a%20question"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="btn bg-green-500 hover:bg-green-600 text-white w-full"
@@ -228,7 +228,7 @@ const Contact = () => {
             <div className="text-center">
               <FiMapPin className="w-16 h-16 mx-auto mb-4" />
               <p className="text-lg">Map Location</p>
-              <p className="text-sm">Guangzhou, China</p>
+              <p className="text-sm">The Garden Hotel office 735, 7Floor, Building 5 and 6, No.368 Huanshi East Road, Yuexiu District, Guangzhou.</p>
             </div>
           </div>
         </section>

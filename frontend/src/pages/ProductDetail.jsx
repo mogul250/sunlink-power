@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { FiCheck, FiDownload, FiMessageCircle, FiPlay } from 'react-icons/fi';
 import { productAPI } from '../services/api';
+import { getImageUrl } from '../services/imageUtils';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import ErrorMessage from '../components/common/ErrorMessage';
 
@@ -44,14 +45,6 @@ const ProductDetail = () => {
   if (!product) return <div className="min-h-screen flex items-center justify-center">Product not found</div>;
 
   const embedUrl = getEmbedUrl(product.video_url);
-
-  // Helper to get full image URL
-  const getImageUrl = (url) => {
-    if (!url) return '';
-    if (url.startsWith('http')) return url;
-    const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace(/\/api$/, '');
-    return `${baseUrl}${url}`;
-  };
 
   return (
     <>
@@ -114,7 +107,8 @@ const ProductDetail = () => {
                 <h1 className="text-3xl md:text-4xl font-heading font-bold text-gray-900 mb-4">{product.name}</h1>
                 
                 <div className="flex items-baseline gap-4 mb-6">
-                  <span className="text-3xl font-bold text-gray-900">${product.price}</span>
+                {/* Price hidden - available through contact */}
+                {/* <span className="text-3xl font-bold text-gray-900">${product.price}</span> */}
                   <span className={`px-3 py-1 rounded-full text-sm font-medium ${
                     product.stock_status === 'in_stock' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'
                   }`}>
@@ -155,7 +149,7 @@ const ProductDetail = () => {
                 {/* Actions */}
                 <div className="flex flex-col sm:flex-row gap-4 mb-8">
                   <a 
-                    href={`https://wa.me/+8613800000000?text=Hi%20Sunlink,%20I'm%20interested%20in%20${encodeURIComponent(product.name)}`}
+                    href={`https://wa.me/+8618617384878?text=Hi%20Sunlink,%20I'm%20interested%20in%20${encodeURIComponent(product.name)}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="btn btn-primary flex-1 flex items-center justify-center gap-2"

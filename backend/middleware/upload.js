@@ -15,6 +15,7 @@ const createUploadDirs = () => {
     path.join(uploadDir, 'products'),
     path.join(uploadDir, 'categories'),
     path.join(uploadDir, 'testimonials'),
+    path.join(uploadDir, 'kits'),
     path.join(uploadDir, 'manuals')
   ];
 
@@ -33,9 +34,11 @@ const storage = multer.diskStorage({
     let folder = 'products';
     
     // Determine folder based on file type or request path
-    if (req.originalUrl.includes('category')) {
+    if (req.originalUrl.includes('category') || req.originalUrl.includes('categories')) {
       folder = 'categories';
-    } else if (req.originalUrl.includes('testimonial')) {
+    } else if (req.originalUrl.includes('kits')) {
+      folder = 'kits';
+    } else if (req.originalUrl.includes('testimonial') || req.originalUrl.includes('testimonials')) {
       folder = 'testimonials';
     } else if (file.mimetype === 'application/pdf') {
       folder = 'manuals';

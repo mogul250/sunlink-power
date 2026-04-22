@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FiPlus, FiEdit2, FiTrash2 } from 'react-icons/fi';
 import { categoryAPI } from '../../services/adminApi';
+import { getImageUrl } from '../../services/imageUtils';
 
 const CategoryList = () => {
   const [categories, setCategories] = useState([]);
@@ -65,7 +66,7 @@ const CategoryList = () => {
                     <td className="px-6 py-4">
                       <div className="w-12 h-12 rounded-lg bg-gray-100 overflow-hidden">
                         {category.image_url && (
-                          <img src={category.image_url} alt="" className="w-full h-full object-cover" />
+                          <img src={getImageUrl(category.image_url)} alt="" className="w-full h-full object-cover" />
                         )}
                       </div>
                     </td>

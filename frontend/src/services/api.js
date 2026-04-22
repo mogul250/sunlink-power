@@ -25,9 +25,13 @@ export const testimonialAPI = {
   }),
 };
 
-// Helper for WhatsApp link
+export const kitAPI = {
+  getAll: (params) => api.get('/kits', { params }),
+  getFeatured: () => api.get('/kits?featured=true&limit=12'),
+};
+
 export const generateWhatsAppLink = (productName) => {
-  const phone = '+8613800000000'; // Replace with real number
+  const phone = '+8618617384878';
   const text = `Hi Sunlink, I'm interested in ${productName}`;
   return `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
 };

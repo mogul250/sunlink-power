@@ -5,7 +5,7 @@ const WhatsAppButton = ({ productName = null, className = '' }) => {
   const handleClick = () => {
     const link = productName 
       ? generateWhatsAppLink(productName)
-      : 'https://wa.me/+8613800000000?text=Hi%20Sunlink%2C%20I%27m%20interested%20in%20your%20solar%20products';
+      : 'https://wa.me/+8618617384878?text=Hi%20Sunlink%2C%20I%27m%20interested%20in%20your%20solar%20products';
     
     window.open(link, '_blank', 'noopener,noreferrer');
   };

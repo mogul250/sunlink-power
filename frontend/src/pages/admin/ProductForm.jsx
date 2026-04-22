@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FiPlus, FiTrash2, FiSave } from 'react-icons/fi';
 import { categoryAPI, productAPI } from '../../services/adminApi';
+import { getImageUrl } from '../../services/imageUtils';
 
 const ProductForm = () => {
   const { id } = useParams();
@@ -34,14 +35,6 @@ const ProductForm = () => {
 
   // Metadata State (for JSON field)
   const [metadata, setMetadata] = useState([{ key: '', value: '' }]);
-
-  // Helper to get full image URL
-  const getImageUrl = (url) => {
-    if (!url) return '';
-    if (url.startsWith('http')) return url;
-    const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace(/\/api$/, '');
-    return `${baseUrl}${url}`;
-  };
 
   useEffect(() => {
     fetchCategories();
@@ -212,11 +205,10 @@ const ProductForm = () => {
           </div>
 
           <div>
-            <label className="label">Price ($)</label>
+            <label className="label">Price ($) <span className="text-xs text-gray-500">(Optional)</span></label>
             <input
               type="number"
               step="0.01"
-              required
               className="input-field w-full border p-2 rounded"
               value={product.price}
               onChange={(e) => setProduct({ ...product, price: e.target.value })}

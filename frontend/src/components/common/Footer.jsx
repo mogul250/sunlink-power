@@ -52,12 +52,12 @@ const Footer = () => {
             <div className="space-y-3">
               <div className="flex items-center gap-3 text-sm">
                 <FiMapPin className="w-5 h-5 text-primary flex-shrink-0" />
-                <span>Guangzhou, China</span>
+                <span>The Garden Hotel office 735, 7Floor, Building 5 and 6, No.368 Huanshi East Road, Yuexiu District, Guangzhou.</span>
               </div>
               <div className="flex items-center gap-3 text-sm">
                 <FiPhone className="w-5 h-5 text-primary flex-shrink-0" />
-                <a href="tel:+8613800000000" className="hover:text-primary transition-colors">
-                  +86 138 0000 0000
+                <a href="tel:+8618617384878" className="hover:text-primary transition-colors">
+                  +86-186-1738-4878
                 </a>
               </div>
               <div className="flex items-center gap-3 text-sm">

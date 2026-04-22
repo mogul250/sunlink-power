@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FiSave } from 'react-icons/fi';
 import { categoryAPI } from '../../services/adminApi';
+import { getImageUrl } from '../../services/imageUtils';
 
 const CategoryForm = () => {
   const { id } = useParams();
@@ -110,7 +111,7 @@ const CategoryForm = () => {
 
         <div>
           <label className="label mb-2 block">Category Image</label>
-          {currentImage && <img src={currentImage} alt="Current" className="h-20 w-20 object-cover rounded mb-2" />}
+          {currentImage && <img src={getImageUrl(currentImage)} alt="Current" className="h-20 w-20 object-cover rounded mb-2" />}
           <input type="file" accept="image/*" onChange={(e) => setImageFile(e.target.files[0])} className="block w-full text-sm text-gray-500"/>
         </div>
 

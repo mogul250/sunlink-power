@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { FiCheck, FiX, FiEye, FiTrash2 } from 'react-icons/fi';
 import { testimonialAPI } from '../../services/adminApi';
+import { getImageUrl } from '../../services/imageUtils';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import ErrorMessage from '../../components/common/ErrorMessage';
 
@@ -49,14 +50,6 @@ const TestimonialQueue = () => {
       console.error('Error deleting testimonial:', err);
       alert('Failed to delete testimonial');
     }
-  };
-
-  // Helper to get full image URL
-  const getImageUrl = (url) => {
-    if (!url) return '';
-    if (url.startsWith('http')) return url;
-    const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace(/\/api$/, '');
-    return `${baseUrl}${url}`;
   };
 
   const pendingTestimonials = testimonials.filter(t => !t.is_approved);
