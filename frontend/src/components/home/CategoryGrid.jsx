@@ -30,7 +30,7 @@ const CategoryGrid = () => {
 
   if (loading) {
     return (
-      <section className="section-padding bg-white">
+      <section className="py-16 md:py-24 bg-gray-50">
         <div className="container-custom">
           <LoadingSpinner size="lg" />
         </div>
@@ -40,7 +40,7 @@ const CategoryGrid = () => {
 
   if (error) {
     return (
-      <section className="section-padding bg-white">
+      <section className="py-16 md:py-24 bg-gray-50">
         <div className="container-custom">
           <ErrorMessage message={error} onRetry={fetchCategories} />
         </div>
@@ -49,7 +49,7 @@ const CategoryGrid = () => {
   }
 
   return (
-    <section className="py-16 md:py-24 bg-white">
+    <section className="py-16 md:py-24 bg-gray-50">
       <div className="container-custom">
         {/* Section Header */}
         <div className="text-center mb-12">
@@ -62,7 +62,7 @@ const CategoryGrid = () => {
         </div>
 
         {/* Category Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {categories.map((category) => (
             <Link
               key={category.id}
@@ -102,7 +102,7 @@ const CategoryGrid = () => {
 
         {/* View All Button */}
         <div className="text-center">
-          <Link to="/browse" className="btn btn-primary btn-lg group">
+          <Link to="/browse" className="inline-flex items-center justify-center gap-2 bg-primary text-white hover:bg-primary/90 rounded-lg text-lg px-8 py-4 transition-all font-bold group">
             View All Categories
             <FiArrowRight className="group-hover:translate-x-1 transition-transform" />
           </Link>

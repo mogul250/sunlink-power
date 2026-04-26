@@ -4,12 +4,8 @@
 
 /* Custom Base Styles */
 @layer base {
-  body {
-    @apply bg-gray-50 text-gray-900 antialiased;
-    margin: 0;
-    padding: 0;
-    min-height: 100vh;
-  }
+
+
 
   h1, h2, h3, h4, h5, h6 {
     @apply font-heading font-bold;
@@ -48,19 +44,18 @@
   }
 }
 
-/* Custom Component Styles */
-@layer components {
-  /* Button Styles */
+/* Custom Component Styles */@layer components {
+
   .btn {
-    @apply inline-flex items-center justify-center px-6 py-3 rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply inline-flex items-center justify-center px-6 py-3 font-bold rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer;
   }
 
   .btn-primary {
-    @apply bg-primary-500 text-white hover:bg-primary-600 focus:ring-primary-500 shadow-md hover:shadow-lg;
+    @apply bg-primary-500 text-white hover:bg-primary-600 focus:ring-primary-500 shadow-sm hover:shadow-md;
   }
 
   .btn-secondary {
-    @apply bg-secondary-500 text-white hover:bg-secondary-600 focus:ring-secondary-500 shadow-md hover:shadow-lg;
+    @apply bg-secondary-500 text-white hover:bg-secondary-600 focus:ring-secondary-500 shadow-sm hover:shadow-md;
   }
 
   .btn-accent {
@@ -84,8 +79,14 @@
   }
 
   /* Card Styles */
+
+  
   .card {
-    @apply bg-white rounded-xl shadow-card overflow-hidden transition-all duration-300 hover:shadow-xl;
+    @apply block bg-white border border-gray-100 overflow-hidden transition-all duration-300;
+  }
+
+  .card-hover {
+    @apply hover:shadow-xl hover:-translate-y-1 hover:border-primary-100;
   }
 
   .card-body {

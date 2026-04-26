@@ -86,7 +86,7 @@ const Hero = () => {
           <div className="flex flex-col sm:flex-row gap-6 pt-4">
             <Link 
               to="/browse" 
-              className="btn btn-primary btn-lg text-lg px-8 py-4 shadow-lg shadow-primary/30 hover:shadow-primary/50 transition-all transform hover:-translate-y-1 flex items-center justify-center"
+              className="bg-primary text-white hover:bg-primary/90  text-lg px-8 py-4 transition-all transform flex items-center justify-center font-bold"
             >
               Explore Catalog
               <FiArrowRight className="ml-2" />

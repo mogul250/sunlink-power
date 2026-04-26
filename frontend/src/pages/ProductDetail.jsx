@@ -2,19 +2,22 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { FiCheck, FiDownload, FiMessageCircle, FiPlay } from 'react-icons/fi';
-import { productAPI } from '../services/api';
+import { productAPI, categoryAPI } from '../services/api';
 import { getImageUrl } from '../services/imageUtils';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import ErrorMessage from '../components/common/ErrorMessage';
+import ProductCard from '../components/browse/ProductCard';
 
 const ProductDetail = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [activeImage, setActiveImage] = useState(null);
+  const [activeMedia, setActiveMedia] = useState({ type: 'image', url: null });
+  const [relatedProducts, setRelatedProducts] = useState([]);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     fetchProduct();
   }, [id]);
 
@@ -23,8 +26,21 @@ const ProductDetail = () => {
       setLoading(true);
       setError(null);
       const response = await productAPI.getById(id);
-      setProduct(response.data.data);
-      setActiveImage(response.data.data.image_url);
+      const productData = response.data.data;
+      setProduct(productData);
+      setActiveMedia({ type: 'image', url: productData.image_url });
+
+      // Fetch related products from the same category
+      if (productData.category_name) {
+        const slug = productData.category_slug || productData.category_name.toLowerCase().replace(/\s+/g, '-');
+        try {
+          const catResponse = await categoryAPI.getBySlug(slug);
+          const catProducts = catResponse.data.data.products || [];
+          setRelatedProducts(catProducts.filter(p => p.id !== productData.id).slice(0, 4));
+        } catch (err) {
+          console.error('Failed to fetch related products', err);
+        }
+      }
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to load product');
     } finally {
@@ -32,19 +48,23 @@ const ProductDetail = () => {
     }
   };
 
-  const getEmbedUrl = (url) => {
+  const getYoutubeInfo = (url) => {
     if (!url) return null;
     // Handle standard YouTube URLs to convert to embed format
     const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
     const match = url.match(regExp);
-    return (match && match[2]) ? `https://www.youtube.com/embed/${match[2].trim()}` : null;
+    if (match && match[2]) {
+      const id = match[2].trim();
+      return { id, embedUrl: `https://www.youtube.com/embed/${id}` };
+    }
+    return null;
   };
 
   if (loading) return <div className="min-h-screen flex items-center justify-center"><LoadingSpinner size="lg" /></div>;
   if (error) return <div className="min-h-screen flex items-center justify-center"><ErrorMessage message={error} onRetry={fetchProduct} /></div>;
   if (!product) return <div className="min-h-screen flex items-center justify-center">Product not found</div>;
 
-  const embedUrl = getEmbedUrl(product.video_url);
+  const videoInfo = getYoutubeInfo(product.video_url);
 
   return (
     <>
@@ -53,16 +73,18 @@ const ProductDetail = () => {
         <meta name="description" content={product.description} />
       </Helmet>
 
-      <div className="min-h-screen bg-gray-50 py-12">
-        <div className="container mx-auto px-4 max-w-[1440px]">
-          <nav className="flex items-center gap-2 text-sm text-gray-500 mb-8">
+      <div className="min-h-screen bg-gray-50 py-8">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <nav className="flex items-center gap-2 text-sm text-gray-500 mb-6">
             <Link to="/" className="hover:text-primary transition-colors">Home</Link>
             <span className="text-gray-400">/</span>
             <Link to="/browse" className="hover:text-primary transition-colors">Products</Link>
             {product.category_name && (
               <>
                 <span className="text-gray-400">/</span>
-                <span className="text-gray-600">{product.category_name}</span>
+                <Link to={`/category/${product.category_slug || product.category_name.toLowerCase().replace(/\s+/g, '-')}`} className="text-gray-600 hover:text-primary transition-colors">
+                  {product.category_name}
+                </Link>
               </>
             )}
             <span className="text-gray-400">/</span>
@@ -70,46 +92,72 @@ const ProductDetail = () => {
           </nav>
 
           <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-0">
               {/* Image Gallery */}
-              <div className="bg-gray-50 h-full flex flex-col">
-                <div className="aspect-square bg-white overflow-hidden shadow-sm relative">
-                  <img src={getImageUrl(activeImage || product.image_url)} alt={product.name} className="w-full h-full object-cover px-8" />
-                </div>
-
-                {/* Thumbnail Gallery */}
-                {(product.gallery_images && product.gallery_images.length > 0) && (
-                  <div className="grid grid-cols-5 gap-2 p-4">
-                    {/* Main Image Thumbnail */}
-                    <button 
-                      onClick={() => setActiveImage(product.image_url)}
-                      className={`aspect-square rounded-lg overflow-hidden border-2 transition-colors ${activeImage === product.image_url ? 'border-primary' : 'border-transparent hover:border-gray-200'}`}
-                    >
-                      <img src={getImageUrl(product.image_url)} alt="Main" className="w-full h-full object-cover" />
-                    </button>
-                    {/* Gallery Thumbnails */}
-                    {product.gallery_images.map((img) => (
+              <div className="bg-white h-full p-3 pr-1.5 lg:p-4 lg:pr-2 flex flex-row gap-2 lg:col-span-3">
+                {/* Thumbnail Gallery (Vertical Scroll on Left) */}
+                {((product.gallery_images && product.gallery_images.length > 0) || videoInfo) && (
+                  <div className="w-14 sm:w-16 lg:w-20 flex-shrink-0 relative">
+                    <div className="absolute inset-0 overflow-y-auto scrollbar-thin flex flex-col gap-2 pr-1 pb-1">
+                      {/* Main Image Thumbnail */}
                       <button 
-                        key={img.id}
-                        onClick={() => setActiveImage(img.image_url)}
-                        className={`aspect-square rounded-lg overflow-hidden border-2 transition-colors ${activeImage === img.image_url ? 'border-primary' : 'border-transparent hover:border-gray-200'}`}
+                        onClick={() => setActiveMedia({ type: 'image', url: product.image_url })}
+                        className={`aspect-square w-full rounded-lg overflow-hidden border-2 transition-colors flex-shrink-0 ${activeMedia.type === 'image' && activeMedia.url === product.image_url ? 'border-primary' : 'border-transparent hover:border-gray-200'}`}
                       >
-                        <img src={getImageUrl(img.image_url)} alt="Gallery" className="w-full h-full object-cover" />
+                        <img src={getImageUrl(product.image_url)} alt="Main" className="w-full h-full object-cover" />
                       </button>
-                    ))}
+                      {/* Gallery Thumbnails */}
+                      {product.gallery_images?.map((img) => (
+                        <button 
+                          key={img.id}
+                          onClick={() => setActiveMedia({ type: 'image', url: img.image_url })}
+                          className={`aspect-square w-full rounded-lg overflow-hidden border-2 transition-colors flex-shrink-0 ${activeMedia.type === 'image' && activeMedia.url === img.image_url ? 'border-primary' : 'border-transparent hover:border-gray-200'}`}
+                        >
+                          <img src={getImageUrl(img.image_url)} alt="Gallery" className="w-full h-full object-cover" />
+                        </button>
+                      ))}
+                      {/* Video Thumbnail */}
+                      {videoInfo && (
+                        <button 
+                          onClick={() => setActiveMedia({ type: 'video', url: videoInfo.embedUrl })}
+                          className={`aspect-square w-full rounded-lg overflow-hidden border-2 transition-colors relative flex-shrink-0 ${activeMedia.type === 'video' ? 'border-primary' : 'border-transparent hover:border-gray-200'}`}
+                        >
+                          <img src={`https://img.youtube.com/vi/${videoInfo.id}/0.jpg`} alt="Video Thumbnail" className="w-full h-full object-cover" />
+                          <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+                            <FiPlay className="text-white w-6 h-6" />
+                          </div>
+                        </button>
+                      )}
+                    </div>
                   </div>
                 )}
+
+                {/* Main Image */}
+                <div className="flex-1 bg-gray-50 border border-gray-100 overflow-hidden relative rounded-xl flex items-start justify-center min-h-[300px]">
+                  {activeMedia.type === 'video' ? (
+                    <iframe
+                      src={activeMedia.url}
+                      title={product.name}
+                      className="w-full aspect-video rounded-lg shadow-sm"
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  ) : (
+                    <img src={getImageUrl(activeMedia.url || product.image_url)} alt={product.name} className="w-full h-auto max-h-[500px] lg:max-h-[600px]" />
+                  )}
+                </div>
               </div>
 
               {/* Product Info */}
-              <div className="p-8 lg:p-12">
-                <div className="mb-2 text-primary font-medium">{product.category_name}</div>
-                <h1 className="text-3xl md:text-4xl font-heading font-bold text-gray-900 mb-4">{product.name}</h1>
+              <div className="p-3 pl-1.5 lg:p-4 lg:pl-2 lg:col-span-2">
+                <div className="mb-1 text-xs text-primary font-medium uppercase tracking-wider">{product.category_name}</div>
+                <h1 className="text-xl md:text-2xl font-heading font-bold text-gray-900 mb-2">{product.name}</h1>
                 
-                <div className="flex items-baseline gap-4 mb-6">
+                <div className="flex items-baseline gap-2 mb-3">
                 {/* Price hidden - available through contact */}
                 {/* <span className="text-3xl font-bold text-gray-900">${product.price}</span> */}
-                  <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                  <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${
                     product.stock_status === 'in_stock' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'
                   }`}>
                     {product.stock_status === 'in_stock' ? 'In Stock' : 'Pre-order'}
@@ -117,51 +165,51 @@ const ProductDetail = () => {
                 </div>
 
                 {/* Key Features */}
-                <div className="grid grid-cols-2 gap-4 mb-8">
+                <div className="grid grid-cols-2 gap-2 mb-4">
                   {product.wattage && (
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <div className="text-sm text-gray-500 mb-1">Power Output</div>
-                      <div className="font-semibold text-gray-900">{product.wattage}</div>
+                    <div className="bg-gray-50 p-2.5 rounded-lg border border-gray-100">
+                      <div className="text-[11px] text-gray-500 mb-0.5 uppercase tracking-wide">Power Output</div>
+                      <div className="text-xs font-semibold text-gray-900">{product.wattage}</div>
                     </div>
                   )}
                   {product.warranty_info && (
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <div className="text-sm text-gray-500 mb-1">Warranty</div>
-                      <div className="font-semibold text-gray-900">{product.warranty_info}</div>
+                    <div className="bg-gray-50 p-2.5 rounded-lg border border-gray-100">
+                      <div className="text-[11px] text-gray-500 mb-0.5 uppercase tracking-wide">Warranty</div>
+                      <div className="text-xs font-semibold text-gray-900">{product.warranty_info}</div>
                     </div>
                   )}
                   {product.battery_type && product.battery_type !== 'N/A' && (
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <div className="text-sm text-gray-500 mb-1">Battery Type</div>
-                      <div className="font-semibold text-gray-900">{product.battery_type}</div>
+                    <div className="bg-gray-50 p-2.5 rounded-lg border border-gray-100">
+                      <div className="text-[11px] text-gray-500 mb-0.5 uppercase tracking-wide">Battery Type</div>
+                      <div className="text-xs font-semibold text-gray-900">{product.battery_type}</div>
                     </div>
                   )}
                   {product.durability_rating && (
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <div className="text-sm text-gray-500 mb-1">Durability</div>
-                      <div className="font-semibold text-gray-900">{product.durability_rating}</div>
+                    <div className="bg-gray-50 p-2.5 rounded-lg border border-gray-100">
+                      <div className="text-[11px] text-gray-500 mb-0.5 uppercase tracking-wide">Durability</div>
+                      <div className="text-xs font-semibold text-gray-900">{product.durability_rating}</div>
                     </div>
                   )}
                 </div>
 
-                <p className="text-gray-600 text-lg mb-8 leading-relaxed">{product.description}</p>
+                <p className="text-gray-600 text-sm mb-5 leading-relaxed">{product.description}</p>
 
                 {/* Actions */}
-                <div className="flex flex-col sm:flex-row gap-4 mb-8">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <a 
                     href={`https://wa.me/+8618617384878?text=Hi%20Sunlink,%20I'm%20interested%20in%20${encodeURIComponent(product.name)}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="btn btn-primary flex-1 flex items-center justify-center gap-2"
+                    className="btn btn-primary btn-sm flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-sm whitespace-nowrap"
                   >
                     <FiMessageCircle /> Inquire on WhatsApp
                   </a>
                   {product.manual_pdf_url && (
                     <a 
-                      href={product.manual_pdf_url}
+                      href={getImageUrl(product.manual_pdf_url)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="btn bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 flex-1 flex items-center justify-center gap-2"
+                      className="btn btn-sm bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-sm whitespace-nowrap"
                     >
                       <FiDownload /> Download Manual
                     </a>
@@ -170,38 +218,19 @@ const ProductDetail = () => {
               </div>
             </div>
 
-            {/* Video Section */}
-            {embedUrl && (
-              <div className="border-t border-gray-100 p-8 lg:p-12">
-                <h2 className="text-2xl font-heading font-bold text-gray-900 mb-6 flex items-center gap-2">
-                  <FiPlay className="text-primary" /> Product Video
-                </h2>
-                <div className="aspect-video w-full max-w-4xl mx-auto rounded-xl overflow-hidden shadow-lg bg-black">
-                  <iframe
-                    src={embedUrl}
-                    title={product.name}
-                    className="w-full h-full"
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
-                </div>
-              </div>
-            )}
-
             {/* Technical Specifications Table */}
             {product.metadata && (
-              <div className="border-t border-gray-100 p-8 lg:p-12 bg-gray-50">
-                <h2 className="text-2xl font-heading font-bold text-gray-900 mb-6">Technical Specifications</h2>
-                <div className="bg-white rounded-xl shadow-sm overflow-hidden max-w-4xl">
-                  <table className="w-full">
+              <div className="border-t border-gray-100 p-3 lg:p-4 bg-gray-50">
+                <h2 className="text-lg font-heading font-bold text-gray-900 mb-3">Technical Specifications</h2>
+                <div className="bg-white rounded-xl shadow-sm overflow-hidden max-w-3xl">
+                  <table className="w-full text-xs">
                     <tbody className="divide-y divide-gray-100">
                       {Object.entries(typeof product.metadata === 'string' ? JSON.parse(product.metadata) : product.metadata).map(([key, value]) => (
                         <tr key={key} className="hover:bg-gray-50">
-                          <td className="px-6 py-4 text-sm font-medium text-gray-500 capitalize w-1/3">
+                          <td className="px-3 py-2 font-bold text-gray-500 capitalize w-1/3">
                             {key.replace(/_/g, ' ')}
                           </td>
-                          <td className="px-6 py-4 text-sm text-gray-900">
+                          <td className="px-3 py-2 text-gray-900">
                             {Array.isArray(value) ? value.join(', ') : value.toString()}
                           </td>
                         </tr>
@@ -212,6 +241,18 @@ const ProductDetail = () => {
               </div>
             )}
           </div>
+
+          {/* You Might Also Like Section */}
+          {relatedProducts.length > 0 && (
+            <div className="mt-12 lg:mt-16">
+              <h2 className="text-2xl font-heading font-bold text-gray-900 mb-6">You Might Also Like</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {relatedProducts.map(relatedProduct => (
+                  <ProductCard key={relatedProduct.id} product={relatedProduct} />
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </>

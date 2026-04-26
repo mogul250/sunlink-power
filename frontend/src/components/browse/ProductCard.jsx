@@ -76,28 +76,22 @@ const ProductCard = ({ product }) => {
         </div>
 
         {/* Price & Actions - Pricing hidden, contact for quotes */}
-        <div className="flex items-center justify-between pt-4 border-t border-gray-200">
-          <div>
-            {/* Pricing available only through contact/WhatsApp */}
-            <div className="text-sm text-gray-500">Contact for pricing</div>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <Link
-              to={`/product/${product.id}`}
-              className="btn btn-outline py-2 px-4 text-sm"
-            >
-              <FiShoppingCart className="w-4 h-4" />
-              Details
-            </Link>
-            <button
-              onClick={handleWhatsAppClick}
-              className="btn bg-green-500 hover:bg-green-600 text-white py-2 px-4 text-sm"
-              title="Chat on WhatsApp"
-            >
-              <FaWhatsapp className="w-4 h-4" />
-            </button>
-          </div>
+        <div className="grid grid-cols-2 gap-2 pt-4 border-t border-gray-200 w-full">
+          <Link
+            to={`/product/${product.id}`}
+            className="btn btn-outline py-1.5 px-1 text-xs flex items-center justify-center gap-1 w-full h-full"
+          >
+            <FiShoppingCart className="w-3.5 h-3.5 shrink-0" />
+            <span className="truncate">Details</span>
+          </Link>
+          <button
+            onClick={handleWhatsAppClick}
+            className="btn bg-green-500 hover:bg-green-600 text-white py-1.5 px-1 text-xs flex items-center justify-center gap-1 w-full h-full"
+            title="Chat on WhatsApp"
+          >
+            <FaWhatsapp className="w-3.5 h-3.5 shrink-0" />
+            <span className="truncate">WhatsApp</span>
+          </button>
         </div>
       </div>
     </div>

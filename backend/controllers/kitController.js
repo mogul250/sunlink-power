@@ -77,11 +77,18 @@ const getKitById = async (req, res, next) => {
       [kit.id]
     );
 
+    // Get kit gallery images
+    const [kitImages] = await promisePool.query(
+      'SELECT * FROM KitImages WHERE kit_id = ? ORDER BY sort_order ASC',
+      [kit.id]
+    );
+
     res.status(200).json({
       success: true,
       data: {
         ...kit,
-        products: kitProducts
+        products: kitProducts,
+        gallery_images: kitImages
       }
     });
   } catch (error) {
@@ -99,8 +106,10 @@ const createKit = async (req, res, next) => {
     if (typeof products == 'string') {
       products = JSON.parse(products);
     }
-    // If file was uploaded, use the uploaded file path
-    if (req.file) {
+    // Handle main image upload
+    if (req.files && req.files['image']) {
+      image_url = `/uploads/kits/${req.files['image'][0].filename}`;
+    } else if (req.file) { // Fallback for single upload
       image_url = `/uploads/kits/${req.file.filename}`;
     }
 
@@ -135,6 +144,23 @@ const createKit = async (req, res, next) => {
       );
     }
 
+    // Add gallery images if provided
+    if (req.files && req.files['gallery_images']) {
+      const imageInserts = req.files['gallery_images'].map((file, index) => [
+        kitId,
+        `/uploads/kits/${file.filename}`,
+        `${name} - Gallery Image ${index + 1}`,
+        index
+      ]);
+
+      if (imageInserts.length > 0) {
+        await promisePool.query(
+          'INSERT INTO KitImages (kit_id, image_url, alt_text, sort_order) VALUES ?',
+          [imageInserts]
+        );
+      }
+    }
+
     // Get the created kit with products
     const [newKit] = await promisePool.query(
       'SELECT * FROM Kits WHERE id = ?',
@@ -150,12 +176,18 @@ const createKit = async (req, res, next) => {
       [kitId]
     );
 
+    const [kitImages] = await promisePool.query(
+      'SELECT * FROM KitImages WHERE kit_id = ? ORDER BY sort_order ASC',
+      [kitId]
+    );
+
     res.status(201).json({
       success: true,
       message: 'Kit created successfully',
       data: {
         ...newKit[0],
-        products: kitProds
+        products: kitProds,
+        gallery_images: kitImages
       }
     });
   } catch (error) {
@@ -169,14 +201,18 @@ const createKit = async (req, res, next) => {
 const updateKit = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { name, description, slug, products = [] } = req.body;
+    let { name, description, slug, products = [] } = req.body;
     let image_url = req.body.image_url;
 
-    // If file was uploaded, use the uploaded file path
-    if (req.file) {
+    // Handle main image
+    if (req.files && req.files['image']) {
+      image_url = `/uploads/kits/${req.files['image'][0].filename}`;
+    } else if (req.file) { // Fallback for single upload
       image_url = `/uploads/kits/${req.file.filename}`;
     }
-
+    if (typeof products == 'string') {
+      products = JSON.parse(products);
+    }
     // Check if kit exists
     const [existing] = await promisePool.query(
       'SELECT * FROM Kits WHERE id = ?',
@@ -241,6 +277,26 @@ const updateKit = async (req, res, next) => {
       );
     }
 
+    // Add NEW gallery images if provided (append to existing)
+    if (req.files && req.files['gallery_images']) {
+      const [currentImages] = await promisePool.query('SELECT MAX(sort_order) as max_sort FROM KitImages WHERE kit_id = ?', [id]);
+      let startSort = currentImages[0].max_sort !== null ? currentImages[0].max_sort + 1 : 0;
+
+      const imageInserts = req.files['gallery_images'].map((file, index) => [
+        id,
+        `/uploads/kits/${file.filename}`,
+        `${name || existing[0].name} - Gallery Image ${startSort + index + 1}`,
+        startSort + index
+      ]);
+
+      if (imageInserts.length > 0) {
+        await promisePool.query(
+          'INSERT INTO KitImages (kit_id, image_url, alt_text, sort_order) VALUES ?',
+          [imageInserts]
+        );
+      }
+    }
+
     // Get updated kit
     const [updated] = await promisePool.query(
       'SELECT * FROM Kits WHERE id = ?',
@@ -256,12 +312,18 @@ const updateKit = async (req, res, next) => {
       [id]
     );
 
+    const [kitImages] = await promisePool.query(
+      'SELECT * FROM KitImages WHERE kit_id = ? ORDER BY sort_order ASC',
+      [id]
+    );
+
     res.status(200).json({
       success: true,
       message: 'Kit updated successfully',
       data: {
         ...updated[0],
-        products: kitProds
+        products: kitProds,
+        gallery_images: kitImages
       }
     });
   } catch (error) {
@@ -304,10 +366,35 @@ const deleteKit = async (req, res, next) => {
   }
 };
 
+// @desc    Delete kit gallery image
+// @route   DELETE /api/kits/images/:imageId
+// @access  Private/Admin
+const deleteKitImage = async (req, res, next) => {
+  try {
+    const { imageId } = req.params;
+
+    const [existing] = await promisePool.query(
+      'SELECT * FROM KitImages WHERE id = ?',
+      [imageId]
+    );
+
+    if (existing.length === 0) {
+      return res.status(404).json({ success: false, message: 'Image not found' });
+    }
+
+    await promisePool.query('DELETE FROM KitImages WHERE id = ?', [imageId]);
+
+    res.status(200).json({ success: true, message: 'Image deleted successfully' });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export {
   getAllKits,
   getKitById,
   createKit,
   updateKit,
-  deleteKit
+  deleteKit,
+  deleteKitImage
 };

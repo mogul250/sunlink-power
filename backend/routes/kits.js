@@ -4,10 +4,11 @@ import {
   getKitById,
   createKit,
   updateKit,
-  deleteKit
+  deleteKit,
+  deleteKitImage
 } from '../controllers/kitController.js';
 import { authenticateToken } from '../middleware/auth.js';
-import { uploadSingleImage, handleUploadError } from '../middleware/upload.js';
+import { uploadKitFiles, handleUploadError } from '../middleware/upload.js';
 
 const router = express.Router();
 
@@ -19,7 +20,7 @@ router.get('/:id', getKitById);
 router.post(
   '/',
   authenticateToken,
-  uploadSingleImage,
+  uploadKitFiles,
   handleUploadError,
   createKit
 );
@@ -27,11 +28,13 @@ router.post(
 router.put(
   '/:id',
   authenticateToken,
-  uploadSingleImage,
+  uploadKitFiles,
   handleUploadError,
   updateKit
 );
 
 router.delete('/:id', authenticateToken, deleteKit);
+
+router.delete('/images/:imageId', authenticateToken, deleteKitImage);
 
 export default router;

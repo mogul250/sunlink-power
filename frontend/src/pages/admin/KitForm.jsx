@@ -11,6 +11,8 @@ const KitForm = () => {
   const [message, setMessage] = useState({ type: '', text: '' });
   const [imageFile, setImageFile] = useState(null);
   const [currentImage, setCurrentImage] = useState(null);
+  const [galleryFiles, setGalleryFiles] = useState([]);
+  const [currentGallery, setCurrentGallery] = useState([]);
   const [allProducts, setAllProducts] = useState([]);
   const [productsLoading, setProductsLoading] = useState(false);
 
@@ -54,6 +56,7 @@ const KitForm = () => {
         })) : []
       });
       if (data.image_url) setCurrentImage(data.image_url);
+      if (data.gallery_images) setCurrentGallery(data.gallery_images);
     } catch (err) {
       setMessage({ type: 'error', text: 'Failed to load kit' });
     }
@@ -97,6 +100,12 @@ const KitForm = () => {
       data.append('description', formData.description);
       data.append('products', JSON.stringify(formData.products));
       if (imageFile) data.append('image', imageFile);
+
+      if (galleryFiles && galleryFiles.length > 0) {
+        Array.from(galleryFiles).forEach((file) => {
+          data.append('gallery_images', file);
+        });
+      }
 
       if (id) {
         await kitAPI.update(id, data);
@@ -163,10 +172,24 @@ const KitForm = () => {
           />
         </div>
 
-        <div>
-          <label className="label mb-2 block">Kit Image</label>
-          {currentImage && <img src={getImageUrl(currentImage)} alt="Current" className="h-20 w-20 object-cover rounded mb-2" />}
-          <input type="file" accept="image/*" onChange={(e) => setImageFile(e.target.files[0])} className="block w-full text-sm text-gray-500"/>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="label mb-2 block">Main Kit Image</label>
+            {currentImage && <img src={getImageUrl(currentImage)} alt="Current" className="h-20 w-20 object-cover rounded mb-2 border border-gray-200" />}
+            <input type="file" accept="image/*" onChange={(e) => setImageFile(e.target.files[0])} className="block w-full text-sm text-gray-500"/>
+          </div>
+
+          <div>
+            <label className="label mb-2 block">Gallery Images (Multiple)</label>
+            {currentGallery && currentGallery.length > 0 && (
+              <div className="flex flex-wrap gap-2 mb-2">
+                {currentGallery.map((img) => (
+                  <img key={img.id} src={getImageUrl(img.image_url)} alt="Gallery" className="h-20 w-20 object-cover rounded border border-gray-200" />
+                ))}
+              </div>
+            )}
+            <input type="file" multiple accept="image/*" onChange={(e) => setGalleryFiles(e.target.files)} className="block w-full text-sm text-gray-500"/>
+          </div>
         </div>
 
         {/* Products Selection */}

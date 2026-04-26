@@ -108,6 +108,12 @@ const uploadTestimonialFiles = upload.fields([
   { name: 'after_image', maxCount: 1 }
 ]);
 
+// Middleware for kit with main image and gallery images
+const uploadKitFiles = upload.fields([
+  { name: 'image', maxCount: 1 },
+  { name: 'gallery_images', maxCount: 10 }
+]);
+
 // Error handling middleware for multer
 const handleUploadError = (err, req, res, next) => {
   if (err instanceof multer.MulterError) {
@@ -136,5 +142,6 @@ export {
   uploadMultipleImages,
   uploadProductFiles,
   uploadTestimonialFiles,
+  uploadKitFiles,
   handleUploadError
 };

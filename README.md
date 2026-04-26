@@ -111,7 +111,7 @@ UPLOAD_PATH=./uploads
 CLIENT_URL=http://localhost:5173
 
 # WhatsApp Configuration
-WHATSAPP_BUSINESS_NUMBER=+8613800000000
+WHATSAPP_BUSINESS_NUMBER=+8618617384878
 ```
 
 #### Start Backend Server
