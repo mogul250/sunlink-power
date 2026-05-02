@@ -34,6 +34,7 @@ app.use(helmet({
 const allowedOrigins = [
   process.env.CLIENT_URL,
   'https://www.sunlink-power.com', 
+  'https://sunlink-power.com', 
   'http://localhost:5173'
 ];
 // CORS configuration
@@ -44,6 +45,7 @@ const  corsOptions = {
      if  (allowedOrigins.indexOf(origin) !== - 1 ) {
       callback( null ,  true );
     }  else  {
+      console.log('blocked url:', origin)
       callback( new Error ( 'Not allowed by CORS' ));
     }
   },
