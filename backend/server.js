@@ -31,12 +31,24 @@ const app = express();
 app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" }
 }));
-
+const allowedOrigins = [
+  process.env.CLIENT_URL,
+  'https://www.sunlink-power.com', 
+  'http://localhost:5173'
+];
 // CORS configuration
-const corsOptions = {
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
-  credentials: true,
-  optionsSuccessStatus: 200
+const  corsOptions = {
+   origin :  function  ( origin, callback )  {
+     // allow requests with no origin (like mobile apps or curl requests) if  (!origin)  return  callback( null ,  true );
+    
+     if  (allowedOrigins.indexOf(origin) !== - 1 ) {
+      callback( null ,  true );
+    }  else  {
+      callback( new Error ( 'Not allowed by CORS' ));
+    }
+  },
+   credentials :  true ,
+   optionsSuccessStatus :  200 
 };
 app.use(cors(corsOptions));
 

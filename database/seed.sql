@@ -47,7 +47,7 @@ CREATE TABLE `admins` (
 
 LOCK TABLES `admins` WRITE;
 /*!40000 ALTER TABLE `admins` DISABLE KEYS */;
-INSERT INTO `admins` VALUES (1,'admin','$2a$12$rfNxTGtgOhOW0jR8oQlW6ehDkdvEDV64chK84LYuO8gndOpUZoNXK','admin@sunlinkpower.com','System Administrator','super_admin',1,'2026-04-21 21:11:07','2026-04-21 21:08:13','2026-04-21 21:11:07');
+INSERT INTO `admins` VALUES (1,'admin','$2a$12$rfNxTGtgOhOW0jR8oQlW6ehDkdvEDV64chK84LYuO8gndOpUZoNXK','admin@sunlink-power.com','System Administrator','super_admin',1,'2026-04-21 21:11:07','2026-04-21 21:08:13','2026-04-21 21:11:07');
 /*!40000 ALTER TABLE `admins` ENABLE KEYS */;
 UNLOCK TABLES;
 

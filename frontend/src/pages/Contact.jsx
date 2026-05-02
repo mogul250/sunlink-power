@@ -21,8 +21,8 @@ const Contact = () => {
     {
       icon: FiMail,
       title: 'Email',
-      content: 'info@sunlinkpower.com',
-      link: 'mailto:info@sunlinkpower.com',
+      content: 'info@sunlink-power.com',
+      link: 'mailto:info@sunlink-power.com',
       color: 'text-accent',
     },
     {

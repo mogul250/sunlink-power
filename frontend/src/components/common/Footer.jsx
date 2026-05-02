@@ -62,8 +62,8 @@ const Footer = () => {
               </div>
               <div className="flex items-center gap-3 text-sm">
                 <FiMail className="w-5 h-5 text-primary flex-shrink-0" />
-                <a href="mailto:info@sunlinkpower.com" className="hover:text-primary transition-colors">
-                  info@sunlinkpower.com
+                <a href="mailto:info@sunlink-power.com" className="hover:text-primary transition-colors">
+                  info@sunlink-power.com
                 </a>
               </div>
             </div>
