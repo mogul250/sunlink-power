@@ -3,7 +3,9 @@
  * Ensures all relative URLs are prefixed with backend base URL
  */
 
-const BACKEND_BASE_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace('/api', '');
+// This targets '/api' only if it's at the very end of the string
+const BACKEND_BASE_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api')
+  .replace(/\/api$/, '');
 
 /**
  * Get full image URL
