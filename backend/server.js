@@ -28,9 +28,9 @@ dotenv.config();
 const app = express();
 
 // Security middleware
-// app.use(helmet({
-//   crossOriginResourcePolicy: { policy: "cross-origin" }
-// }));
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" }
+}));
 const allowedOrigins = [
   process.env.CLIENT_URL,
   'https://www.sunlink-power.com', 
@@ -40,9 +40,9 @@ const allowedOrigins = [
 // CORS configuration
 const  corsOptions = {
    origin :  function  ( origin, callback )  {
-     // allow requests with no origin (like mobile apps or curl requests) if  (!origin)  return  callback( null ,  true );
+    if  (!origin)  return  callback( null ,  true );
     
-     if  (allowedOrigins.indexOf(origin) !== - 1 ) {
+    if  (allowedOrigins.indexOf(origin) !== - 1 ) {
       callback( null ,  true );
     }  else  {
       console.log('blocked url:', origin)
