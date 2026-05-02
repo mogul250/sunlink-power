@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { HelmetProvider } from 'react-helmet-async';
+import { Helmet, HelmetProvider } from 'react-helmet-async';
 
 // Layout Components
 import PublicLayout from './layouts/PublicLayout';
@@ -31,6 +31,28 @@ function App() {
   return (
     <HelmetProvider>
       <Router>
+        <Helmet>
+          <title>Sunlink Power - Premium Solar Solutions for Africa</title>
+          <meta name="description" content="Leading supplier of high-quality solar panels, inverters, batteries, and complete solar systems. Powering homes and businesses across Africa with reliable renewable energy." />
+          
+          {/* Open Graph / Facebook / WhatsApp */}
+          <meta property="og:type" content="website" />
+          <meta property="og:url" content="https://www.sunlink-power.com/" />
+          <meta property="og:title" content="Sunlink Power - Premium Solar Solutions for Africa" />
+          <meta property="og:description" content="Leading supplier of high-quality solar panels, inverters, batteries, and complete solar systems. Powering homes and businesses across Africa with reliable renewable energy." />
+          
+          {/* THE CULPRIT: The Image Link */}
+          {/* Use a direct link to a high-quality PNG/JPG on your server */}
+          <meta property="og:image" content="https://sunlink-power.com/logo.png" />
+          <meta property="og:image:type" content="image/png" />
+          <meta property="og:image:width" content="1200" />
+          <meta property="og:image:height" content="630" />
+
+          {/* Twitter */}
+          <meta name="twitter:card" content="summary_large_image" />
+          <meta name="twitter:title" content="Sunlink Power" />
+          <meta name="twitter:image" content="https://sunlink-power.com/logo.png" />
+        </Helmet>
         <Routes>
           {/* Admin Login - Standing alone */}
           <Route path="/admin/login" element={<AdminLogin />} />

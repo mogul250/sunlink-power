@@ -71,6 +71,7 @@ const ProductDetail = () => {
       <Helmet>
         <title>{product.name} - Sunlink Power</title>
         <meta name="description" content={product.description} />
+        <meta property="og:image" content={getImageUrl(product.image)} />
       </Helmet>
 
       <div className="min-h-screen bg-gray-50 py-8">
