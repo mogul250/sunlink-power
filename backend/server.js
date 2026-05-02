@@ -28,9 +28,9 @@ dotenv.config();
 const app = express();
 
 // Security middleware
-app.use(helmet({
-  crossOriginResourcePolicy: { policy: "cross-origin" }
-}));
+// app.use(helmet({
+//   crossOriginResourcePolicy: { policy: "cross-origin" }
+// }));
 const allowedOrigins = [
   process.env.CLIENT_URL,
   'https://www.sunlink-power.com', 
