@@ -1,15 +1,26 @@
-import { useState, useEffect } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FiArrowRight } from 'react-icons/fi';
+import { FiArrowRight, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { categoryAPI } from '../../services/api';
-import { getImageUrl } from '../../services/imageUtils';
 import LoadingSpinner from '../common/LoadingSpinner';
 import ErrorMessage from '../common/ErrorMessage';
+import { getImageUrl } from '../../services/imageUtils';
 
 const CategoryGrid = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [activeLoopIndex, setActiveLoopIndex] = useState(0);
+  const carouselRef = useRef(null);
+  const isDraggingRef = useRef(false);
+  const dragStartXRef = useRef(0);
+  const dragStartScrollRef = useRef(0);
+
+  const carouselCategories = useMemo(() => (
+    categories.length
+      ? Array.from({ length: 5 }, () => categories).flat()
+      : []
+  ), [categories]);
 
   useEffect(() => {
     fetchCategories();
@@ -20,7 +31,7 @@ const CategoryGrid = () => {
       setLoading(true);
       setError(null);
       const response = await categoryAPI.getAll();
-      setCategories(response.data.data.slice(0, 6)); // Show top 6 categories
+      setCategories(response.data.data.slice(0, 8));
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to load categories');
     } finally {
@@ -28,9 +39,103 @@ const CategoryGrid = () => {
     }
   };
 
+  const getCardStep = useCallback(() => {
+    const carousel = carouselRef.current;
+    const firstCard = carousel?.querySelector('[data-category-card="true"]');
+    if (!carousel || !firstCard) return 320;
+
+    const cardWidth = firstCard.getBoundingClientRect().width;
+    const gap = Number.parseFloat(window.getComputedStyle(carousel).columnGap || '20');
+    return cardWidth + gap;
+  }, []);
+
+  const getSegmentWidth = useCallback(() => {
+    const carousel = carouselRef.current;
+    if (!carousel || categories.length === 0) return 0;
+
+    return getCardStep() * categories.length;
+  }, [categories.length, getCardStep]);
+
+  const normalizeInfiniteScroll = useCallback(() => {
+    const carousel = carouselRef.current;
+    if (!carousel || categories.length === 0) return;
+
+    const segmentWidth = getSegmentWidth();
+    if (!segmentWidth) return;
+
+    if (carousel.scrollLeft < segmentWidth * 1.15) {
+      carousel.scrollLeft += segmentWidth * 2;
+    } else if (carousel.scrollLeft > segmentWidth * 3.15) {
+      carousel.scrollLeft -= segmentWidth * 2;
+    }
+  }, [categories.length, getSegmentWidth]);
+
+  const updateActiveCategory = useCallback(() => {
+    const carousel = carouselRef.current;
+    if (!carousel || categories.length === 0) return;
+
+    const cardStep = getCardStep();
+    const centerPosition = carousel.scrollLeft + carousel.clientWidth / 2;
+    const centeredLoopIndex = Math.round((centerPosition - cardStep / 2) / cardStep);
+    setActiveLoopIndex(Math.max(0, Math.min(centeredLoopIndex, carouselCategories.length - 1)));
+  }, [carouselCategories.length, categories.length, getCardStep]);
+
+  const handleCarouselScroll = useCallback(() => {
+    normalizeInfiniteScroll();
+    updateActiveCategory();
+  }, [normalizeInfiniteScroll, updateActiveCategory]);
+
+  const scrollCategories = (direction) => {
+    const carousel = carouselRef.current;
+    if (!carousel) return;
+
+    const cardStep = getCardStep();
+    const nextLoopIndex = activeLoopIndex + direction;
+    const targetScrollLeft = nextLoopIndex * cardStep + cardStep / 2 - carousel.clientWidth / 2;
+
+    carousel.scrollTo({
+      left: targetScrollLeft,
+      behavior: 'smooth',
+    });
+    setActiveLoopIndex(nextLoopIndex);
+  };
+
+  const startDragging = (event) => {
+    const carousel = carouselRef.current;
+    if (!carousel) return;
+
+    isDraggingRef.current = true;
+    dragStartXRef.current = event.pageX;
+    dragStartScrollRef.current = carousel.scrollLeft;
+    carousel.classList.add('cursor-grabbing');
+  };
+
+  const stopDragging = () => {
+    isDraggingRef.current = false;
+    carouselRef.current?.classList.remove('cursor-grabbing');
+  };
+
+  const dragCarousel = (event) => {
+    const carousel = carouselRef.current;
+    if (!carousel || !isDraggingRef.current) return;
+
+    event.preventDefault();
+    carousel.scrollLeft = dragStartScrollRef.current - (event.pageX - dragStartXRef.current);
+  };
+
+  useEffect(() => {
+    const carousel = carouselRef.current;
+    if (!carousel || categories.length === 0) return;
+
+    requestAnimationFrame(() => {
+      carousel.scrollLeft = getSegmentWidth() * 2;
+      updateActiveCategory();
+    });
+  }, [categories.length, getSegmentWidth, updateActiveCategory]);
+
   if (loading) {
     return (
-      <section className="py-16 md:py-24 bg-gray-50">
+      <section className="bg-gray-50 py-16">
         <div className="container-custom">
           <LoadingSpinner size="lg" />
         </div>
@@ -40,7 +145,7 @@ const CategoryGrid = () => {
 
   if (error) {
     return (
-      <section className="py-16 md:py-24 bg-gray-50">
+      <section className="bg-gray-50 py-16">
         <div className="container-custom">
           <ErrorMessage message={error} onRetry={fetchCategories} />
         </div>
@@ -49,63 +154,94 @@ const CategoryGrid = () => {
   }
 
   return (
-    <section className="py-16 md:py-24 bg-gray-50">
+    <section className="relative z-10 -mt-32 bg-gray-50 pb-14 pt-8 md:-mt-44 md:pb-20 md:pt-10">
       <div className="container-custom">
-        {/* Section Header */}
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-heading font-bold text-gray-900 mb-4">
-            Browse Our Products
-          </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Explore our comprehensive range of solar products designed for African markets
-          </p>
-        </div>
-
-        {/* Category Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {categories.map((category) => (
-            <Link
-              key={category.id}
-              to={`/category/${category.slug}`}
-              className="card card-hover group"
-            >
-              {/* Image */}
-              <div className="relative h-48 overflow-hidden">
-                <img
-                  src={getImageUrl(category.image_url) || 'https://images.unsplash.com/photo-1509391366360-2e959784a276?w=400'}
-                  alt={category.name}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                
-                {/* Category Name Overlay */}
-                <div className="absolute bottom-0 left-0 right-0 p-6">
-                  <h3 className="text-xl font-heading font-bold text-white mb-1">
-                    {category.name}
-                  </h3>
-                </div>
-              </div>
-
-              {/* Content */}
-              <div className="p-6">
-                <p className="text-gray-600 mb-4 line-clamp-2">
-                  {category.description || 'Explore our range of high-quality products'}
-                </p>
-                <div className="flex items-center text-primary font-medium group-hover:gap-2 transition-all">
-                  View Products
-                  <FiArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-
-        {/* View All Button */}
-        <div className="text-center">
-          <Link to="/browse" className="inline-flex items-center justify-center gap-2 bg-primary text-white hover:bg-primary/90 rounded-lg text-lg px-8 py-4 transition-all font-bold group">
-            View All Categories
-            <FiArrowRight className="group-hover:translate-x-1 transition-transform" />
+        <div className="mb-8 border border-gray-200 bg-white p-5 text-center shadow-sm">
+          <div className="mx-auto max-w-2xl">
+            <p className="text-sm font-bold uppercase tracking-wide text-primary-600">Product Families</p>
+            <h2 className="mt-3 text-3xl font-bold text-gray-950 md:text-4xl">
+              Browse by category
+            </h2>
+            <p className="mt-4 max-w-2xl text-gray-600">
+              Start with the component family you need, then compare available products.
+            </p>
+          </div>
+          <Link to="/browse" className="btn btn-primary mt-6 w-fit">
+            All Categories
+            <FiArrowRight className="ml-2 h-4 w-4" />
           </Link>
+        </div>
+
+        <div className="relative">
+          <button
+            type="button"
+            onClick={() => scrollCategories(-1)}
+            className="absolute left-0 top-1/2 z-50 flex h-11 w-11 -translate-x-2 -translate-y-1/2 items-center justify-center bg-white text-gray-900 shadow-md transition hover:bg-primary-600 hover:text-white md:-translate-x-5"
+            aria-label="Show previous categories"
+          >
+            <FiChevronLeft className="h-6 w-6" />
+          </button>
+
+          <div
+            ref={carouselRef}
+            onScroll={handleCarouselScroll}
+            onMouseDown={startDragging}
+            onMouseLeave={stopDragging}
+            onMouseUp={stopDragging}
+            onMouseMove={dragCarousel}
+            className="flex cursor-grab select-none gap-5 overflow-x-auto scroll-smooth px-7 py-8 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:px-10"
+          >
+            {carouselCategories.map((category, index) => {
+              const distance = Math.abs(index - activeLoopIndex);
+              const scale = distance === 0 ? 'scale-[1.14]' : distance === 1 ? 'scale-[1.06]' : 'scale-100';
+              const zIndex = distance === 0 ? 'z-20' : distance === 1 ? 'z-10' : 'z-0';
+
+              return (
+                <Link
+                  key={`${category.id}-${index}`}
+                  data-category-card="true"
+                  to={`/category/${category.slug}`}
+                  className={`group relative w-[240px] shrink-0 overflow-hidden border border-gray-200 bg-white shadow-sm transition duration-300 ${scale} ${zIndex} hover:border-primary-200 md:w-[280px]`}
+                  draggable="false"
+                >
+                  <div className="relative h-44 overflow-hidden bg-gray-100 md:h-52">
+                    <img
+                      src={getImageUrl(category.image_url) || 'https://images.unsplash.com/photo-1509391366360-2e959784a276?w=600'}
+                      alt={category.name}
+                      className="h-full w-full object-cover"
+                      loading="lazy"
+                      draggable="false"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
+                    <div className="absolute bottom-0 left-0 right-0 p-4">
+                      <h3 className="font-heading text-xl font-bold text-white">{category.name}</h3>
+                    </div>
+                  </div>
+
+                  <div className="p-4">
+                    <p className="mb-4 line-clamp-2 min-h-[2.5rem] text-sm text-gray-600">
+                      {category.description || 'Explore our range of high-quality products'}
+                    </p>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-semibold text-gray-700">View Products</span>
+                      <div className="flex h-9 w-9 items-center justify-center bg-primary-50 transition-all group-hover:bg-primary">
+                        <FiArrowRight className="h-4 w-4 text-primary transition-colors group-hover:text-white" />
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+
+          <button
+            type="button"
+            onClick={() => scrollCategories(1)}
+            className="absolute right-0 top-1/2 z-50 flex h-11 w-11 -translate-y-1/2 translate-x-2 items-center justify-center bg-white text-gray-900 shadow-md transition hover:bg-primary-600 hover:text-white md:translate-x-5"
+            aria-label="Show next categories"
+          >
+            <FiChevronRight className="h-6 w-6" />
+          </button>
         </div>
       </div>
     </section>

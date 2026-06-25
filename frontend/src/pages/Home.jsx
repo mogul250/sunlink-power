@@ -1,6 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import Hero from '../components/home/Hero';
 import CategoryGrid from '../components/home/CategoryGrid';
+import ProductApplications from '../components/home/ProductApplications';
 import TrustSection from '../components/home/TrustSection';
 
 const Home = () => {
@@ -21,6 +22,7 @@ const Home = () => {
       <div className="min-h-screen">
         <Hero />
         <CategoryGrid />
+        <ProductApplications />
         <TrustSection />
       </div>
     </>

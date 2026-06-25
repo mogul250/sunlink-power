@@ -12,13 +12,13 @@ const ProductCard = ({ product }) => {
   };
 
   return (
-    <div className="card card-hover group">
+    <div className="group border border-gray-200 bg-white shadow-sm transition hover:border-primary-200 hover:shadow-md">
       {/* Image */}
-      <Link to={`/product/${product.id}`} className="block relative h-56 overflow-hidden">
+      <Link to={`/product/${product.id}`} className="block relative h-48 overflow-hidden bg-gray-100">
         <img
           src={getImageUrl(product.image_url) || 'https://images.unsplash.com/photo-1509391366360-2e959784a276?w=400'}
           alt={product.name}
-          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           loading="lazy"
         />
         
@@ -39,7 +39,7 @@ const ProductCard = ({ product }) => {
       </Link>
 
       {/* Content */}
-      <div className="p-5">
+      <div className="p-4">
         {/* Category */}
         {product.category_name && (
           <span className="text-xs font-medium text-primary uppercase tracking-wide">
@@ -76,7 +76,7 @@ const ProductCard = ({ product }) => {
         </div>
 
         {/* Price & Actions - Pricing hidden, contact for quotes */}
-        <div className="grid grid-cols-2 gap-2 pt-4 border-t border-gray-200 w-full">
+        <div className="grid grid-cols-2 gap-2 pt-3 border-t border-gray-200 w-full">
           <Link
             to={`/product/${product.id}`}
             className="btn btn-outline py-1.5 px-1 text-xs flex items-center justify-center gap-1 w-full h-full"

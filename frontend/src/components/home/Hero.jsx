@@ -1,130 +1,112 @@
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { FiArrowRight, FiPlay } from 'react-icons/fi';
+import { useEffect, useMemo, useState } from 'react';
+import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+
+const sliderModules = import.meta.glob('../../assets/sliders/*.{png,PNG,jpg,JPG,jpeg,JPEG,webp,WEBP}', {
+  eager: true,
+  import: 'default',
+  query: '?url',
+});
 
 const Hero = () => {
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  
-  const images = [
-    'https://images.unsplash.com/photo-1509391366360-2e959784a276?w=1600', // Solar Farm
-    'https://images.unsplash.com/photo-1497440001374-f26997328c1b?w=1600', // Installation
-    'https://images.unsplash.com/photo-1545209463-ce23922ce71e?w=1600'  // Panels
-  ];
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [hasUserInteracted, setHasUserInteracted] = useState(false);
+  const sliderImages = useMemo(
+    () => Object.entries(sliderModules)
+      .sort(([first], [second]) => first.localeCompare(second))
+      .map(([, src]) => src),
+    []
+  );
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentImageIndex((prev) => (prev + 1) % images.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
+    if (sliderImages.length <= 1 || hasUserInteracted) return undefined;
+
+    const interval = window.setInterval(() => {
+      setCurrentSlide((current) => (current + 1) % sliderImages.length);
+    }, 4000);
+
+    return () => window.clearInterval(interval);
+  }, [hasUserInteracted, sliderImages.length]);
+
+  const showPreviousSlide = () => {
+    setHasUserInteracted(true);
+    setCurrentSlide((current) => {
+      if (sliderImages.length <= 1) return current;
+      return (current - 1 + sliderImages.length) % sliderImages.length;
+    });
+  };
+
+  const showNextSlide = () => {
+    setHasUserInteracted(true);
+    setCurrentSlide((current) => {
+      if (sliderImages.length <= 1) return current;
+      return (current + 1) % sliderImages.length;
+    });
+  };
+
+  const showSelectedSlide = (index) => {
+    setHasUserInteracted(true);
+    setCurrentSlide(index);
+  };
 
   return (
-    <section className="relative h-screen w-full overflow-hidden bg-gray-900">
-      <style>{`
-        @keyframes ken-burns {
-          0% { transform: scale(1); }
-          100% { transform: scale(1.1); }
-        }
-        .animate-ken-burns {
-          animation: ken-burns 20s ease-out infinite alternate;
-        }
-        @keyframes marquee {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-        .animate-marquee {
-          animation: marquee 30s linear infinite;
-        }
-        @keyframes fadeInUp {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fade-in-up {
-          animation: fadeInUp 1s ease-out forwards;
-        }
-      `}</style>
-
-      {/* Background Images with Crossfade and Zoom */}
-      {images.map((img, index) => (
-        <div
-          key={img}
-          className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-            index === currentImageIndex ? 'opacity-100' : 'opacity-0'
-          }`}
-        >
-          <img
-            src={img}
-            alt="Solar Background"
-            className="w-full h-full object-cover animate-ken-burns"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/60 to-transparent" />
-        </div>
-      ))}
-
-      {/* Content */}
-      <div className="relative h-full container-custom flex flex-col justify-center z-10 pb-20">
-        <div className="max-w-4xl space-y-8 animate-fade-in-up">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white w-fit">
-            <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-            <span className="text-sm font-medium tracking-wide uppercase">
-              Powering Africa's Future
-            </span>
+    <section className="relative h-[52vw] min-h-[360px] max-h-[620px] overflow-hidden bg-white text-white">
+      <div className="absolute inset-0">
+        {sliderImages.map((image, index) => (
+          <div
+            key={image}
+            className={`absolute inset-0 transition-opacity duration-1000 ${
+              index === currentSlide ? 'opacity-100' : 'opacity-0'
+            }`}
+          >
+            <img
+              src={image}
+              alt=""
+              className="absolute inset-0 h-full w-full scale-110 object-cover blur-2xl"
+            />
+            <img
+              src={image}
+              alt=""
+              className="relative h-full w-full object-contain"
+            />
           </div>
-
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-heading font-bold text-white leading-tight">
-            Energy That <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
-              Never Stops
-            </span>
-          </h1>
-
-          <p className="text-xl md:text-2xl text-gray-300 max-w-2xl leading-relaxed font-light">
-            Premium solar solutions engineered for durability and efficiency. 
-            Direct from Guangzhou to your doorstep.
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-6 pt-4">
-            <Link 
-              to="/browse" 
-              className="bg-primary text-white hover:bg-primary/90  text-lg px-8 py-4 transition-all transform flex items-center justify-center font-bold"
-            >
-              Explore Catalog
-              <FiArrowRight className="ml-2" />
-            </Link>
-            <Link 
-              to="/contact" 
-              className="btn bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white hover:text-gray-900 btn-lg text-lg px-8 py-4 transition-all flex items-center justify-center"
-            >
-              Request Quote
-            </Link>
-          </div>
-        </div>
+        ))}
       </div>
 
-      {/* Running Text / Marquee Strip */}
-      <div className="absolute bottom-0 left-0 right-0 bg-primary/90 backdrop-blur-md text-white py-4 overflow-hidden z-20 border-t border-white/10">
-        <div className="flex animate-marquee whitespace-nowrap">
-          {[...Array(4)].map((_, i) => (
-            <div key={i} className="flex items-center gap-12 mx-6">
-              <span className="text-lg font-bold uppercase tracking-widest flex items-center gap-3">
-                <FiPlay className="fill-current w-3 h-3" /> Solar Panels
-              </span>
-              <span className="text-lg font-bold uppercase tracking-widest flex items-center gap-3">
-                <FiPlay className="fill-current w-3 h-3" /> Inverters
-              </span>
-              <span className="text-lg font-bold uppercase tracking-widest flex items-center gap-3">
-                <FiPlay className="fill-current w-3 h-3" /> Lithium Batteries
-              </span>
-              <span className="text-lg font-bold uppercase tracking-widest flex items-center gap-3">
-                <FiPlay className="fill-current w-3 h-3" /> Complete Kits
-              </span>
-              <span className="text-lg font-bold uppercase tracking-widest flex items-center gap-3">
-                <FiPlay className="fill-current w-3 h-3" /> Installation Support
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
+      {sliderImages.length > 1 && (
+        <>
+          <button
+            type="button"
+            onClick={showPreviousSlide}
+            className="absolute left-3 top-1/2 z-30 flex h-10 w-10 -translate-y-1/2 items-center justify-center bg-black/30 text-white backdrop-blur-sm transition hover:bg-black/50 md:left-6 md:h-12 md:w-12"
+            aria-label="Show previous slide"
+          >
+            <FiChevronLeft className="h-6 w-6" />
+          </button>
+
+          <button
+            type="button"
+            onClick={showNextSlide}
+            className="absolute right-3 top-1/2 z-30 flex h-10 w-10 -translate-y-1/2 items-center justify-center bg-black/30 text-white backdrop-blur-sm transition hover:bg-black/50 md:right-6 md:h-12 md:w-12"
+            aria-label="Show next slide"
+          >
+            <FiChevronRight className="h-6 w-6" />
+          </button>
+
+          <div className="absolute bottom-6 right-6 z-30 hidden items-center gap-2 md:flex">
+            {sliderImages.map((image, index) => (
+              <button
+                key={image}
+                type="button"
+                onClick={() => showSelectedSlide(index)}
+                className={`h-2.5 transition-all ${
+                  index === currentSlide ? 'w-8 bg-primary-400' : 'w-2.5 bg-white/45 hover:bg-white'
+                }`}
+                aria-label={`Show slide ${index + 1}`}
+              />
+            ))}
+          </div>
+        </>
+      )}
     </section>
   );
 };

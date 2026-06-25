@@ -1,9 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FiSearch } from 'react-icons/fi';
 import KitCard from '../components/browse/KitCard';
 import { kitAPI } from '../services/api.js';
-import { getImageUrl } from '../services/imageUtils';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 
 const Kits = () => {
@@ -11,6 +10,12 @@ const Kits = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [activeFilter, setActiveFilter] = useState('all');
+
+  const quickKits = [
+    { name: 'Agri Solar', path: '/kit/agri-solar' },
+    { name: 'Solar EV Station', path: '/kit/solar-ev-station' },
+  ];
 
   useEffect(() => {
     fetchKits();
@@ -20,8 +25,7 @@ const Kits = () => {
     try {
       setLoading(true);
       setError(null);
-      
-      
+
       const response = await kitAPI.getAll();
       setKits(response.data.data || []);
     } catch (err) {
@@ -31,10 +35,18 @@ const Kits = () => {
     }
   };
 
-  const filteredKits = kits.filter(kit =>
-    kit.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    kit.description?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredKits = kits.filter((kit) => {
+    const search = searchTerm.toLowerCase();
+    const matchesSearch =
+      kit.name.toLowerCase().includes(search) ||
+      kit.description?.toLowerCase().includes(search);
+
+    if (!matchesSearch) return false;
+    if (activeFilter === 'featured') return Boolean(kit.is_featured);
+    if (activeFilter === 'available') return kit.stock_status !== 'out_of_stock';
+
+    return true;
+  });
 
   if (loading) {
     return (
@@ -51,87 +63,108 @@ const Kits = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
-      <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-20">
-        <div className="container-custom text-center">
-          <h1 className="text-4xl md:text-5xl font-heading font-bold mb-6">
-            Complete Solar Kits
-          </h1>
-          <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto leading-relaxed">
-            Pre-configured solar power solutions for homes, businesses, and off-grid applications.
-            Everything you need in one package.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-md mx-auto">
-            <Link
-              to="#kits"
-              className="btn btn-light px-8 py-3 text-lg font-semibold"
-            >
-              Browse Kits
-            </Link>
-            <a
-              href="https://wa.me/+8618617384878?text=Hi%20Sunlink%2C%20I'm%20interested%20in%20solar%20kits"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-primary px-8 py-3 text-lg font-semibold"
-            >
-              Get Custom Quote
-            </a>
+      <section className="border-b border-gray-200 bg-white py-10 md:py-12">
+        <div className="container-custom">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+            <div className="max-w-3xl">
+              <p className="text-sm font-bold uppercase tracking-wide text-primary-600">Complete Systems</p>
+              <h1 className="mt-3 text-3xl md:text-5xl font-heading font-bold text-gray-950">
+                Solar kits
+              </h1>
+              <p className="mt-4 text-lg text-gray-600">
+                Pre-configured systems with matched components for faster selection.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              {quickKits.map((kit) => (
+                <Link
+                  key={kit.path}
+                  to={kit.path}
+                  className="border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-800 hover:border-primary-200 hover:text-primary"
+                >
+                  {kit.name}
+                </Link>
+              ))}
+              <a
+                href="https://wa.me/+8618617384878?text=Hi%20Sunlink%2C%20I'm%20interested%20in%20solar%20kits"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-primary btn-sm"
+              >
+                Custom Quote
+              </a>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Search & Filters */}
-      <div className="container-custom py-12">
-        <div className="flex flex-col lg:flex-row gap-4 items-center justify-between mb-12">
-          <div className="flex-1 max-w-md">
+      <div className="container-custom py-10 md:py-14">
+        <div className="mb-8 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div className="w-full max-w-md">
             <div className="relative">
-              <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <FiSearch className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
               <input
                 type="text"
-                placeholder="Search kits by name or description..."
+                placeholder="Search kits..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                className="w-full border border-gray-200 bg-white py-3 pl-12 pr-4 transition-all focus:border-transparent focus:ring-2 focus:ring-primary"
               />
             </div>
           </div>
-          <div className="flex gap-2 text-sm">
-            <button className="px-4 py-2 bg-primary text-white rounded-lg font-medium">
+
+          <div className="flex flex-wrap gap-2 text-sm">
+            <button
+              onClick={() => setActiveFilter('all')}
+              className={`px-4 py-2 font-semibold transition ${
+                activeFilter === 'all'
+                  ? 'bg-primary text-white'
+                  : 'border border-gray-200 bg-white text-gray-700 hover:border-primary-200 hover:text-primary'
+              }`}
+            >
               All Kits ({filteredKits.length})
             </button>
-            <button className="px-4 py-2 border border-gray-200 text-gray-700 hover:bg-gray-50 rounded-lg font-medium transition-colors">
+            <button
+              onClick={() => setActiveFilter('featured')}
+              className={`px-4 py-2 font-semibold transition ${
+                activeFilter === 'featured'
+                  ? 'bg-primary text-white'
+                  : 'border border-gray-200 bg-white text-gray-700 hover:border-primary-200 hover:text-primary'
+              }`}
+            >
               Featured
             </button>
-            <button className="px-4 py-2 border border-gray-200 text-gray-700 hover:bg-gray-50 rounded-lg font-medium transition-colors">
-              Residential
+            <button
+              onClick={() => setActiveFilter('available')}
+              className={`px-4 py-2 font-semibold transition ${
+                activeFilter === 'available'
+                  ? 'bg-primary text-white'
+                  : 'border border-gray-200 bg-white text-gray-700 hover:border-primary-200 hover:text-primary'
+              }`}
+            >
+              Available
             </button>
           </div>
         </div>
 
         {error && (
-          <div className="text-center py-20">
-            <div className="text-red-600 mb-4">{error}</div>
-            <button
-              onClick={fetchKits}
-              className="btn btn-primary"
-            >
+          <div className="py-16 text-center">
+            <div className="mb-4 text-red-600">{error}</div>
+            <button onClick={fetchKits} className="btn btn-primary">
               Try Again
             </button>
           </div>
         )}
 
-        {/* Kits Grid */}
-        <div id="kits" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div id="kits" className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {filteredKits.length > 0 ? (
-            filteredKits.map((kit) => (
-              <KitCard key={kit.id} kit={kit} />
-            ))
+            filteredKits.map((kit) => <KitCard key={kit.id} kit={kit} />)
           ) : (
-            <div className="col-span-full text-center py-20">
-              <div className="text-6xl text-gray-300 mb-4">📦</div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">No kits found</h3>
-              <p className="text-gray-600 mb-8 max-w-md mx-auto">
-                {searchTerm ? 'Try a different search term' : 'No kits available right now'}
+            <div className="col-span-full py-16 text-center">
+              <h3 className="mb-2 text-2xl font-bold text-gray-900">No kits found</h3>
+              <p className="mx-auto mb-8 max-w-md text-gray-600">
+                {searchTerm ? 'Try a different search term or clear the filters.' : 'No kits available right now.'}
               </p>
               <Link to="/browse" className="btn btn-primary">
                 Browse Products Instead
@@ -140,17 +173,25 @@ const Kits = () => {
           )}
         </div>
 
-        {kits.length > 12 && (
-          <div className="text-center mt-16">
-            <Link to="/kits" className="btn btn-outline-primary px-8 py-3 text-lg">
-              Load More Kits
-            </Link>
+        <div className="mt-12 border border-gray-200 bg-white p-6 md:flex md:items-center md:justify-between">
+          <div>
+            <h2 className="text-xl font-bold text-gray-950">Need a configured kit?</h2>
+            <p className="mt-2 text-gray-600">
+              Send your load requirements, usage hours, and destination country.
+            </p>
           </div>
-        )}
+          <a
+            href="https://wa.me/+8618617384878?text=Hi%20Sunlink%2C%20I%20need%20a%20configured%20solar%20kit"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn btn-primary mt-5 md:mt-0"
+          >
+            Request Configuration
+          </a>
+        </div>
       </div>
     </div>
   );
 };
 
 export default Kits;
-

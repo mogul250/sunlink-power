@@ -1,212 +1,217 @@
 import { Helmet } from 'react-helmet-async';
-import { FiMail, FiPhone, FiMapPin, FiClock } from 'react-icons/fi';
+import { FiClock, FiMail, FiMapPin, FiMessageSquare, FiPhone, FiSend } from 'react-icons/fi';
 import { FaWhatsapp } from 'react-icons/fa';
 import TestimonialForm from '../components/common/TestimonialForm';
 
 const Contact = () => {
-  const contactInfo = [
-    {
-      icon: FiMapPin,
-      title: 'Address',
-      content: 'Guangzhou, Guangdong Province, China',
-      color: 'text-primary',
-    },
+  const contactChannels = [
     {
       icon: FiPhone,
       title: 'Phone',
-      content: '+86-186-1738-4878',
-      link: 'tel:+8618617384878',
-      color: 'text-secondary',
+      detail: '+86-186-1738-4878',
+      href: 'tel:+8618617384878',
     },
     {
       icon: FiMail,
       title: 'Email',
-      content: 'info@sunlink-power.com',
-      link: 'mailto:info@sunlink-power.com',
-      color: 'text-accent',
+      detail: 'info@sunlink-power.com',
+      href: 'mailto:info@sunlink-power.com',
     },
     {
-      icon: FiClock,
-      title: 'Business Hours',
-      content: 'Mon - Sat: 9:00 AM - 6:00 PM (GMT+8)',
-      color: 'text-primary',
+      icon: FaWhatsapp,
+      title: 'WhatsApp',
+      detail: 'Discuss products, pricing, and shipment planning',
+      href: 'https://wa.me/+8618617384878?text=Hi%20Sunlink%2C%20I%20would%20like%20to%20discuss%20a%20solar%20energy%20inquiry',
     },
+  ];
+
+  const inquiryTypes = [
+    'Product quotation',
+    'Distributor partnership',
+    'Solar kit configuration',
+    'Project-scale system',
+    'Shipping and logistics',
+    'Technical documentation',
   ];
 
   return (
     <>
       <Helmet>
-        <title>Contact Us - Sunlink Power</title>
+        <title>Contact Sunlink Power - Solar Product and Project Inquiries</title>
         <meta
           name="description"
-          content="Get in touch with Sunlink Power. We're here to help you with all your solar energy needs across Africa."
+          content="Contact Sunlink Power for solar product quotations, distributor partnerships, solar kits, batteries, inverters, lighting, pumps, and project-scale energy systems."
         />
       </Helmet>
 
-      <div className="min-h-screen bg-gray-50">
-        {/* Hero Section */}
-        <section className="bg-gradient-to-br from-primary-50 to-secondary-50 py-16">
-          <div className="container-custom">
-            <div className="max-w-3xl">
-              <h1 className="text-4xl md:text-5xl font-heading font-bold text-gray-900 mb-4">
-                Get in Touch
-              </h1>
-              <p className="text-lg text-gray-600">
-                Have questions about our solar products? Our team is ready to help you 
-                find the perfect solution for your energy needs.
-              </p>
+      <div className="min-h-screen bg-white text-gray-900">
+        <section className="bg-gray-950 text-white">
+          <div className="container-custom py-20 md:py-24">
+            <div className="grid gap-10 lg:grid-cols-[1fr_0.75fr] lg:items-end">
+              <div className="max-w-4xl">
+                <p className="text-sm font-bold uppercase tracking-wide text-primary-300">Contact Sunlink Power</p>
+                <h1 className="mt-4 text-4xl font-bold leading-tight md:text-6xl">
+                  Speak with our team about solar supply, system design, and project support.
+                </h1>
+                <p className="mt-7 max-w-3xl text-lg leading-8 text-gray-300">
+                  Use the form or direct channels below to discuss product specifications,
+                  quotation needs, distributor opportunities, shipping coordination, or a
+                  complete solar system requirement.
+                </p>
+              </div>
+
+              <div className="border border-white/10 bg-white/5 p-6">
+                <div className="flex items-start gap-4">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center bg-primary-500 text-white">
+                    <FiClock className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold">Business Hours</h2>
+                    <p className="mt-2 leading-7 text-gray-300">Monday to Saturday</p>
+                    <p className="text-gray-300">9:00 AM - 6:00 PM, China Standard Time</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* Contact Section */}
-        <section className="section-padding">
+        <section className="border-b border-gray-200 bg-gray-50 py-12 md:py-16">
           <div className="container-custom">
-            <div className="grid lg:grid-cols-2 gap-12">
-              {/* Contact Information */}
-              <div className="space-y-8">
-                <div>
-                  <h2 className="text-2xl font-heading font-bold text-gray-900 mb-4">
-                    Contact Information
-                  </h2>
-                  <p className="text-gray-600 mb-8">
-                    Reach out to us through any of the following channels. We're here to help!
-                  </p>
-                </div>
-
-                <div className="space-y-6">
-                  {contactInfo.map((item, index) => (
-                    <div key={index} className="flex items-start gap-4">
-                      <div className={`w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0 ${item.color}`}>
-                        <item.icon className="w-6 h-6" />
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-gray-900 mb-1">
-                          {item.title}
-                        </h3>
-                        {item.link ? (
-                          <a
-                            href={item.link}
-                            className="text-gray-600 hover:text-primary transition-colors"
-                          >
-                            {item.content}
-                          </a>
-                        ) : (
-                          <p className="text-gray-600">{item.content}</p>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* WhatsApp CTA */}
-                <div className="card p-6 bg-gradient-to-br from-green-50 to-green-100 border-2 border-green-200">
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="w-12 h-12 rounded-full bg-green-500 flex items-center justify-center">
-                      <FaWhatsapp className="w-7 h-7 text-white" />
+            <div className="grid gap-5 md:grid-cols-3">
+              {contactChannels.map((channel) => (
+                <a
+                  key={channel.title}
+                  href={channel.href}
+                  target={channel.title === 'WhatsApp' ? '_blank' : undefined}
+                  rel={channel.title === 'WhatsApp' ? 'noopener noreferrer' : undefined}
+                  className="group border border-gray-200 bg-white p-6 shadow-sm transition hover:border-primary-200 hover:shadow-md"
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center border border-primary-100 bg-primary-50 text-primary-700 transition group-hover:border-primary-200 group-hover:bg-primary-100">
+                      <channel.icon className="h-5 w-5" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-gray-900">Instant Support</h3>
-                      <p className="text-sm text-gray-600">Chat with us on WhatsApp</p>
+                      <h2 className="text-lg font-bold text-gray-950">{channel.title}</h2>
+                      <p className="mt-3 leading-7 text-gray-600">{channel.detail}</p>
                     </div>
                   </div>
-                  <a
-                    href="https://wa.me/+8618617384878?text=Hi%20Sunlink%2C%20I%20have%20a%20question"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn bg-green-500 hover:bg-green-600 text-white w-full"
-                  >
-                    <FaWhatsapp className="w-5 h-5" />
-                    Start Chat
-                  </a>
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="py-16 md:py-24">
+          <div className="container-custom">
+            <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr]">
+              <div>
+                <p className="text-sm font-bold uppercase tracking-wide text-primary-600">Inquiry Details</p>
+                <h2 className="mt-4 text-3xl font-bold leading-tight text-gray-950 md:text-5xl">
+                  Send a clear request so we can respond with the right technical and commercial information.
+                </h2>
+                <p className="mt-7 text-lg leading-8 text-gray-600">
+                  For faster response, include the product category, estimated quantity, destination
+                  country, preferred shipping route, and whether you need product-only supply or a
+                  complete configured system.
+                </p>
+
+                <div className="mt-10 border border-gray-200 bg-gray-50 p-6">
+                  <h3 className="text-lg font-bold text-gray-950">Common Inquiry Types</h3>
+                  <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                    {inquiryTypes.map((type) => (
+                      <div key={type} className="flex items-center gap-3 text-sm font-semibold text-gray-700">
+                        <FiMessageSquare className="h-4 w-4 shrink-0 text-primary-600" />
+                        {type}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="mt-8 border border-gray-200 bg-white p-6">
+                  <div className="flex items-start gap-4">
+                    <FiMapPin className="mt-1 h-6 w-6 shrink-0 text-primary-600" />
+                    <div>
+                      <h3 className="text-lg font-bold text-gray-950">Guangzhou Office</h3>
+                      <p className="mt-3 leading-7 text-gray-600">
+                        The Garden Hotel office 735, 7Floor, Building 5 and 6, No.368
+                        Huanshi East Road, Yuexiu District, Guangzhou.
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              {/* Contact Form */}
-              <div className="card p-8">
-                <h2 className="text-2xl font-heading font-bold text-gray-900 mb-6">
-                  Send us a Message
-                </h2>
+              <div className="border border-gray-200 bg-white p-6 shadow-sm md:p-8">
+                <div className="mb-8">
+                  <p className="text-sm font-bold uppercase tracking-wide text-primary-600">Message Form</p>
+                  <h2 className="mt-3 text-2xl font-bold text-gray-950">Request a quotation or consultation</h2>
+                </div>
+
                 <form className="space-y-6">
-                  <div className="grid md:grid-cols-2 gap-6">
+                  <div className="grid gap-5 md:grid-cols-2">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        First Name *
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        className="input"
-                        placeholder="John"
-                      />
+                      <label className="label">First Name *</label>
+                      <input type="text" required className="input" placeholder="First name" />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Last Name *
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        className="input"
-                        placeholder="Doe"
-                      />
+                      <label className="label">Last Name *</label>
+                      <input type="text" required className="input" placeholder="Last name" />
                     </div>
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Email *
-                    </label>
-                    <input
-                      type="email"
-                      required
-                      className="input"
-                      placeholder="john@example.com"
-                    />
+                  <div className="grid gap-5 md:grid-cols-2">
+                    <div>
+                      <label className="label">Email *</label>
+                      <input type="email" required className="input" placeholder="name@company.com" />
+                    </div>
+                    <div>
+                      <label className="label">Phone / WhatsApp</label>
+                      <input type="tel" className="input" placeholder="+234 ..." />
+                    </div>
+                  </div>
+
+                  <div className="grid gap-5 md:grid-cols-2">
+                    <div>
+                      <label className="label">Country *</label>
+                      <select required className="input">
+                        <option value="">Select country</option>
+                        <option value="Kenya">Kenya</option>
+                        <option value="Nigeria">Nigeria</option>
+                        <option value="Zimbabwe">Zimbabwe</option>
+                        <option value="Rwanda">Rwanda</option>
+                        <option value="Tanzania">Tanzania</option>
+                        <option value="South Africa">South Africa</option>
+                        <option value="Zambia">Zambia</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="label">Inquiry Type</label>
+                      <select className="input">
+                        <option value="">Select inquiry type</option>
+                        {inquiryTypes.map((type) => (
+                          <option key={type} value={type}>
+                            {type}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Phone Number
-                    </label>
-                    <input
-                      type="tel"
-                      className="input"
-                      placeholder="+1 234 567 8900"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Country *
-                    </label>
-                    <select required className="input">
-                      <option value="">Select your country</option>
-                      <option value="Kenya">Kenya</option>
-                      <option value="Nigeria">Nigeria</option>
-                      <option value="Zimbabwe">Zimbabwe</option>
-                      <option value="Rwanda">Rwanda</option>
-                      <option value="Tanzania">Tanzania</option>
-                      <option value="South Africa">South Africa</option>
-                      <option value="Zambia">Zambia</option>
-                      <option value="Other">Other</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Message *
-                    </label>
+                    <label className="label">Message *</label>
                     <textarea
                       required
-                      rows="5"
+                      rows="6"
                       className="input resize-none"
-                      placeholder="Tell us about your solar energy needs..."
+                      placeholder="Tell us the product, quantity, destination country, and timeline."
                     />
                   </div>
 
                   <button type="submit" className="btn btn-primary w-full">
-                    Send Message
+                    Send Inquiry
+                    <FiSend className="ml-2 h-4 w-4" />
                   </button>
                 </form>
               </div>
@@ -214,21 +219,20 @@ const Contact = () => {
           </div>
         </section>
 
-        {/* Testimonial Submission Section */}
-        <section className="py-16 bg-white">
-          <div className="container-custom max-w-4xl">
-            <div className="text-center mb-10"><h2 className="text-3xl font-heading font-bold text-gray-900">Happy with our service?</h2><p className="text-gray-600">Share your story with the world!</p></div>
-            <TestimonialForm />
-          </div>
-        </section>
-
-        {/* Map Section (Placeholder) */}
-        <section className="bg-gray-200 h-96">
-          <div className="w-full h-full flex items-center justify-center text-gray-500">
-            <div className="text-center">
-              <FiMapPin className="w-16 h-16 mx-auto mb-4" />
-              <p className="text-lg">Map Location</p>
-              <p className="text-sm">The Garden Hotel office 735, 7Floor, Building 5 and 6, No.368 Huanshi East Road, Yuexiu District, Guangzhou.</p>
+        <section className="mt-10 border-y border-gray-200 bg-gray-50 pt-14 pb-20 md:mt-14 md:pt-16 md:pb-24">
+          <div className="container-custom">
+            <div className="grid gap-8 md:grid-cols-[0.7fr_1fr] md:items-center">
+              <div>
+                <p className="text-sm font-bold uppercase tracking-wide text-primary-600">Customer Feedback</p>
+                <h2 className="mt-4 text-3xl font-bold text-gray-950">Share a completed project experience</h2>
+                <p className="mt-5 leading-8 text-gray-600">
+                  If you have worked with Sunlink Power, submit your testimonial and project
+                  details for review. Approved stories help future partners understand real outcomes.
+                </p>
+              </div>
+              <div className="border border-gray-200 bg-white p-6 shadow-sm">
+                <TestimonialForm />
+              </div>
             </div>
           </div>
         </section>

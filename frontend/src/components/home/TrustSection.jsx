@@ -1,156 +1,160 @@
-import { useState, useEffect } from 'react';
-import { FiStar, FiMapPin } from 'react-icons/fi';
-import { testimonialAPI } from '../../services/api';
-import { getImageUrl } from '../../services/imageUtils';
+import { Link } from 'react-router-dom';
+import {
+  FiArrowRight,
+  FiCpu,
+  FiGlobe,
+  FiHeadphones,
+  FiShield,
+  FiSliders,
+  FiTool,
+} from 'react-icons/fi';
 
 const TrustSection = () => {
-  const [testimonials, setTestimonials] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const strengths = [
+    {
+      icon: FiCpu,
+      title: 'Advanced Technology',
+      description: 'High-efficiency solar energy products with intelligent control options.',
+    },
+    {
+      icon: FiShield,
+      title: 'Premium Quality',
+      description: 'Carefully selected components built for stable long-term use.',
+    },
+    {
+      icon: FiSliders,
+      title: 'Custom Solutions',
+      description: 'Solar systems matched to project size, site needs, and budgets.',
+    },
+    {
+      icon: FiTool,
+      title: 'Expert Engineering',
+      description: 'Practical product guidance, installation planning, and technical support.',
+    },
+    {
+      icon: FiGlobe,
+      title: 'Global Presence',
+      description: 'Serving distributors, project teams, and partners across markets.',
+    },
+    {
+      icon: FiHeadphones,
+      title: 'After-Sales Support',
+      description: 'Clear assistance for product selection, maintenance, and follow-up.',
+    },
+  ];
 
-  useEffect(() => {
-    fetchTestimonials();
-  }, []);
-
-  const fetchTestimonials = async () => {
-    try {
-      const response = await testimonialAPI.getApproved({ limit: 6 });
-      setTestimonials(response.data.data);
-    } catch (err) {
-      console.error('Failed to load testimonials:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const logisticsPartners = [
-    { name: 'DHL', logo: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/DHL_Logo.svg' },
-    { name: 'FedEx', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/FedEx_Corporation_-_2016_Logo.svg/1280px-FedEx_Corporation_-_2016_Logo.svg.png' },
-    { name: 'Maersk', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Maersk_Line_Logo%2C_July_2021.svg/3840px-Maersk_Line_Logo%2C_July_2021.svg.png' },
-    { name: 'UPS', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/UPS_Logo_Shield_2017.svg/1920px-UPS_Logo_Shield_2017.svg.png' },
+  const projects = [
+    {
+      title: 'Solar Power Plant',
+      description: 'Utility-scale solar project support for reliable clean energy supply.',
+      image: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?w=900',
+      path: '/browse',
+    },
+    {
+      title: 'Commercial Solar System',
+      description: 'Renewable energy systems for factories, offices, hotels, and malls.',
+      image: 'https://images.unsplash.com/photo-1497440001374-f26997328c1b?w=900',
+      path: '/browse',
+    },
+    {
+      title: 'Solar Street Lighting',
+      description: 'Smart outdoor lighting for roads, communities, estates, and public spaces.',
+      image: 'https://images.unsplash.com/photo-1519608487953-e999c86e7455?w=900',
+      path: '/category/solar-strip-lights',
+    },
+    {
+      title: 'Solar Water Pump System',
+      description: 'Solar-powered pumping for agriculture, livestock, and rural water access.',
+      image: 'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=900',
+      path: '/kit/agri-solar',
+    },
   ];
 
   return (
-    <section className="py-16 md:py-24 bg-gray-50">
-      <div className="container-custom">
-        {/* Section Header */}
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-heading font-bold text-gray-900 mb-4">
-            Trusted by Thousands
-          </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Join our growing family of satisfied customers across Africa
-          </p>
-        </div>
+    <>
+      <section className="bg-gradient-to-r from-primary-700 via-primary-800 to-gray-950 py-14 text-white md:py-20">
+        <div className="container-custom">
+          <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
+            <div>
+              <p className="text-sm font-bold uppercase tracking-wide text-primary-100">Why Choose Sunlink Power</p>
+              <h2 className="mt-4 text-3xl font-bold leading-tight md:text-4xl">
+                Engineering Excellence. Powering Trust.
+              </h2>
+              <p className="mt-6 max-w-xl leading-8 text-white/80">
+                Sunlink Power combines dependable product lines, practical configuration support,
+                and quality-focused sourcing for homes, businesses, farms, and infrastructure projects.
+              </p>
+              <Link to="/about" className="mt-8 inline-flex items-center bg-white px-5 py-3 text-sm font-bold text-primary-700 transition hover:bg-primary-50">
+                Learn More About Us
+                <FiArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </div>
 
-        {/* Testimonials Grid */}
-        {!loading && testimonials.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
-            {testimonials.map((testimonial) => (
-              <div key={testimonial.id} className="card p-6 hover:shadow-xl transition-shadow">
-                {/* Rating */}
-                <div className="flex items-center gap-1 mb-4">
-                  {[...Array(testimonial.rating || 5)].map((_, i) => (
-                    <FiStar key={i} className="w-5 h-5 fill-accent text-accent" />
-                  ))}
+            <div className="grid gap-px overflow-hidden border border-white/15 bg-white/15 sm:grid-cols-2 lg:grid-cols-3">
+              {strengths.map((item) => (
+                <div key={item.title} className="bg-white/5 p-6 backdrop-blur-sm">
+                  <item.icon className="h-9 w-9 text-primary-100" />
+                  <h3 className="mt-5 text-lg font-bold">{item.title}</h3>
+                  <p className="mt-3 text-sm leading-6 text-white/75">{item.description}</p>
                 </div>
-
-                {/* Content */}
-                <p className="text-gray-700 mb-4 line-clamp-3">
-                  "{testimonial.content}"
-                </p>
-
-                {/* Author */}
-                <div className="flex items-center gap-3 pt-4 border-t border-gray-200">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white font-bold text-lg">
-                    {testimonial.client_name.charAt(0)}
-                  </div>
-                  <div>
-                    <div className="font-semibold text-gray-900">
-                      {testimonial.client_name}
-                    </div>
-                    <div className="flex items-center gap-1 text-sm text-gray-600">
-                      <FiMapPin className="w-4 h-4" />
-                      {testimonial.country}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Before/After Images */}
-                {(testimonial.before_image_url || testimonial.after_image_url) && (
-                  <div className="grid grid-cols-2 gap-2 mt-4">
-                    {testimonial.before_image_url && (
-                      <div className="relative">
-                        <img
-                          src={getImageUrl(testimonial.before_image_url)}
-                          alt="Before"
-                          className="w-full h-24 object-cover rounded-lg"
-                        />
-                        <span className="absolute top-2 left-2 px-2 py-1 bg-black/70 text-white text-xs rounded">
-                          Before
-                        </span>
-                      </div>
-                    )}
-                    {testimonial.after_image_url && (
-                      <div className="relative">
-                        <img
-                          src={getImageUrl(testimonial.after_image_url)}
-                          alt="After"
-                          className="w-full h-24 object-cover rounded-lg"
-                        />
-                        <span className="absolute top-2 left-2 px-2 py-1 bg-primary text-white text-xs rounded">
-                          After
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        )}
+        </div>
+      </section>
 
-        {/* Logistics Partners */}
-        <div className="bg-white rounded-2xl shadow-md p-8">
-          <h3 className="text-xl font-heading font-bold text-center text-gray-900 mb-8">
-            Our Logistics Partners
-          </h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 items-center">
-            {logisticsPartners.map((partner) => (
-              <div
-                key={partner.name}
-                className="flex items-center justify-center hover:grayscale-0 transition-all hover:opacity-100"
+      <section className="bg-white py-14 md:py-20">
+        <div className="container-custom">
+          <div className="mb-9 text-center">
+            <p className="text-sm font-bold uppercase tracking-wide text-primary-600">Our Projects</p>
+            <h2 className="mt-3 text-3xl font-bold text-gray-950 md:text-4xl">Real Projects. Real Impact.</h2>
+          </div>
+
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {projects.map((project) => (
+              <Link
+                key={project.title}
+                to={project.path}
+                className="group overflow-hidden border border-gray-200 bg-white shadow-sm transition hover:border-primary-200 hover:shadow-md"
               >
-                <img
-                  src={partner.logo}
-                  alt={partner.name}
-                  className="h-[120px] w-auto object-contain"
-                />
-              </div>
+                <div className="h-44 overflow-hidden bg-gray-100">
+                  <img
+                    src={project.image}
+                    alt={project.title}
+                    className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                  />
+                </div>
+                <div className="p-5">
+                  <h3 className="text-base font-bold text-gray-950">{project.title}</h3>
+                  <p className="mt-3 line-clamp-3 text-sm leading-6 text-gray-600">{project.description}</p>
+                  <div className="mt-5 flex items-center text-sm font-bold text-primary-600">
+                    View Project
+                    <FiArrowRight className="ml-2 h-4 w-4 transition group-hover:translate-x-1" />
+                  </div>
+                </div>
+              </Link>
             ))}
           </div>
         </div>
+      </section>
 
-        {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-12">
-          <div className="text-center">
-            <div className="text-4xl font-bold text-primary mb-2">10,000+</div>
-            <div className="text-gray-600">Happy Customers</div>
-          </div>
-          <div className="text-center">
-            <div className="text-4xl font-bold text-secondary mb-2">15+</div>
-            <div className="text-gray-600">Countries Served</div>
-          </div>
-          <div className="text-center">
-            <div className="text-4xl font-bold text-accent mb-2">99.8%</div>
-            <div className="text-gray-600">Satisfaction Rate</div>
-          </div>
-          <div className="text-center">
-            <div className="text-4xl font-bold text-primary mb-2">24/7</div>
-            <div className="text-gray-600">Customer Support</div>
+      <section className="bg-gradient-to-r from-primary-700 to-gray-950 py-10 text-white">
+        <div className="container-custom">
+          <div className="grid gap-6 md:grid-cols-[1fr_auto] md:items-center">
+            <div>
+              <h2 className="text-2xl font-bold md:text-3xl">Let&apos;s Build a Greener Future Together</h2>
+              <p className="mt-3 max-w-2xl leading-7 text-white/80">
+                Talk to our team about the right solar solution for your home, business, farm, or project.
+              </p>
+            </div>
+            <Link to="/contact" className="inline-flex w-fit items-center bg-white px-5 py-3 text-sm font-bold text-primary-700 transition hover:bg-primary-50">
+              Get a Free Consultation
+              <FiArrowRight className="ml-2 h-4 w-4" />
+            </Link>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 };
 
