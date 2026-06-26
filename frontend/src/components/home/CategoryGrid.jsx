@@ -6,11 +6,47 @@ import LoadingSpinner from '../common/LoadingSpinner';
 import ErrorMessage from '../common/ErrorMessage';
 import { getImageUrl } from '../../services/imageUtils';
 
+const HOME_CATEGORY_PRIORITY = [
+  'solar-panels',
+  'inverters',
+  'batteries',
+  'energy-storage-systems',
+  'solar-water-pumps',
+  'solar-street-lights',
+  'solar-flood-lights',
+  'ev-chargers',
+  'charge-controllers',
+  'solar-fans',
+];
+
+const LOW_PRIORITY_CATEGORY_KEYWORDS = [
+  'accessor',
+  'combiner',
+  'management',
+  'strip',
+  'batten',
+  'garden',
+];
+
+const getCategoryPriority = (category) => {
+  const slug = category.slug?.toLowerCase() || '';
+  const name = category.name?.toLowerCase() || '';
+  const preferredIndex = HOME_CATEGORY_PRIORITY.indexOf(slug);
+
+  if (preferredIndex !== -1) return preferredIndex;
+  if (LOW_PRIORITY_CATEGORY_KEYWORDS.some((keyword) => slug.includes(keyword) || name.includes(keyword))) {
+    return HOME_CATEGORY_PRIORITY.length + 100;
+  }
+
+  return HOME_CATEGORY_PRIORITY.length + 20;
+};
+
 const CategoryGrid = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeLoopIndex, setActiveLoopIndex] = useState(0);
+  const [hasUserInteracted, setHasUserInteracted] = useState(false);
   const carouselRef = useRef(null);
   const isDraggingRef = useRef(false);
   const dragStartXRef = useRef(0);
@@ -31,7 +67,15 @@ const CategoryGrid = () => {
       setLoading(true);
       setError(null);
       const response = await categoryAPI.getAll();
-      setCategories(response.data.data.slice(0, 8));
+      const homeCategories = [...(response.data.data || [])]
+        .sort((first, second) => {
+          const priorityDifference = getCategoryPriority(first) - getCategoryPriority(second);
+          if (priorityDifference !== 0) return priorityDifference;
+          return (first.name || '').localeCompare(second.name || '');
+        })
+        .slice(0, 8);
+
+      setCategories(homeCategories);
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to load categories');
     } finally {
@@ -81,13 +125,27 @@ const CategoryGrid = () => {
   }, [carouselCategories.length, categories.length, getCardStep]);
 
   const handleCarouselScroll = useCallback(() => {
-    normalizeInfiniteScroll();
+    if (!hasUserInteracted) {
+      normalizeInfiniteScroll();
+    }
     updateActiveCategory();
-  }, [normalizeInfiniteScroll, updateActiveCategory]);
+  }, [hasUserInteracted, normalizeInfiniteScroll, updateActiveCategory]);
+
+  const stopCarouselMotion = useCallback(() => {
+    const carousel = carouselRef.current;
+    setHasUserInteracted(true);
+
+    if (!carousel) return;
+    carousel.style.scrollBehavior = 'auto';
+    carousel.scrollLeft = carousel.scrollLeft;
+  }, []);
 
   const scrollCategories = (direction) => {
     const carousel = carouselRef.current;
     if (!carousel) return;
+
+    setHasUserInteracted(true);
+    carousel.style.scrollBehavior = 'smooth';
 
     const cardStep = getCardStep();
     const nextLoopIndex = activeLoopIndex + direction;
@@ -104,6 +162,7 @@ const CategoryGrid = () => {
     const carousel = carouselRef.current;
     if (!carousel) return;
 
+    stopCarouselMotion();
     isDraggingRef.current = true;
     dragStartXRef.current = event.pageX;
     dragStartScrollRef.current = carousel.scrollLeft;
@@ -125,13 +184,13 @@ const CategoryGrid = () => {
 
   useEffect(() => {
     const carousel = carouselRef.current;
-    if (!carousel || categories.length === 0) return;
+    if (!carousel || categories.length === 0 || hasUserInteracted) return;
 
     requestAnimationFrame(() => {
       carousel.scrollLeft = getSegmentWidth() * 2;
       updateActiveCategory();
     });
-  }, [categories.length, getSegmentWidth, updateActiveCategory]);
+  }, [categories.length, getSegmentWidth, hasUserInteracted, updateActiveCategory]);
 
   if (loading) {
     return (
@@ -154,11 +213,14 @@ const CategoryGrid = () => {
   }
 
   return (
-    <section className="relative z-10 -mt-32 bg-gray-50 pb-14 pt-8 md:-mt-44 md:pb-20 md:pt-10">
+    <section
+      className="relative z-10 -mt-32 bg-gray-50 pb-14 pt-8 md:-mt-44 md:pb-20 md:pt-10"
+      onPointerDown={stopCarouselMotion}
+    >
       <div className="container-custom">
         <div className="mb-8 border border-gray-200 bg-white p-5 text-center shadow-sm">
           <div className="mx-auto max-w-2xl">
-            <p className="text-sm font-bold uppercase tracking-wide text-primary-600">Product Families</p>
+            <p className="text-sm font-bold uppercase tracking-wide text-[#094fa4]">Product Families</p>
             <h2 className="mt-3 text-3xl font-bold text-gray-950 md:text-4xl">
               Browse by category
             </h2>
@@ -166,7 +228,7 @@ const CategoryGrid = () => {
               Start with the component family you need, then compare available products.
             </p>
           </div>
-          <Link to="/browse" className="btn btn-primary mt-6 w-fit">
+          <Link to="/browse" className="mt-6 inline-flex w-fit items-center bg-[#094fa4] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#073b7a]">
             All Categories
             <FiArrowRight className="ml-2 h-4 w-4" />
           </Link>
@@ -176,7 +238,7 @@ const CategoryGrid = () => {
           <button
             type="button"
             onClick={() => scrollCategories(-1)}
-            className="absolute left-0 top-1/2 z-50 flex h-11 w-11 -translate-x-2 -translate-y-1/2 items-center justify-center bg-white text-gray-900 shadow-md transition hover:bg-primary-600 hover:text-white md:-translate-x-5"
+            className="absolute left-0 top-1/2 z-50 flex h-11 w-11 -translate-x-2 -translate-y-1/2 items-center justify-center bg-white text-gray-900 shadow-md transition hover:bg-[#094fa4] hover:text-white md:-translate-x-5"
             aria-label="Show previous categories"
           >
             <FiChevronLeft className="h-6 w-6" />
@@ -186,6 +248,8 @@ const CategoryGrid = () => {
             ref={carouselRef}
             onScroll={handleCarouselScroll}
             onMouseDown={startDragging}
+            onClick={stopCarouselMotion}
+            onTouchStart={stopCarouselMotion}
             onMouseLeave={stopDragging}
             onMouseUp={stopDragging}
             onMouseMove={dragCarousel}
@@ -201,7 +265,7 @@ const CategoryGrid = () => {
                   key={`${category.id}-${index}`}
                   data-category-card="true"
                   to={`/category/${category.slug}`}
-                  className={`group relative w-[240px] shrink-0 overflow-hidden border border-gray-200 bg-white shadow-sm transition duration-300 ${scale} ${zIndex} hover:border-primary-200 md:w-[280px]`}
+                  className={`group relative w-[240px] shrink-0 overflow-hidden border border-gray-200 bg-white shadow-sm transition duration-300 ${scale} ${zIndex} hover:border-[#094fa4]/30 md:w-[280px]`}
                   draggable="false"
                 >
                   <div className="relative h-44 overflow-hidden bg-gray-100 md:h-52">
@@ -224,8 +288,8 @@ const CategoryGrid = () => {
                     </p>
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-semibold text-gray-700">View Products</span>
-                      <div className="flex h-9 w-9 items-center justify-center bg-primary-50 transition-all group-hover:bg-primary">
-                        <FiArrowRight className="h-4 w-4 text-primary transition-colors group-hover:text-white" />
+                      <div className="flex h-9 w-9 items-center justify-center bg-[#094fa4]/10 transition-all group-hover:bg-[#094fa4]">
+                        <FiArrowRight className="h-4 w-4 text-[#094fa4] transition-colors group-hover:text-white" />
                       </div>
                     </div>
                   </div>
@@ -237,7 +301,7 @@ const CategoryGrid = () => {
           <button
             type="button"
             onClick={() => scrollCategories(1)}
-            className="absolute right-0 top-1/2 z-50 flex h-11 w-11 -translate-y-1/2 translate-x-2 items-center justify-center bg-white text-gray-900 shadow-md transition hover:bg-primary-600 hover:text-white md:translate-x-5"
+            className="absolute right-0 top-1/2 z-50 flex h-11 w-11 -translate-y-1/2 translate-x-2 items-center justify-center bg-white text-gray-900 shadow-md transition hover:bg-[#094fa4] hover:text-white md:translate-x-5"
             aria-label="Show next categories"
           >
             <FiChevronRight className="h-6 w-6" />
