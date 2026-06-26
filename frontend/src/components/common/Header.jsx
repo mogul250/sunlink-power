@@ -24,7 +24,7 @@ const Header = () => {
     { name: 'Kits', path: '/kits' },
     { name: 'Agri Solar', path: '/kit/agri-solar' },
     { name: 'Solar EV Station', path: '/kit/solar-ev-station' },
-    { name: 'Solar Lights', path: '/category/solar-strip-lights' },
+    { name: 'Solar Lights', path: '/category/solar-street-lights' },
     { name: 'About Us', path: '/about' },
     { name: 'Contact', path: '/contact' },
   ];

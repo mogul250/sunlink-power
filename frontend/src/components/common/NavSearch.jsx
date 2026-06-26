@@ -24,7 +24,7 @@ const QUICK_LINKS = [
     type: 'category',
     name: 'Solar Lights',
     description: 'Outdoor, street, garden, and security solar lighting products.',
-    path: '/category/solar-strip-lights',
+    path: '/category/solar-street-lights',
   },
 ];
 

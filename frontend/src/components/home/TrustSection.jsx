@@ -60,7 +60,7 @@ const TrustSection = () => {
       title: 'Solar Street Lighting',
       description: 'Smart outdoor lighting for roads, communities, estates, and public spaces.',
       image: 'https://images.unsplash.com/photo-1519608487953-e999c86e7455?w=900',
-      path: '/category/solar-strip-lights',
+      path: '/category/solar-street-lights',
     },
     {
       title: 'Solar Water Pump System',

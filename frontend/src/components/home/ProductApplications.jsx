@@ -51,7 +51,7 @@ const ProductApplications = () => {
       title: 'Public infrastructure',
       description: 'Solar street lights and public lighting solutions for smart cities, roads, and communities.',
       image: infrastructureImage,
-      path: '/category/solar-strip-lights',
+      path: '/category/solar-street-lights',
     },
     {
       title: 'E-Mobility',
