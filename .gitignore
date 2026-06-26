@@ -9,8 +9,8 @@ yarn.lock
 .env.production
 
 # Uploads
-backend/uploads/
-uploads/
+# backend/uploads/
+# uploads/
 
 # Logs
 logs/
