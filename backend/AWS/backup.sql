@@ -369,6 +369,197 @@ LOCK TABLES `Testimonials` WRITE;
 INSERT INTO `Testimonials` VALUES (1,'John Mwangi','Kenya',NULL,'https://images.unsplash.com/photo-1497440001374-f26997328c1b?w=400','https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?w=400','Sunlink Power transformed my business! We installed a 5kW system and now save over $200 monthly on electricity. The panels work perfectly even during the rainy season. Excellent quality and great customer support!',1,5,'2026-04-21 21:18:28','2026-04-21 21:18:28'),(2,'Amara Okafor','Nigeria',NULL,NULL,NULL,'Best investment I ever made for my home. The 3kW solar kit powers my entire house including AC and refrigerator. Installation was smooth and the team was very professional. Highly recommended!',1,5,'2026-04-21 21:18:28','2026-04-21 21:18:28'),(3,'Tendai Moyo','Zimbabwe','https://www.youtube.com/watch?v=example1','https://images.unsplash.com/photo-1497440001374-f26997328c1b?w=400','https://images.unsplash.com/photo-1509391366360-2e959784a276?w=400','Running my farm on solar power now! The 10kW system handles all our irrigation pumps and cold storage. No more diesel generator costs. Sunlink quality is outstanding!',1,5,'2026-04-21 21:18:28','2026-04-21 21:18:28'),(4,'Grace Uwimana','Rwanda',NULL,NULL,NULL,'Our clinic now has reliable 24/7 power thanks to Sunlink. The battery backup system keeps our medical equipment running even during power outages. Lives are being saved because of this technology!',1,5,'2026-04-21 21:18:28','2026-04-21 21:18:28'),(5,'David Banda','Zambia',NULL,'https://images.unsplash.com/photo-1497440001374-f26997328c1b?w=400','https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?w=400','Installed solar panels on my shop 6 months ago. The return on investment is amazing! My electricity bill went from $150 to almost zero. The panels are still performing excellently.',1,5,'2026-04-21 21:18:28','2026-04-21 21:18:28'),(6,'Fatima Hassan','Tanzania',NULL,NULL,NULL,'Quality products at fair prices. We bought the complete home kit and it was easy to install. Customer service answered all our questions. Very happy with our purchase!',1,4,'2026-04-21 21:18:28','2026-04-21 21:18:28'),(7,'Emmanuel Nkosi','South Africa',NULL,NULL,NULL,'Sunlink inverters are the best! Pure sine wave output, very quiet operation, and the LCD display is very helpful. Been using it for 8 months without any issues.',0,5,'2026-04-21 21:18:28','2026-04-21 21:18:28');
 /*!40000 ALTER TABLE `Testimonials` ENABLE KEYS */;
 UNLOCK TABLES;
+-- BEGIN GENERATED SOLAR LIGHT AND FAN CATALOGUE
+--
+-- Authoritative Solar Light and Fan catalogue rebuild (2026-06-28)
+-- Source: SUNLINK Solar Light and Fan Catalog, pages 5-53.
+-- Each catalogue family is one Product; catalogue model codes are ProductModels.
+-- Shared specification values render with colspan, while differing values render per model.
+--
+DELETE FROM `KitProducts` WHERE `product_id` IN (SELECT `id` FROM `Products` WHERE `category_id` IN (7,8,9,10,11,12,13));
+DELETE FROM `ProductImages` WHERE `product_id` IN (SELECT `id` FROM `Products` WHERE `category_id` IN (7,8,9,10,11,12,13));
+DELETE FROM `ProductSpecifications` WHERE `product_id` IN (SELECT `id` FROM `Products` WHERE `category_id` IN (7,8,9,10,11,12,13));
+DELETE FROM `ProductModels` WHERE `product_id` IN (SELECT `id` FROM `Products` WHERE `category_id` IN (7,8,9,10,11,12,13));
+DELETE FROM `Products` WHERE `category_id` IN (7,8,9,10,11,12,13);
+DELETE FROM `Categories` WHERE `id`=13;
+
+INSERT INTO `Products`
+(`id`,`category_id`,`name`,`description`,`wattage`,`durability_rating`,`battery_type`,`warranty_info`,`metadata`) VALUES
+(601,7,'Solar Smart Street Light','Project street-light family with adjustable mounting, high-efficiency mono panels, Teijin PC optics, and optional radar sensing.','Multiple models','Catalogue Solar Product','LiFePO4','5 years warranty',JSON_OBJECT('catalogue_page',6,'source','SUNLINK Solar Light and Fan Catalog')),
+(602,7,'Solar Street Light Starship I Premium','Camera-equipped Starship I street-light family with 1440P monitoring, radar sensing, 4G/Wi-Fi connectivity, and remote operation.','Multiple models','Catalogue Solar Product','LiFePO4','5 years warranty',JSON_OBJECT('catalogue_page',7,'source','SUNLINK Solar Light and Fan Catalog')),
+(603,7,'Solar Street Light Starship I Primary','High-lumen Starship I street-light family with radar sensing, fast solar charging, wide road optics, and smart power management.','Multiple models','Catalogue Solar Product','LiFePO4','5 years warranty',JSON_OBJECT('catalogue_page',8,'source','SUNLINK Solar Light and Fan Catalog')),
+(604,7,'Solar Street Light Starship II','Galvanized-steel integrated street-light family with adjustable mounting, wide optics, and optional radar sensing.','1000W / 1500W','Catalogue Solar Product','LiFePO4','5 years warranty',JSON_OBJECT('catalogue_page',9,'source','SUNLINK Solar Light and Fan Catalog')),
+(605,7,'Solar Street Light Starship III Premium Double Screen','Double-screen camera street-light family with 1440P monitoring, radar sensing, 4G/Wi-Fi, and app-based security functions.','800W / 1200W','Catalogue Solar Product','LiFePO4','5 years warranty',JSON_OBJECT('catalogue_page',10,'source','SUNLINK Solar Light and Fan Catalog')),
+(606,7,'Solar Street Light Starship III Premium Single Screen','Single-screen camera street-light family with 1440P monitoring, radar sensing, 4G/Wi-Fi, and app-based security functions.','800W / 1200W','Catalogue Solar Product','LiFePO4','5 years warranty',JSON_OBJECT('catalogue_page',11,'source','SUNLINK Solar Light and Fan Catalog')),
+(607,7,'Solar Street Light Starship III Primary','Integrated Starship III street-light family with radar sensing, fast charging, Teijin PC optics, and smart power management.','800W / 1200W','Catalogue Solar Product','LiFePO4','5 years warranty',JSON_OBJECT('catalogue_page',12,'source','SUNLINK Solar Light and Fan Catalog')),
+(608,7,'Nova Solar Street Light','Aluminum Nova street-light family with high-capacity battery housings, front service access, efficient cooling, and low-wind-resistance construction.','300W / 500W / 800W / 1000W / 1500W / 3000W','Catalogue Solar Product','LiFePO4','5 years warranty',JSON_OBJECT('catalogue_page',13,'source','SUNLINK Solar Light and Fan Catalog')),
+(609,7,'Interstellar Warrior I Solar Street Light','Aluminum Interstellar Warrior I street-light family with Teijin PC optics, fast charging, and smart power management.','100W / 200W / 300W / 400W / 600W','Catalogue Solar Product','LiFePO4','5 years warranty',JSON_OBJECT('catalogue_page',14,'source','SUNLINK Solar Light and Fan Catalog')),
+(610,7,'Interstellar Warrior II Solar Street Light','Upgraded Interstellar Warrior II street-light family with SMD5050 LEDs, optional radar sensing, wide optics, and smart power management.','200W / 300W / 400W / 500W / 600W','Catalogue Solar Product','LiFePO4','5 years warranty',JSON_OBJECT('catalogue_page',15,'source','SUNLINK Solar Light and Fan Catalog')),
+(611,7,'Intrepid Pioneer I Solar Street Light','Compact integrated street-light family with radar sensing, quick charging, multiple operating modes, and extended battery runtime.','100W / 200W / 300W','Catalogue Solar Product','LiFePO4','5 years warranty',JSON_OBJECT('catalogue_page',16,'source','SUNLINK Solar Light and Fan Catalog')),
+(612,7,'Intrepid Pioneer II Solar Street Light','Upgraded integrated street-light family with radar sensing, efficient charging, multiple modes, and smart power management.','300W / 400W / 500W / 600W','Catalogue Solar Product','LiFePO4','5 years warranty',JSON_OBJECT('catalogue_page',17,'source','SUNLINK Solar Light and Fan Catalog')),
+(701,8,'Solar Aurora Flood Light','Demountable three-color solar flood-light family with anti-UV housing, replaceable components, and all-night LiFePO4 storage.','100W / 200W / 300W / 400W / 600W','Catalogue Solar Product','LiFePO4','5 years warranty',JSON_OBJECT('catalogue_page',18,'source','SUNLINK Solar Light and Fan Catalog')),
+(702,8,'Breaker Warrior Solar Flood Light Premium','Camera-equipped Breaker Warrior flood-light family with radar sensing, 1440P monitoring, app control, alarms, and playback.','100W / 200W / 300W / 500W / 800W / 1200W','Catalogue Solar Product','LiFePO4','5 years warranty',JSON_OBJECT('catalogue_page',19,'source','SUNLINK Solar Light and Fan Catalog')),
+(703,8,'Breaker Warrior Solar Flood Light Primary','Project flood-light family with wide optics, optional motion sensing, SMD5054 LEDs, and smart nighttime power distribution.','60W / 100W / 200W / 300W / 500W / 800W / 1200W / 1500W','Catalogue Solar Product','LiFePO4','5 years warranty',JSON_OBJECT('catalogue_page',20,'source','SUNLINK Solar Light and Fan Catalog')),
+(704,8,'TF Solar Flood Light','Portable TF flood-light family with optional radar sensing, efficient charging, modular maintenance, and automatic nighttime power distribution.','100W / 200W / 300W / 400W / 600W','Catalogue Solar Product','LiFePO4','5 years warranty',JSON_OBJECT('catalogue_page',21,'source','SUNLINK Solar Light and Fan Catalog')),
+(705,8,'Alien Warrior Solar Flood Light Premium','RGBW Alien Warrior flood-light family with Bluetooth music rhythm control, modular servicing, and intelligent energy management.','60W / 100W / 200W / 300W / 500W / 800W','Catalogue Solar Product','LiFePO4','5 years warranty',JSON_OBJECT('catalogue_page',22,'source','SUNLINK Solar Light and Fan Catalog')),
+(706,8,'Alien Warrior Solar Flood Light Primary','Aluminum-and-glass Alien Warrior flood-light family with wide optics, efficient charging, and intelligent energy management.','60W / 100W / 200W / 300W / 500W / 800W','Catalogue Solar Product','LiFePO4','5 years warranty',JSON_OBJECT('catalogue_page',23,'source','SUNLINK Solar Light and Fan Catalog')),
+(801,9,'Solar Morning Glory Lawn Light','Three-color lawn-light family with wall, pillar, pole, and ground-spike installation options and removable service cover.','Multiple models','Catalogue Solar Product','LiFePO4','5 years warranty',JSON_OBJECT('catalogue_page',24,'source','SUNLINK Solar Light and Fan Catalog')),
+(802,9,'Solar Diamond Lawn Light','Round and square three-color lawn-light family for floor or pillar mounting with extension-pole options.','Multiple models','Catalogue Solar Product','LiFePO4','5 years warranty',JSON_OBJECT('catalogue_page',25,'source','SUNLINK Solar Light and Fan Catalog')),
+(803,9,'Solar Ark Garden Light','Galvanized-steel garden-light family with Teijin PC optics, serviceable construction, and large solar and battery capacity.','1000W / 2000W','Catalogue Solar Product','LiFePO4','5 years warranty',JSON_OBJECT('catalogue_page',26,'source','SUNLINK Solar Light and Fan Catalog')),
+(804,9,'Explorer Warrior Solar Garden Light','App-controlled garden-light family with warm white, white, and RGB output, Bluetooth music rhythm, and 360-degree illumination.','800W / 1200W','Catalogue Solar Product','LiFePO4','5 years warranty',JSON_OBJECT('catalogue_page',27,'source','SUNLINK Solar Light and Fan Catalog')),
+(901,10,'Spider-Man Solar Strip Light','Single-color solar strip-light family with multiple lengths, installation methods, lighting modes, and smart power management.','50W / 100W / 200W','Catalogue Solar Product','LiFePO4','5 years warranty',JSON_OBJECT('catalogue_page',28,'source','SUNLINK Solar Light and Fan Catalog')),
+(1001,11,'Light Sword Solar Batten Light','Solar batten-light family for off-grid spaces with integrated batteries, separate mono panels, soft illumination, and optional smart sensing.','100W / 200W','Catalogue Solar Product','LiFePO4','5 years warranty',JSON_OBJECT('catalogue_page',29,'source','SUNLINK Solar Light and Fan Catalog')),
+(1101,12,'Solar Fan','Portable solar air-circulation fan family for desk or floor use with adjustable angle, solar and DC charging, and USB output.','Multiple models','Catalogue Solar Product','LiFePO4','5 years warranty',JSON_OBJECT('catalogue_page',30,'source','SUNLINK Solar Light and Fan Catalog'));
+
+DROP TABLE IF EXISTS `CatalogLightingModels`;
+CREATE TABLE `CatalogLightingModels` (
+  `product_id` int NOT NULL, `model_code` varchar(150) NOT NULL, `display_name` varchar(150) NOT NULL,
+  `nominal_power` varchar(100), `battery` varchar(255), `solar_panel` varchar(255), `material` varchar(255),
+  `dimensions` varchar(255), `cct` varchar(255), `radar_sensor` varchar(255), `luminous_flux` varchar(255),
+  `camera_resolution` varchar(255), `color` varchar(255), `blow_direction` varchar(255), `sort_order` int NOT NULL
+);
+INSERT INTO `CatalogLightingModels` VALUES
+(601,'MJ-SS100','MJ-SS100',NULL,'LiFePO4 3.2V 55Ah','Mono 4.5V/65W','AL+Teijin PC','910 x 400 x 102mm','6000K-6500K','OPTIONAL','4000/5200lm',NULL,NULL,NULL,0),
+(601,'MJ-SS200','MJ-SS200',NULL,'LiFePO4 3.2V 85Ah','Mono 4.5V/85W','AL+Teijin PC','1130 x 400 x 102mm','6000K-6500K','OPTIONAL','5000/6400lm',NULL,NULL,NULL,1),
+(601,'MJ-SS300','MJ-SS300',NULL,'LiFePO4 3.2V 100Ah','Mono 4.5V/110W','AL+Teijin PC','1440 x 400 x 102mm','6000K-6500K','OPTIONAL','6000/7800lm',NULL,NULL,NULL,2),
+(601,'MJ-SS400','MJ-SS400',NULL,'LiFePO4 3.2V 130Ah','Mono 4.5V/125W','AL+Teijin PC','1645 x 400 x 102mm','6000K-6500K','OPTIONAL','8000/10400lm',NULL,NULL,NULL,3),
+(601,'MJ-SS500','MJ-SS500',NULL,'LiFePO4 3.2V 165Ah','Mono 4.5V/140W','AL+Teijin PC','1830 x 400 x 102mm','6000K-6500K','OPTIONAL','10000/13000lm',NULL,NULL,NULL,4),
+(601,'MJ-SS100P','MJ-SS100P',NULL,'LiFePO4 12.8V 25Ah','Mono 4.5V/65W','AL+Teijin PC','910 x 400 x 102mm','6000K-6500K','OPTIONAL','4000/5200lm',NULL,NULL,NULL,5),
+(601,'MJ-SS200P','MJ-SS200P',NULL,'LiFePO4 12.8V 30Ah','Mono 4.5V/85W','AL+Teijin PC','1130 x 400 x 102mm','6000K-6500K','OPTIONAL','5000/6400lm',NULL,NULL,NULL,6),
+(601,'MJ-SS300P','MJ-SS300P',NULL,'LiFePO4 12.8V 30Ah','Mono 18V/110W','AL+Teijin PC','1140 x 400 x 102mm','6000K-6500K','OPTIONAL','6000/7800lm',NULL,NULL,NULL,7),
+(601,'MJ-SS400P','MJ-SS400P',NULL,'LiFePO4 12.8V 45Ah','Mono 18V/125W','AL+Teijin PC','1645 x 400 x 102mm','6000K-6500K','OPTIONAL','8000/10400lm',NULL,NULL,NULL,8),
+(601,'MJ-SS500P','MJ-SS500P',NULL,'LiFePO4 12.8V 60Ah','Mono 18V/140W','AL+Teijin PC','1830 x 400 x 102mm','6000K-6500K','OPTIONAL','10000/13000lm',NULL,NULL,NULL,9),
+(602,'MJ-SSO100C','MJ-SSO100C',NULL,'LiFePO4 75Ah','Mono 4V/60W','AL+Teijin PC','932 x 365 x 160mm','6000K-6500K','YES','4500lm','1440P',NULL,NULL,0),
+(602,'MJ-SSO200C','MJ-SSO200C',NULL,'LiFePO4 85Ah','Mono 4V/75W','AL+Teijin PC','1122 x 365 x 160mm','6000K-6500K','YES','6500lm','1440P',NULL,NULL,1),
+(602,'MJ-SSO300C','MJ-SSO300C',NULL,'LiFePO4 105Ah','Mono 4V/90W','AL+Teijin PC','1342 x 365 x 160mm','6000K-6500K','YES','8500lm','1440P',NULL,NULL,2),
+(602,'MJ-SSO400C','MJ-SSO400C',NULL,'LiFePO4 170Ah','Mono 4V/110W','AL+Teijin PC','1672 x 365 x 160mm','6000K-6500K','YES','12000lm','1440P',NULL,NULL,3),
+(603,'MJ-SSO100','MJ-SSO100',NULL,'LiFePO4 60Ah','Mono 4V/60W','AL+Teijin PC','932 x 365 x 160mm','6000K-6500K','YES','4500lm',NULL,NULL,NULL,0),
+(603,'MJ-SSO200','MJ-SSO200',NULL,'LiFePO4 85Ah','Mono 4V/75W','AL+Teijin PC','1122 x 365 x 160mm','6000K-6500K','YES','6500lm',NULL,NULL,NULL,1),
+(603,'MJ-SSO300','MJ-SSO300',NULL,'LiFePO4 105Ah','Mono 4V/90W','AL+Teijin PC','1342 x 365 x 160mm','6000K-6500K','YES','8500lm',NULL,NULL,NULL,2),
+(603,'MJ-SSO400','MJ-SSO400',NULL,'LiFePO4 170Ah','Mono 4V/110W','AL+Teijin PC','1672 x 365 x 160mm','6000K-6500K','YES','12000lm',NULL,NULL,NULL,3),
+(604,'MJ-SST1000','MJ-SST1000','1000W','LiFePO4 36Ah','Mono 4V/40W','Galvanized Steel + Teijin PC','650 x 320 x 66mm','6500-7500K','OPTIONAL','2150/2816lm',NULL,NULL,NULL,0),
+(604,'MJ-SST1500','MJ-SST1500','1500W','LiFePO4 50Ah','Mono 4V/50W','Galvanized Steel + Teijin PC','790 x 320 x 66mm','6500-7500K','OPTIONAL','2969/3840lm',NULL,NULL,NULL,1),
+(605,'MJ-SSTH800C','MJ-SSTH800C','800W','LiFePO4 36Ah','Mono 4V/30W','ABS+Teijin PC','700 x 300 x 145mm','6500-7500K','YES','2550lm','1440P',NULL,NULL,0),
+(605,'MJ-SSTH1200C','MJ-SSTH1200C','1200W','LiFePO4 54Ah','Mono 4V/40W','ABS+Teijin PC','820 x 300 x 145mm','6500-7500K','YES','3840lm','1440P',NULL,NULL,1),
+(606,'MJ-SSTH800C','MJ-SSTH800C','800W','LiFePO4 36Ah','Mono 4V/30W','ABS+Teijin PC','700 x 300 x 145mm','6500-7500K','YES','2550lm','1440P',NULL,NULL,0),
+(606,'MJ-SSTH1200C','MJ-SSTH1200C','1200W','LiFePO4 54Ah','Mono 4V/40W','ABS+Teijin PC','820 x 300 x 145mm','6500-7500K','YES','3840lm','1440P',NULL,NULL,1),
+(607,'MJ-SSTH800','MJ-SSTH800','800W','LiFePO4 30Ah','Mono 4V/30W','ABS+Teijin PC','700 x 300 x 81mm','6500-7500K','YES','2550lm',NULL,NULL,NULL,0),
+(607,'MJ-SSTH1200','MJ-SSTH1200','1200W','LiFePO4 45Ah','Mono 4V/40W','ABS+Teijin PC','820 x 300 x 81mm','6500-7500K','YES','3840lm',NULL,NULL,NULL,1),
+(608,'MJ-NOVA300','MJ-NOVA300','300W','LiFePO4 30Ah','Mono 5V/40W','AL+Teijin PC','527 x 218.8 x 45.9mm','6500-7500K','NO','2048lm',NULL,NULL,NULL,0),
+(608,'MJ-NOVA500','MJ-NOVA500','500W','LiFePO4 36Ah','Mono 5V/45W','AL+Teijin PC','628 x 255.6 x 53.9mm','6500-7500K','NO','2560lm',NULL,NULL,NULL,1),
+(608,'MJ-NOVA800','MJ-NOVA800','800W','LiFePO4 50Ah','Mono 5V/50W','AL+Teijin PC','628 x 255.6 x 53.9mm','6500-7500K','NO','3072lm',NULL,NULL,NULL,2),
+(608,'MJ-NOVA1000','MJ-NOVA1000','1000W','LiFePO4 60Ah','Mono 5V/60W','AL+Teijin PC','628 x 255.6 x 53.9mm','6500-7500K','NO','3584lm',NULL,NULL,NULL,3),
+(608,'MJ-NOVA1500','MJ-NOVA1500','1500W','LiFePO4 120Ah','Mono 5V/100W','AL+Teijin PC','689 x 297.3 x 65.4mm','6500-7500K','NO','6336lm',NULL,NULL,NULL,4),
+(608,'MJ-NOVA3000','MJ-NOVA3000','3000W','LiFePO4 230Ah','Mono 5V 80W x 2','AL+Teijin PC','689 x 297.3 x 65.4mm','6500-7500K','NO','12800lm',NULL,NULL,NULL,5),
+(609,'MJ-XJ801','MJ-XJ801','100W','LiFePO4 20Ah','Mono 5V/30W','AL+Teijin PC','520 x 260 x 80mm','6500-7500K','NO','1485lm',NULL,NULL,NULL,0),
+(609,'MJ-XJ802','MJ-XJ802','200W','LiFePO4 30Ah','Mono 5V/40W','AL+Teijin PC','520 x 260 x 80mm','6500-7500K','NO','2000lm',NULL,NULL,NULL,1),
+(609,'MJ-XJ803','MJ-XJ803','300W','LiFePO4 36Ah','Mono 5V/45W','AL+Teijin PC','600 x 300 x 80mm','6500-7500K','NO','2374lm',NULL,NULL,NULL,2),
+(609,'MJ-XJ804','MJ-XJ804','400W','LiFePO4 48Ah','Mono 5V/50W','AL+Teijin PC','600 x 300 x 80mm','6500-7500K','NO','2791lm',NULL,NULL,NULL,3),
+(609,'MJ-XJ806','MJ-XJ806','600W','LiFePO4 60Ah','Mono 5V/60W','AL+Teijin PC','600 x 300 x 80mm','6500-7500K','NO','3168lm',NULL,NULL,NULL,4),
+(609,'MJ-S5500','MJ-S5500',NULL,'LiFePO4 75Ah','Mono 5V/80W','AL+Teijin PC','600 x 300 x 80mm','6500-7500K','NO','5500lm',NULL,NULL,NULL,5),
+(610,'MJ-XJ902','MJ-XJ902','200W','LiFePO4 20Ah','Mono 5V/30W','AL+Teijin PC','530 x 260 x 80mm','6500-7500K','Optional','1800lm',NULL,NULL,NULL,0),
+(610,'MJ-XJ903','MJ-XJ903','300W','LiFePO4 30Ah','Mono 5V/40W','AL+Teijin PC','530 x 260 x 80mm','6500-7500K','Optional','2650lm',NULL,NULL,NULL,1),
+(610,'MJ-XJ904','MJ-XJ904','400W','LiFePO4 36Ah','Mono 5V/45W','AL+Teijin PC','615 x 300 x 80MM','6500-7500K','Optional','3120lm',NULL,NULL,NULL,2),
+(610,'MJ-XJ905','MJ-XJ905','500W','LiFePO4 48Ah','Mono 5V/50W','AL+Teijin PC','615 x 300 x 80MM','6500-7500K','Optional','3512lm',NULL,NULL,NULL,3),
+(610,'MJ-XJ906','MJ-XJ906','600W','LiFePO4 60Ah','Mono 5V/60W','AL+Teijin PC','615 x 300 x 80MM','6500-7500K','Optional','3840lm',NULL,NULL,NULL,4),
+(610,'MJ-S5500PRO','MJ-S5500PRO',NULL,'LiFePO4 75Ah','Mono 5V/80W','AL+Teijin PC','615 x 300 x 80MM','6500-7500K','Optional','5500lm',NULL,NULL,NULL,5),
+(611,'MJ-LH8100','MJ-LH8100','100W','LiFePO4 15Ah','Mono 4V/13W','ABS+PC(Anti-UV)','530 x 270 x 70mm','6500-7500K','YES','1248lm',NULL,NULL,NULL,0),
+(611,'MJ-LH8200','MJ-LH8200','200W','LiFePO4 18Ah','Mono 4V/18W','ABS+PC(Anti-UV)','645 x 300 x 70mm','6500-7500K','YES','1747lm',NULL,NULL,NULL,1),
+(611,'MJ-LH8300','MJ-LH8300','300W','LiFePO4 30Ah','Mono 4V/23W','ABS+PC(Anti-UV)','750 x 300 x 70mm','6500-7500K','YES','2246lm',NULL,NULL,NULL,2),
+(612,'MJ-LH9300','MJ-LH9300','300W','LiFePO4 10Ah','Mono 4V/12W','ABS+PC(Anti-UV)','510 x 260 x 65mm','6500-7500K','YES','994lm',NULL,NULL,NULL,0),
+(612,'MJ-LH9400','MJ-LH9400','400W','LiFePO4 15Ah','Mono 4V/15W','ABS+PC(Anti-UV)','580 x 270 x 65mm','6500-7500K','YES','1476lm',NULL,NULL,NULL,1),
+(612,'MJ-LH9500','MJ-LH9500','500W','LiFePO4 18Ah','Mono 4V/20W','ABS+PC(Anti-UV)','680 x 290 x 65mm','6500-7500K','YES','1970lm',NULL,NULL,NULL,2),
+(612,'MJ-LH9600','MJ-LH9600','600W','LiFePO4 30Ah','Mono 4V/25W','ABS+PC(Anti-UV)','780 x 290 x 65mm','6500-7500K','YES','2488lm',NULL,NULL,NULL,3),
+(701,'MJ-SAR100','MJ-SAR100','100W','LiFePO4 6AH','Mono 5V/12W','ABS+Glass','246 x 200 x 60mm','WW/NW/CW','NO','624lm',NULL,NULL,NULL,0),
+(701,'MJ-SAR200','MJ-SAR200','200W','LiFePO4 12AH','Mono 5V/18W','ABS+Glass','295 x 240 x 64.5mm','WW/NW/CW','NO','915lm',NULL,NULL,NULL,1),
+(701,'MJ-SAR300','MJ-SAR300','300W','LiFePO4 18AH','Mono 5V/25W','ABS+Glass','346 x 282 x 70mm','WW/NW/CW','NO','1248lm',NULL,NULL,NULL,2),
+(701,'MJ-SAR400','MJ-SAR400','400W','LiFePO4 24AH','Mono 5V/30W','ABS+Glass','401 x 326 x 80mm','WW/NW/CW','NO','1664lm',NULL,NULL,NULL,3),
+(701,'MJ-SAR600','MJ-SAR600','600W','LiFePO4 36AH','Mono 5V/40W','ABS+Glass','401 x 326 x 80mm','WW/NW/CW','NO','2288lm',NULL,NULL,NULL,4),
+(702,'MJ-BW100C','MJ-BW100C','100W','LiFePO4 18Ah','Mono 5V/25W','AL+Teijin PC','235 x 200 x 50mm','6500-7500K','YES','958lm','1440P',NULL,NULL,0),
+(702,'MJ-BW200C','MJ-BW200C','200W','LiFePO4 30Ah','Mono 5V/30W','AL+Teijin PC','271 x 220 x 50mm','6500-7500K','YES','1267lm','1440P',NULL,NULL,1),
+(702,'MJ-BW300C','MJ-BW300C','300W','LiFePO4 36Ah','Mono 5V/40W','AL+Teijin PC','311 x 264 x 55mm','6500-7500K','YES','2017lm','1440P',NULL,NULL,2),
+(702,'MJ-BW500C','MJ-BW500C','500W','LiFePO4 45Ah','Mono 5V/45W','AL+Teijin PC','360 x 306 x 55mm','6500-7500K','YES','2535lm','1440P',NULL,NULL,3),
+(702,'MJ-BW800C','MJ-BW800C','800W','LiFePO4 54Ah','Mono 5V/50W','AL+Teijin PC','405 x 345 x 58mm','6500-7500K','YES','3038lm','1440P',NULL,NULL,4),
+(702,'MJ-BW1200C','MJ-BW1200C','1200W','LiFePO4 60Ah','Mono 5V/60W','AL+Teijin PC','405 x 345 x 58mm','6500-7500K','YES','3510lm','1440P',NULL,NULL,5),
+(703,'MJ-BW60','MJ-BW60','60W','LiFePO4 6Ah','Mono 5V/12W','AL+Teijin PC','235 x 200 x 50mm','6500-7500K','Optional','620lm',NULL,NULL,NULL,0),
+(703,'MJ-BW100','MJ-BW100','100W','LiFePO4 15Ah','Mono 5V/18W','AL+Teijin PC','235 x 200 x 50mm','6500-7500K','Optional','1097lm',NULL,NULL,NULL,1),
+(703,'MJ-BW200','MJ-BW200','200W','LiFePO4 18Ah','Mono 5V/30W','AL+Teijin PC','271 x 220 x 50mm','6500-7500K','Optional','1343lm',NULL,NULL,NULL,2),
+(703,'MJ-BW300','MJ-BW300','300W','LiFePO4 30Ah','Mono 5V/40W','AL+Teijin PC','311 x 264 x 55mm','6500-7500K','Optional','2178Im',NULL,NULL,NULL,3),
+(703,'MJ-BW500','MJ-BW500','500W','LiFePO4 36Ah','Mono 5V/45W','AL+Teijin PC','360 x 306 x 55mm','6500-7500K','Optional','2641lm',NULL,NULL,NULL,4),
+(703,'MJ-BW800','MJ-BW800','800W','LiFePO4 45Ah','Mono 5V/50W','AL+Teijin PC','405 x 345 x 58mm','6500-7500K','Optional','3263lm',NULL,NULL,NULL,5),
+(703,'MJ-BW1200','MJ-BW1200','1200W','LiFePO4 54Ah','Mono 5V/60W','AL+Teijin PC','405 x 345 x 58mm','6500-7500K','Optional','3795lm',NULL,NULL,NULL,6),
+(703,'MJ-BW1500','MJ-BW1500','1500W','LiFePO4 100Ah','Mono 5V/80W','AL+Teijin PC','405 x 345 x 58mm','6500-7500K','Optional','5401lm',NULL,NULL,NULL,7),
+(704,'MJ-D901-1','MJ-D901-1','100W','LiFePO4 6Ah','Mono 5V/12W','AL+Teijin PC','217 x 179 x 45mm','6500-7500K','Optional','530lm',NULL,NULL,NULL,0),
+(704,'MJ-D901-2','MJ-D901-2','100W','LiFePO4 15Ah','Mono 5V/18W','AL+Teijin PC','217 x 179 x 45mm','6500-7500K','Optional','940lm',NULL,NULL,NULL,1),
+(704,'MJ-D902','MJ-D902','200W','LiFePO4 18Ah','Mono 5V/30W','AL+Teijin PC','258 x 213 x 45mm','6500-7500K','Optional','1276lm',NULL,NULL,NULL,2),
+(704,'MJ-D903','MJ-D903','300W','LiFePO4 24Ah','Mono 5V/35W','AL+Teijin PC','312 x 270 x 50mm','6500-7500K','Optional','1920lm',NULL,NULL,NULL,3),
+(704,'MJ-D904-1','MJ-D904-1','400W','LiFePO4 30Ah','Mono 5V/40W','AL+Teijin PC','365 x 295 x 50mm','6500-7500K','Optional','2320lm',NULL,NULL,NULL,4),
+(704,'MJ-D904-2','MJ-D904-2','600W','LiFePO4 36Ah','Mono 5V/45W','AL+Teijin PC','365 x 295 x 50mm','6500-7500K','Optional','2550lm',NULL,NULL,NULL,5),
+(705,'MJ-AW60C','MJ-AW60C','60W','LiFePO4 6Ah','Mono 5V/12W','AL+Glass','215.2 x 170.2 x 60mm','RGBW','NO',NULL,NULL,NULL,NULL,0),
+(705,'MJ-AW100C','MJ-AW100C','100W','LiFePO4 15Ah','Mono 5V/18W','AL+Glass','260.2 x 202.2 x 65mm','RGBW','NO',NULL,NULL,NULL,NULL,1),
+(705,'MJ-AW200C','MJ-AW200C','200W','LiFePO4 18Ah','Mono 5V/30W','AL+Glass','305.1 x 240.1 x 69mm','RGBW','NO',NULL,NULL,NULL,NULL,2),
+(705,'MJ-AW300C','MJ-AW300C','300W','LiFePO4 30Ah','Mono 5V/40W','AL+Glass','340.2 x 270.2 x 78mm','RGBW','NO',NULL,NULL,NULL,NULL,3),
+(705,'MJ-AW500C','MJ-AW500C','500W','LiFePO4 36Ah','Mono 5V/45W','AL+Glass','385.2 x 303.2 x 82mm','RGBW','NO',NULL,NULL,NULL,NULL,4),
+(705,'MJ-AW800C','MJ-AW800C','800W','LiFePO4 54Ah','Mono 5V/60W','AL+Glass','385.2 x 303.2 x 82mm','RGBW','NO',NULL,NULL,NULL,NULL,5),
+(706,'MJ-AW60','MJ-AW60','60W','LiFePO4 6Ah','Mono 5V/12W','AL+Glass','215.2 x 170.2 x 60mm','6500-7500K','NO','515lm',NULL,NULL,NULL,0),
+(706,'MJ-AW100','MJ-AW100','100W','LiFePO4 15Ah','Mono 5V/18W','AL+Glass','260.2 x 202.2 x 65mm','6500-7500K','NO','896lm',NULL,NULL,NULL,1),
+(706,'MJ-AW200','MJ-AW200','200W','LiFePO4 18Ah','Mono 5V/30W','AL+Glass','305.1 x 240.1 x 69mm','6500-7500K','NO','1250lm',NULL,NULL,NULL,2),
+(706,'MJ-AW300','MJ-AW300','300W','LiFePO4 30Ah','Mono 5V/40W','AL+Glass','340.2 x 270.2 x 78mm','6500-7500K','NO','1956lm',NULL,NULL,NULL,3),
+(706,'MJ-AW500','MJ-AW500','500W','LiFePO4 36Ah','Mono 5V/45W','AL+Glass','385.2 x 303.2 x 82mm','6500-7500K','NO','2472lm',NULL,NULL,NULL,4),
+(706,'MJ-AW800','MJ-AW800','800W','LiFePO4 54Ah','Mono 5V/60W','AL+Glass','385.2 x 303.2 x 82mm','6500-7500K','NO','2960lm',NULL,NULL,NULL,5),
+(801,'MJ-MG-P200','MJ-MG-P200',NULL,'3.2V/4AH','Dia 196mm-4V/3.5W','ABS+PC','211.3 x 201mm','WW/NW/CW','NO','312lm',NULL,NULL,NULL,0),
+(801,'MJ-MG-W220','MJ-MG-W220',NULL,'3.2V/4AH','Dia 196mm-4V/3.5W','ABS+PC','245.15 x 221mm','WW/NW/CW','NO','312lm',NULL,NULL,NULL,1),
+(801,'MJ-MG-G625','MJ-MG-G625',NULL,'3.2V/4AH','Dia 196mm-4V/3.5W','ABS+PC','211.3 x 635.5mm','WW/NW/CW','NO','312lm',NULL,NULL,NULL,2),
+(802,'MJ-DA275','MJ-DA275',NULL,'LiFePO4 8.8AH','Mono 4V/5.5W','AL+PC(Anti-UV)','Dia 261 x 275mm','WW/NW/CW','NO','582lm',NULL,NULL,NULL,0),
+(802,'MJ-DA780','MJ-DA780',NULL,'LiFePO4 8.8AH','Mono 4V/5.5W','AL+PC(Anti-UV)','Dia 261 x 780mm','WW/NW/CW','NO','582lm',NULL,NULL,NULL,1),
+(802,'MJ-DB275','MJ-DB275',NULL,'LiFePO4 8.8AH','Mono 4V/7.5W','AL+PC(Anti-UV)','241 x 241 x 275mm','WW/NW/CW','NO','672lm',NULL,NULL,NULL,2),
+(802,'MJ-DB780','MJ-DB780',NULL,'LiFePO4 8.8AH','Mono 4V/7.5W','AL+PC(Anti-UV)','241 x 241 x 780mm','WW/NW/CW','NO','672lm',NULL,NULL,NULL,3),
+(803,'MJ-SA1000','MJ-SA1000','1000W','LiFePO4 36AH','Mono 4V/40W','Galvanized steel','510 x 510 x 80.5mm','7000-7500K','NO','2560lm',NULL,NULL,NULL,0),
+(803,'MJ-SA2000','MJ-SA2000','2000W','LiFePO4 60AH','Mono 4V/65W','Galvanized steel','590 x 590 x 85.5mm','7000-7500K','NO','4100lm',NULL,NULL,NULL,1),
+(804,'MJ-EW800','MJ-EW800','800W','LiFePO4 32Ah','Mono 4V/32W','AL+PC(Anti-UV)','Dia 580 x H248mm','WW / W / RGB','Optional','2029lm',NULL,NULL,NULL,0),
+(804,'MJ-EW1200','MJ-EW1200','1200W','LiFePO4 48Ah','Mono 4V/40W','AL+PC(Anti-UV)','Dia 580 x H248mm','WW / W / RGB','Optional','2679lm',NULL,NULL,NULL,1),
+(901,'MJ-SM50','MJ-SM50','50W','LiFePO4 6Ah','4V/10W','ABS+Silicone','5m','3000-3500K','NO','360lm',NULL,NULL,NULL,0),
+(901,'MJ-SM100','MJ-SM100','100W','LiFePO4 15Ah','4V/15W','ABS+Silicone','10m','3000-3500K','NO','790lm',NULL,NULL,NULL,1),
+(901,'MJ-SM200','MJ-SM200','200W','LiFePO4 30Ah','4V/30W','ABS+Silicone','20m','3000-3500K','NO','1584lm',NULL,NULL,NULL,2),
+(1001,'MJ-SBL-100','MJ-SBL-100','100W','3.2V18Ah','Mono 5V/30W','PC','590 x 74 x 70mm','7000-7500K','NO','1100lm',NULL,NULL,NULL,0),
+(1001,'MJ-SBL-200','MJ-SBL-200','200W','3.2V36Ah','Mono 5V/45W','PC','990 x 74 x 70mm','7000-7500K','NO','2100lm',NULL,NULL,NULL,1),
+(1101,'MJ-SF01','MJ-SF01',NULL,'3.7V 20.8Ah','Mono 9V/28W','ABS',NULL,NULL,NULL,NULL,NULL,'White+Grey','Left / Right',0),
+(1101,'MJ-SF02','MJ-SF02',NULL,'3.2V/25Ah','Mono 5V/30W','ABS',NULL,NULL,NULL,NULL,NULL,'White+Grey','Left / Right',1),
+(1101,'MJ-SF03','MJ-SF03',NULL,'3.2V/36Ah','Mono 5V/45W','ABS',NULL,NULL,NULL,NULL,NULL,'White+Grey','Left / Right',2);
+
+INSERT INTO `ProductModels` (`product_id`,`model_code`,`display_name`,`nominal_power`,`is_default`,`sort_order`)
+SELECT `product_id`,`model_code`,`display_name`,`nominal_power`,(`sort_order`=0),`sort_order` FROM `CatalogLightingModels`;
+
+INSERT INTO `ProductSpecifications`
+(`product_id`,`section_name`,`spec_key`,`label`,`unit`,`value_mode`,`shared_value`,`model_values`,`sort_order`)
+WITH `spec_values` AS (
+  SELECT `product_id`,`model_code`,'Power System' section_name,'battery' spec_key,'Battery' label,`battery` spec_value,1 sort_order FROM `CatalogLightingModels`
+  UNION ALL SELECT `product_id`,`model_code`,'Power System','solar_panel','Solar Panel',`solar_panel`,2 FROM `CatalogLightingModels`
+  UNION ALL SELECT `product_id`,`model_code`,'Construction','material','Material',`material`,3 FROM `CatalogLightingModels`
+  UNION ALL SELECT `product_id`,`model_code`,'Construction','dimensions','Dimensions / Length',`dimensions`,4 FROM `CatalogLightingModels`
+  UNION ALL SELECT `product_id`,`model_code`,'Lighting','cct','Color Temperature',`cct`,5 FROM `CatalogLightingModels`
+  UNION ALL SELECT `product_id`,`model_code`,'Lighting','radar_sensor','Radar Sensor',`radar_sensor`,6 FROM `CatalogLightingModels`
+  UNION ALL SELECT `product_id`,`model_code`,'Lighting','luminous_flux','Luminous Flux',`luminous_flux`,7 FROM `CatalogLightingModels`
+  UNION ALL SELECT `product_id`,`model_code`,'Monitoring','camera_resolution','Camera Resolution',`camera_resolution`,8 FROM `CatalogLightingModels`
+  UNION ALL SELECT `product_id`,`model_code`,'Lighting','color','Color',`color`,9 FROM `CatalogLightingModels`
+  UNION ALL SELECT `product_id`,`model_code`,'General','blow_direction','Blow Direction',`blow_direction`,10 FROM `CatalogLightingModels`
+), `present_values` AS (
+  SELECT * FROM `spec_values` WHERE `spec_value` IS NOT NULL AND `spec_value`<>''
+)
+SELECT `product_id`,MAX(`section_name`),`spec_key`,MAX(`label`),NULL,
+  IF(COUNT(DISTINCT `spec_value`)=1,'shared','custom'),
+  IF(COUNT(DISTINCT `spec_value`)=1,MAX(`spec_value`),NULL),
+  IF(COUNT(DISTINCT `spec_value`)=1,NULL,JSON_OBJECTAGG(`model_code`,`spec_value`)),MAX(`sort_order`)
+FROM `present_values` GROUP BY `product_id`,`spec_key`;
+
+INSERT INTO `KitProducts` (`kit_id`,`product_id`,`product_model_id`,`quantity`,`sort_order`)
+SELECT 21,1001,`id`,2,1 FROM `ProductModels` WHERE `product_id`=1001 AND `model_code`='MJ-SBL-100'
+UNION ALL SELECT 21,1101,`id`,1,2 FROM `ProductModels` WHERE `product_id`=1101 AND `model_code`='MJ-SF02'
+UNION ALL SELECT 22,703,`id`,2,4 FROM `ProductModels` WHERE `product_id`=703 AND `model_code`='MJ-BW800';
+
+DROP TABLE `CatalogLightingModels`;
+-- END GENERATED SOLAR LIGHT AND FAN CATALOGUE
+
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
