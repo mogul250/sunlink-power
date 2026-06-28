@@ -169,6 +169,11 @@ const KitDetail = () => {
                     <h3 className="text-sm font-semibold text-gray-900 line-clamp-2 group-hover:text-primary transition-colors leading-tight flex-grow">
                       {product.name}
                     </h3>
+                    {product.model_name && (
+                      <p className="mt-2 text-xs font-semibold text-[#094fa4]">
+                        {product.model_name}{product.model_code ? ` - ${product.model_code}` : ''}
+                      </p>
+                    )}
                     <p className="text-xs text-gray-500 mt-2 font-medium">Qty: {product.quantity || 1}</p>
                   </Link>
                 ))}

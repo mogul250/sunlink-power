@@ -257,6 +257,56 @@ INSERT INTO `Products` VALUES (101,1,'Mono Half-Cell Solar Panel Grade A 300W',0
 UNLOCK TABLES;
 
 --
+-- Product family models and comparison specifications
+--
+
+DROP TABLE IF EXISTS `ProductSpecifications`;
+DROP TABLE IF EXISTS `ProductModels`;
+
+CREATE TABLE `ProductModels` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `product_id` int NOT NULL,
+  `model_code` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `display_name` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nominal_power` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `price` decimal(10,2) DEFAULT NULL,
+  `stock_status` enum('in_stock','out_of_stock','pre_order') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'in_stock',
+  `is_default` tinyint(1) DEFAULT '0',
+  `sort_order` int DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_product_model_code` (`product_id`,`model_code`),
+  KEY `idx_product_models_product` (`product_id`,`sort_order`),
+  CONSTRAINT `ProductModels_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `Products` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `ProductSpecifications` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `product_id` int NOT NULL,
+  `section_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'General',
+  `spec_key` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `label` varchar(180) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `unit` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `value_mode` enum('shared','custom') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'shared',
+  `shared_value` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `model_values` json DEFAULT NULL,
+  `sort_order` int DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_product_spec_key` (`product_id`,`spec_key`),
+  KEY `idx_product_specifications_product` (`product_id`,`sort_order`),
+  CONSTRAINT `ProductSpecifications_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `Products` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `ProductSpecifications_chk_1` CHECK (((`value_mode` = 'shared' AND `shared_value` IS NOT NULL) OR (`value_mode` = 'custom' AND `model_values` IS NOT NULL)))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+ALTER TABLE `KitProducts`
+  ADD COLUMN `product_model_id` int DEFAULT NULL AFTER `product_id`,
+  ADD KEY `idx_kit_products_product_model_id` (`product_model_id`),
+  ADD CONSTRAINT `KitProducts_ibfk_3` FOREIGN KEY (`product_model_id`) REFERENCES `ProductModels` (`id`) ON DELETE SET NULL;
+
+--
 -- Table structure for table `Testimonials`
 --
 
@@ -838,6 +888,227 @@ UPDATE `Products` SET
     'storage_temperature','-15 to +60C','humidity','0-95% non-condensing','noise','<=75dB at 1m',
     'dimensions','1000 x 430 x 1200mm','net_weight','169kg')
 WHERE `id`=1504;
+
+--
+-- Multi-model inverter families
+-- Shared values render once across all model columns; custom values render
+-- per model. Product names remain customer-facing Sunlink catalogue names.
+--
+
+-- Preserve the matching single-phase product media and consolidate the
+-- former 6kW, 8kW and 10kW rows into one verified hardware family.
+UPDATE `Products` family
+JOIN `Products` model ON model.`id`=205
+SET family.`image_url`=COALESCE(family.`image_url`,model.`image_url`)
+WHERE family.`id`=203;
+UPDATE `ProductImages` SET `product_id`=203 WHERE `product_id`=205;
+UPDATE `KitProducts` SET `product_id`=203 WHERE `product_id` IN (204,205);
+DELETE FROM `Products` WHERE `id` IN (204,205);
+
+UPDATE `Products` SET
+  `name`='Single-Phase Low-Voltage Hybrid Inverter 3.6-10kW',
+  `description`='Single-phase low-voltage hybrid inverter family with dual MPPT solar input, IP65 protection, AC coupling, generator charging, programmable charge and discharge periods, and parallel operation for residential and light-commercial energy systems.',
+  `wattage`='3.6-10kW', `durability_rating`='IP65 Hybrid Inverter',
+  `battery_type`='Lead-acid or Lithium-ion', `warranty_info`='5 years standard; extended coverage available', `metadata`=NULL
+WHERE `id`=203;
+
+UPDATE `Products` SET
+  `name`='Single-Phase Low-Voltage Hybrid Inverter 12-16kW',
+  `description`='High-output single-phase low-voltage hybrid inverter family with three MPPT trackers, dual battery inputs, AC coupling, generator support, time-of-use control, and parallel operation for large residential and light-commercial systems.',
+  `wattage`='12-16kW', `durability_rating`='IP65 Hybrid Inverter',
+  `battery_type`='Lead-acid or Lithium-ion', `warranty_info`='5 years standard; extended coverage available', `metadata`=NULL
+WHERE `id`=206;
+
+UPDATE `KitProducts` SET `product_id`=207 WHERE `product_id`=208;
+DELETE FROM `Products` WHERE `id`=208;
+UPDATE `Products` SET
+  `name`='Three-Phase High-Voltage Hybrid Inverter 5-25kW',
+  `description`='Three-phase high-voltage hybrid inverter family for commercial solar and storage, supporting two MPPT trackers, unbalanced loads, AC coupling, generator charging, high-voltage lithium batteries, and parallel operation.',
+  `wattage`='5-25kW', `durability_rating`='IP65 Three-Phase Hybrid',
+  `battery_type`='Lithium-ion with BMS', `warranty_info`='5 years standard; extended coverage available', `metadata`=NULL
+WHERE `id`=207;
+
+UPDATE `Products` SET
+  `name`='Three-Phase High-Voltage Hybrid Inverter 29.9-50kW',
+  `description`='Commercial and industrial three-phase high-voltage hybrid inverter family with three or four MPPT trackers, dual battery inputs, unbalanced output, AC coupling, generator support, and protected grid and backup operation.',
+  `wattage`='29.9-50kW', `durability_rating`='IP65 Three-Phase Hybrid',
+  `battery_type`='Lithium-ion with BMS', `warranty_info`='5 years standard; extended coverage available', `metadata`=NULL
+WHERE `id`=209;
+
+INSERT INTO `Products`
+(`id`,`category_id`,`name`,`price`,`description`,`wattage`,`durability_rating`,`battery_type`,`warranty_info`,`image_url`,`manual_pdf_url`,`video_url`,`metadata`,`is_featured`,`stock_status`)
+VALUES
+(210,2,'Three-Phase Low-Voltage Hybrid Inverter 3-12kW',0.00,'Three-phase low-voltage hybrid inverter family with dual MPPT tracking, 48V battery support, unbalanced output, AC coupling, generator charging, programmable operating periods, and parallel on-grid or off-grid operation.','3-12kW','IP65 Three-Phase Hybrid','Lead-acid or Lithium-ion','5 years standard; extended coverage available',NULL,NULL,NULL,NULL,1,'in_stock');
+
+INSERT INTO `ProductModels`
+(`id`,`product_id`,`model_code`,`display_name`,`nominal_power`,`price`,`stock_status`,`is_default`,`sort_order`) VALUES
+(20301,203,'SUN-3.6K-SG05LP1-EU','3.6kW','3.6kW',NULL,'in_stock',0,1),
+(20302,203,'SUN-5K-SG05LP1-EU','5kW','5kW',NULL,'in_stock',0,2),
+(20303,203,'SUN-6K-SG05LP1-EU','6kW','6kW',NULL,'in_stock',1,3),
+(20304,203,'SUN-7K-SG05LP1-EU','7kW','7kW',NULL,'in_stock',0,4),
+(20305,203,'SUN-7.6K-SG05LP1-EU','7.6kW','7.6kW',NULL,'in_stock',0,5),
+(20306,203,'SUN-8K-SG05LP1-EU','8kW','8kW',NULL,'in_stock',0,6),
+(20307,203,'SUN-10K-SG05LP1-EU','10kW','10kW',NULL,'in_stock',0,7),
+(20601,206,'SUN-12K-SG01LP1-EU','12kW','12kW',NULL,'in_stock',1,1),
+(20602,206,'SUN-14K-SG01LP1-EU','14kW','14kW',NULL,'in_stock',0,2),
+(20603,206,'SUN-16K-SG01LP1-EU','16kW','16kW',NULL,'in_stock',0,3),
+(20701,207,'SUN-5K-SG01HP3-EU-AM2','5kW','5kW',NULL,'in_stock',0,1),
+(20702,207,'SUN-6K-SG01HP3-EU-AM2','6kW','6kW',NULL,'in_stock',0,2),
+(20703,207,'SUN-8K-SG01HP3-EU-AM2','8kW','8kW',NULL,'in_stock',0,3),
+(20704,207,'SUN-10K-SG01HP3-EU-AM2','10kW','10kW',NULL,'in_stock',0,4),
+(20705,207,'SUN-12K-SG01HP3-EU-AM2','12kW','12kW',NULL,'in_stock',0,5),
+(20706,207,'SUN-15K-SG01HP3-EU-AM2','15kW','15kW',NULL,'in_stock',1,6),
+(20707,207,'SUN-20K-SG01HP3-EU-AM2','20kW','20kW',NULL,'in_stock',0,7),
+(20708,207,'SUN-25K-SG01HP3-EU-AM2','25kW','25kW',NULL,'in_stock',0,8),
+(20901,209,'SUN-29.9K-SG01HP3-EU-BM3','29.9kW','29.9kW',NULL,'in_stock',0,1),
+(20902,209,'SUN-30K-SG01HP3-EU-BM3','30kW','30kW',NULL,'in_stock',1,2),
+(20903,209,'SUN-35K-SG01HP3-EU-BM3','35kW','35kW',NULL,'in_stock',0,3),
+(20904,209,'SUN-40K-SG01HP3-EU-BM4','40kW','40kW',NULL,'in_stock',0,4),
+(20905,209,'SUN-50K-SG01HP3-EU-BM4','50kW','50kW',NULL,'in_stock',0,5),
+(21001,210,'SUN-3K-SG05LP3-EU-SM2','3kW','3kW',NULL,'in_stock',0,1),
+(21002,210,'SUN-4K-SG05LP3-EU-SM2','4kW','4kW',NULL,'in_stock',0,2),
+(21003,210,'SUN-5K-SG05LP3-EU-SM2','5kW','5kW',NULL,'in_stock',0,3),
+(21004,210,'SUN-6K-SG05LP3-EU-SM2','6kW','6kW',NULL,'in_stock',1,4),
+(21005,210,'SUN-8K-SG05LP3-EU-SM2','8kW','8kW',NULL,'in_stock',0,5),
+(21006,210,'SUN-10K-SG05LP3-EU-SM2','10kW','10kW',NULL,'in_stock',0,6),
+(21007,210,'SUN-12K-SG05LP3-EU-SM2','12kW','12kW',NULL,'in_stock',0,7);
+
+-- Keep every existing kit tied to the model it previously represented.
+UPDATE `KitProducts` SET `product_model_id`=20303 WHERE `product_id`=203 AND `kit_id` IN (3,24,27,28);
+UPDATE `KitProducts` SET `product_model_id`=20306 WHERE `product_id`=203 AND `kit_id`=19;
+UPDATE `KitProducts` SET `product_model_id`=20307 WHERE `product_id`=203 AND `kit_id`=4;
+UPDATE `KitProducts` SET `product_model_id`=20601 WHERE `product_id`=206;
+UPDATE `KitProducts` SET `product_model_id`=20706 WHERE `product_id`=207 AND `kit_id` IN (14,20,26,29);
+UPDATE `KitProducts` SET `product_model_id`=20707 WHERE `product_id`=207 AND `kit_id` IN (5,25);
+UPDATE `KitProducts` SET `product_model_id`=20902 WHERE `product_id`=209;
+
+-- Single-phase low-voltage 3.6-10kW family.
+INSERT INTO `ProductSpecifications`
+(`product_id`,`section_name`,`spec_key`,`label`,`unit`,`value_mode`,`shared_value`,`model_values`,`sort_order`) VALUES
+(203,'Battery Input','battery_type','Battery Type',NULL,'shared','Lead-acid or Lithium-ion',NULL,1),
+(203,'Battery Input','battery_voltage_range','Battery Voltage Range','V DC','shared','40-60',NULL,2),
+(203,'Battery Input','max_charge_current','Maximum Charging Current','A','custom',NULL,JSON_OBJECT('SUN-3.6K-SG05LP1-EU','90','SUN-5K-SG05LP1-EU','120','SUN-6K-SG05LP1-EU','135','SUN-7K-SG05LP1-EU','175','SUN-7.6K-SG05LP1-EU','190','SUN-8K-SG05LP1-EU','190','SUN-10K-SG05LP1-EU','210'),3),
+(203,'Battery Input','max_discharge_current','Maximum Discharging Current','A','custom',NULL,JSON_OBJECT('SUN-3.6K-SG05LP1-EU','90','SUN-5K-SG05LP1-EU','120','SUN-6K-SG05LP1-EU','135','SUN-7K-SG05LP1-EU','175','SUN-7.6K-SG05LP1-EU','190','SUN-8K-SG05LP1-EU','190','SUN-10K-SG05LP1-EU','210'),4),
+(203,'PV Input','max_pv_access_power','Maximum PV Access Power','W','custom',NULL,JSON_OBJECT('SUN-3.6K-SG05LP1-EU','7200','SUN-5K-SG05LP1-EU','10000','SUN-6K-SG05LP1-EU','12000','SUN-7K-SG05LP1-EU','14000','SUN-7.6K-SG05LP1-EU','15200','SUN-8K-SG05LP1-EU','16000','SUN-10K-SG05LP1-EU','20000'),5),
+(203,'PV Input','max_pv_input_power','Maximum PV Input Power','W','custom',NULL,JSON_OBJECT('SUN-3.6K-SG05LP1-EU','5760','SUN-5K-SG05LP1-EU','8000','SUN-6K-SG05LP1-EU','9600','SUN-7K-SG05LP1-EU','11200','SUN-7.6K-SG05LP1-EU','12160','SUN-8K-SG05LP1-EU','12800','SUN-10K-SG05LP1-EU','16000'),6),
+(203,'PV Input','max_pv_voltage','Maximum PV Input Voltage','V DC','shared','500',NULL,7),
+(203,'PV Input','mppt_range','MPPT Voltage Range','V DC','shared','150-425',NULL,8),
+(203,'PV Input','mppt_trackers','MPPT Trackers',NULL,'shared','2',NULL,9),
+(203,'AC Input and Output','rated_ac_power','Rated AC Input/Output Active Power','W','custom',NULL,JSON_OBJECT('SUN-3.6K-SG05LP1-EU','3600','SUN-5K-SG05LP1-EU','5000','SUN-6K-SG05LP1-EU','6000','SUN-7K-SG05LP1-EU','7000','SUN-7.6K-SG05LP1-EU','7600','SUN-8K-SG05LP1-EU','8000','SUN-10K-SG05LP1-EU','10000'),10),
+(203,'AC Input and Output','max_apparent_power','Maximum Apparent Power','VA','custom',NULL,JSON_OBJECT('SUN-3.6K-SG05LP1-EU','3960','SUN-5K-SG05LP1-EU','5500','SUN-6K-SG05LP1-EU','6600','SUN-7K-SG05LP1-EU','7700','SUN-7.6K-SG05LP1-EU','8360','SUN-8K-SG05LP1-EU','8800','SUN-10K-SG05LP1-EU','11000'),11),
+(203,'AC Input and Output','rated_voltage','Rated Input/Output Voltage',NULL,'shared','220/230V AC, L+N+PE',NULL,12),
+(203,'Performance','maximum_efficiency','Maximum Efficiency','%','shared','97.6',NULL,13),
+(203,'Performance','mppt_efficiency','MPPT Efficiency','%','shared','>99',NULL,14),
+(203,'General','communication','Communication',NULL,'shared','Wi-Fi / RS485 / CAN',NULL,15),
+(203,'General','protection_rating','Ingress Protection',NULL,'shared','IP65',NULL,16),
+(203,'General','operating_temperature','Operating Temperature','C','shared','-40 to +60; derating above 45',NULL,17),
+(203,'General','dimensions','Cabinet Dimensions','mm','shared','330 x 580 x 232',NULL,18),
+(203,'General','weight','Weight','kg','shared','24.9',NULL,19);
+
+-- Single-phase low-voltage 12-16kW family.
+INSERT INTO `ProductSpecifications`
+(`product_id`,`section_name`,`spec_key`,`label`,`unit`,`value_mode`,`shared_value`,`model_values`,`sort_order`) VALUES
+(206,'Battery Input','battery_type','Battery Type',NULL,'shared','Lead-acid or Lithium-ion',NULL,1),
+(206,'Battery Input','battery_voltage_range','Battery Voltage Range','V DC','shared','40-60',NULL,2),
+(206,'Battery Input','max_charge_discharge_current','Maximum Charging/Discharging Current','A','custom',NULL,JSON_OBJECT('SUN-12K-SG01LP1-EU','220','SUN-14K-SG01LP1-EU','250','SUN-16K-SG01LP1-EU','290'),3),
+(206,'Battery Input','battery_inputs','Battery Inputs',NULL,'shared','2',NULL,4),
+(206,'PV Input','max_pv_access_power','Maximum PV Access Power','W','custom',NULL,JSON_OBJECT('SUN-12K-SG01LP1-EU','24000','SUN-14K-SG01LP1-EU','28000','SUN-16K-SG01LP1-EU','32000'),5),
+(206,'PV Input','max_pv_input_power','Maximum PV Input Power','W','custom',NULL,JSON_OBJECT('SUN-12K-SG01LP1-EU','19200','SUN-14K-SG01LP1-EU','22400','SUN-16K-SG01LP1-EU','25600'),6),
+(206,'PV Input','max_pv_voltage','Maximum PV Input Voltage','V DC','shared','500',NULL,7),
+(206,'PV Input','mppt_range','MPPT Voltage Range','V DC','shared','150-425',NULL,8),
+(206,'PV Input','mppt_trackers','MPPT Trackers / Strings',NULL,'shared','3 / 2+2+2',NULL,9),
+(206,'AC Input and Output','rated_ac_power','Rated AC Input/Output Active Power','W','custom',NULL,JSON_OBJECT('SUN-12K-SG01LP1-EU','12000','SUN-14K-SG01LP1-EU','14000','SUN-16K-SG01LP1-EU','16000'),10),
+(206,'AC Input and Output','max_apparent_power','Maximum Apparent Power','VA','custom',NULL,JSON_OBJECT('SUN-12K-SG01LP1-EU','13200','SUN-14K-SG01LP1-EU','15400','SUN-16K-SG01LP1-EU','17600'),11),
+(206,'AC Input and Output','rated_voltage','Rated Input/Output Voltage',NULL,'shared','220/230V AC, L+N+PE',NULL,12),
+(206,'Performance','maximum_efficiency','Maximum Efficiency','%','shared','97.6',NULL,13),
+(206,'Performance','mppt_efficiency','MPPT Efficiency','%','shared','>99',NULL,14),
+(206,'General','communication','Communication',NULL,'shared','Wi-Fi / RS485 / CAN',NULL,15),
+(206,'General','protection_rating','Ingress Protection',NULL,'shared','IP65',NULL,16),
+(206,'General','dimensions','Cabinet Dimensions','mm','shared','464 x 763 x 282',NULL,17),
+(206,'General','weight','Weight','kg','shared','52',NULL,18);
+
+-- Three-phase high-voltage 5-25kW family.
+INSERT INTO `ProductSpecifications`
+(`product_id`,`section_name`,`spec_key`,`label`,`unit`,`value_mode`,`shared_value`,`model_values`,`sort_order`) VALUES
+(207,'Battery Input','battery_type','Battery Type',NULL,'shared','Lithium-ion with BMS',NULL,1),
+(207,'Battery Input','battery_voltage_range','Battery Voltage Range','V DC','shared','160-700',NULL,2),
+(207,'Battery Input','max_charge_current','Maximum Charging Current','A','custom',NULL,JSON_OBJECT('SUN-5K-SG01HP3-EU-AM2','30','SUN-6K-SG01HP3-EU-AM2','30','SUN-8K-SG01HP3-EU-AM2','30','SUN-10K-SG01HP3-EU-AM2','30','SUN-12K-SG01HP3-EU-AM2','30','SUN-15K-SG01HP3-EU-AM2','37','SUN-20K-SG01HP3-EU-AM2','50','SUN-25K-SG01HP3-EU-AM2','50'),3),
+(207,'PV Input','max_pv_access_power','Maximum PV Access Power','W','custom',NULL,JSON_OBJECT('SUN-5K-SG01HP3-EU-AM2','10000','SUN-6K-SG01HP3-EU-AM2','12000','SUN-8K-SG01HP3-EU-AM2','16000','SUN-10K-SG01HP3-EU-AM2','20000','SUN-12K-SG01HP3-EU-AM2','24000','SUN-15K-SG01HP3-EU-AM2','30000','SUN-20K-SG01HP3-EU-AM2','40000','SUN-25K-SG01HP3-EU-AM2','50000'),4),
+(207,'PV Input','max_pv_input_power','Maximum PV Input Power','W','custom',NULL,JSON_OBJECT('SUN-5K-SG01HP3-EU-AM2','8000','SUN-6K-SG01HP3-EU-AM2','9600','SUN-8K-SG01HP3-EU-AM2','12800','SUN-10K-SG01HP3-EU-AM2','16000','SUN-12K-SG01HP3-EU-AM2','19200','SUN-15K-SG01HP3-EU-AM2','24000','SUN-20K-SG01HP3-EU-AM2','32000','SUN-25K-SG01HP3-EU-AM2','40000'),5),
+(207,'PV Input','max_pv_voltage','Maximum PV Input Voltage','V DC','shared','1000',NULL,6),
+(207,'PV Input','mppt_range','MPPT Voltage Range','V DC','shared','150-850',NULL,7),
+(207,'PV Input','mppt_trackers','MPPT Trackers',NULL,'shared','2',NULL,8),
+(207,'AC Input and Output','rated_ac_power','Rated AC Input/Output Active Power','W','custom',NULL,JSON_OBJECT('SUN-5K-SG01HP3-EU-AM2','5000','SUN-6K-SG01HP3-EU-AM2','6000','SUN-8K-SG01HP3-EU-AM2','8000','SUN-10K-SG01HP3-EU-AM2','10000','SUN-12K-SG01HP3-EU-AM2','12000','SUN-15K-SG01HP3-EU-AM2','15000','SUN-20K-SG01HP3-EU-AM2','20000','SUN-25K-SG01HP3-EU-AM2','25000'),9),
+(207,'AC Input and Output','max_apparent_power','Maximum Apparent Power','VA','custom',NULL,JSON_OBJECT('SUN-5K-SG01HP3-EU-AM2','5500','SUN-6K-SG01HP3-EU-AM2','6600','SUN-8K-SG01HP3-EU-AM2','8800','SUN-10K-SG01HP3-EU-AM2','11000','SUN-12K-SG01HP3-EU-AM2','13200','SUN-15K-SG01HP3-EU-AM2','16500','SUN-20K-SG01HP3-EU-AM2','22000','SUN-25K-SG01HP3-EU-AM2','27500'),10),
+(207,'AC Input and Output','rated_voltage','Rated Input/Output Voltage',NULL,'shared','220/380V or 230/400V AC, 3L+N+PE',NULL,11),
+(207,'Performance','maximum_efficiency','Maximum Efficiency','%','shared','97.6',NULL,12),
+(207,'Performance','mppt_efficiency','MPPT Efficiency','%','shared','>99',NULL,13),
+(207,'General','communication','Communication',NULL,'shared','RS485 / RS232 / CAN; optional wireless monitoring',NULL,14),
+(207,'General','protection_rating','Ingress Protection',NULL,'shared','IP65',NULL,15),
+(207,'General','dimensions','Cabinet Dimensions','mm','shared','408 x 638 x 237',NULL,16),
+(207,'General','weight','Weight','kg','shared','30.5',NULL,17);
+
+-- Three-phase high-voltage 29.9-50kW family.
+INSERT INTO `ProductSpecifications`
+(`product_id`,`section_name`,`spec_key`,`label`,`unit`,`value_mode`,`shared_value`,`model_values`,`sort_order`) VALUES
+(209,'Battery Input','battery_type','Battery Type',NULL,'shared','Lithium-ion with BMS',NULL,1),
+(209,'Battery Input','battery_voltage_range','Battery Voltage Range','V DC','shared','160-800',NULL,2),
+(209,'Battery Input','max_charge_current','Maximum Charging Current','A','shared','50+50',NULL,3),
+(209,'Battery Input','battery_inputs','Battery Inputs',NULL,'shared','2',NULL,4),
+(209,'PV Input','max_pv_access_power','Maximum PV Access Power','W','custom',NULL,JSON_OBJECT('SUN-29.9K-SG01HP3-EU-BM3','59800','SUN-30K-SG01HP3-EU-BM3','60000','SUN-35K-SG01HP3-EU-BM3','70000','SUN-40K-SG01HP3-EU-BM4','80000','SUN-50K-SG01HP3-EU-BM4','100000'),5),
+(209,'PV Input','max_pv_input_power','Maximum PV Input Power','W','custom',NULL,JSON_OBJECT('SUN-29.9K-SG01HP3-EU-BM3','47840','SUN-30K-SG01HP3-EU-BM3','48000','SUN-35K-SG01HP3-EU-BM3','56000','SUN-40K-SG01HP3-EU-BM4','64000','SUN-50K-SG01HP3-EU-BM4','80000'),6),
+(209,'PV Input','max_pv_voltage','Maximum PV Input Voltage','V DC','shared','1000',NULL,7),
+(209,'PV Input','mppt_range','MPPT Voltage Range','V DC','shared','150-850',NULL,8),
+(209,'PV Input','mppt_trackers','MPPT Trackers',NULL,'custom',NULL,JSON_OBJECT('SUN-29.9K-SG01HP3-EU-BM3','3','SUN-30K-SG01HP3-EU-BM3','3','SUN-35K-SG01HP3-EU-BM3','3','SUN-40K-SG01HP3-EU-BM4','4','SUN-50K-SG01HP3-EU-BM4','4'),9),
+(209,'AC Input and Output','rated_ac_power','Rated AC Input/Output Active Power','W','custom',NULL,JSON_OBJECT('SUN-29.9K-SG01HP3-EU-BM3','29900','SUN-30K-SG01HP3-EU-BM3','30000','SUN-35K-SG01HP3-EU-BM3','35000','SUN-40K-SG01HP3-EU-BM4','40000','SUN-50K-SG01HP3-EU-BM4','50000'),10),
+(209,'AC Input and Output','max_apparent_power','Maximum Apparent Power','VA','custom',NULL,JSON_OBJECT('SUN-29.9K-SG01HP3-EU-BM3','29900','SUN-30K-SG01HP3-EU-BM3','33000','SUN-35K-SG01HP3-EU-BM3','38500','SUN-40K-SG01HP3-EU-BM4','44000','SUN-50K-SG01HP3-EU-BM4','55000'),11),
+(209,'AC Input and Output','rated_voltage','Rated Input/Output Voltage',NULL,'shared','220/380V or 230/400V AC, 3L+N+PE',NULL,12),
+(209,'Performance','maximum_efficiency','Maximum Efficiency','%','shared','97.6',NULL,13),
+(209,'Performance','mppt_efficiency','MPPT Efficiency','%','shared','>99',NULL,14),
+(209,'General','communication','Communication',NULL,'shared','RS485 / RS232 / CAN; optional wireless monitoring',NULL,15),
+(209,'General','protection_rating','Ingress Protection',NULL,'shared','IP65',NULL,16),
+(209,'General','dimensions','Cabinet Dimensions','mm','shared','527 x 894 x 294',NULL,17),
+(209,'General','weight','Weight','kg','shared','80',NULL,18);
+
+-- Requested three-phase low-voltage 3-12kW family.
+INSERT INTO `ProductSpecifications`
+(`product_id`,`section_name`,`spec_key`,`label`,`unit`,`value_mode`,`shared_value`,`model_values`,`sort_order`) VALUES
+(210,'Battery Input','battery_type','Battery Type',NULL,'shared','Lead-acid or Lithium-ion',NULL,1),
+(210,'Battery Input','battery_voltage_range','Battery Voltage Range','V DC','shared','40-60',NULL,2),
+(210,'Battery Input','max_charge_discharge_current','Maximum Charging/Discharging Current','A','custom',NULL,JSON_OBJECT('SUN-3K-SG05LP3-EU-SM2','70','SUN-4K-SG05LP3-EU-SM2','95','SUN-5K-SG05LP3-EU-SM2','120','SUN-6K-SG05LP3-EU-SM2','135','SUN-8K-SG05LP3-EU-SM2','190','SUN-10K-SG05LP3-EU-SM2','210','SUN-12K-SG05LP3-EU-SM2','240'),3),
+(210,'Battery Input','charging_strategy','Lithium Battery Charging Strategy',NULL,'shared','Automatic BMS adaptation',NULL,4),
+(210,'Battery Input','battery_inputs','Battery Inputs',NULL,'shared','1',NULL,5),
+(210,'PV Input','max_pv_access_power','Maximum PV Access Power','W','custom',NULL,JSON_OBJECT('SUN-3K-SG05LP3-EU-SM2','6000','SUN-4K-SG05LP3-EU-SM2','8000','SUN-5K-SG05LP3-EU-SM2','10000','SUN-6K-SG05LP3-EU-SM2','12000','SUN-8K-SG05LP3-EU-SM2','16000','SUN-10K-SG05LP3-EU-SM2','20000','SUN-12K-SG05LP3-EU-SM2','24000'),6),
+(210,'PV Input','max_pv_input_power','Maximum PV Input Power','W','custom',NULL,JSON_OBJECT('SUN-3K-SG05LP3-EU-SM2','4500','SUN-4K-SG05LP3-EU-SM2','6400','SUN-5K-SG05LP3-EU-SM2','8000','SUN-6K-SG05LP3-EU-SM2','9600','SUN-8K-SG05LP3-EU-SM2','12800','SUN-10K-SG05LP3-EU-SM2','16000','SUN-12K-SG05LP3-EU-SM2','19200'),7),
+(210,'PV Input','max_pv_voltage','Maximum PV Input Voltage','V DC','shared','800',NULL,8),
+(210,'PV Input','startup_voltage','Start-up Voltage','V DC','shared','160',NULL,9),
+(210,'PV Input','mppt_range','MPPT Voltage Range','V DC','shared','200-650',NULL,10),
+(210,'PV Input','rated_pv_voltage','Rated PV Input Voltage','V DC','shared','550',NULL,11),
+(210,'PV Input','mppt_trackers','MPPT Trackers',NULL,'shared','2',NULL,12),
+(210,'AC Input and Output','rated_ac_power','Rated AC Input/Output Active Power','W','custom',NULL,JSON_OBJECT('SUN-3K-SG05LP3-EU-SM2','3000','SUN-4K-SG05LP3-EU-SM2','4000','SUN-5K-SG05LP3-EU-SM2','5000','SUN-6K-SG05LP3-EU-SM2','6000','SUN-8K-SG05LP3-EU-SM2','8000','SUN-10K-SG05LP3-EU-SM2','10000','SUN-12K-SG05LP3-EU-SM2','12000'),13),
+(210,'AC Input and Output','max_apparent_power','Maximum Apparent Power','VA','custom',NULL,JSON_OBJECT('SUN-3K-SG05LP3-EU-SM2','3300','SUN-4K-SG05LP3-EU-SM2','4400','SUN-5K-SG05LP3-EU-SM2','5500','SUN-6K-SG05LP3-EU-SM2','6600','SUN-8K-SG05LP3-EU-SM2','8800','SUN-10K-SG05LP3-EU-SM2','11000','SUN-12K-SG05LP3-EU-SM2','13200'),14),
+(210,'AC Input and Output','rated_ac_current','Rated AC Input/Output Current','A','custom',NULL,JSON_OBJECT('SUN-3K-SG05LP3-EU-SM2','4.6/4.4','SUN-4K-SG05LP3-EU-SM2','6.1/5.8','SUN-5K-SG05LP3-EU-SM2','7.6/7.3','SUN-6K-SG05LP3-EU-SM2','9.1/8.7','SUN-8K-SG05LP3-EU-SM2','12.2/11.6','SUN-10K-SG05LP3-EU-SM2','15.2/14.5','SUN-12K-SG05LP3-EU-SM2','18.2/17.4'),15),
+(210,'AC Input and Output','max_ac_current','Maximum AC Input/Output Current','A','custom',NULL,JSON_OBJECT('SUN-3K-SG05LP3-EU-SM2','5/4.8','SUN-4K-SG05LP3-EU-SM2','6.7/6.4','SUN-5K-SG05LP3-EU-SM2','8.4/8','SUN-6K-SG05LP3-EU-SM2','10/9.6','SUN-8K-SG05LP3-EU-SM2','13.4/12.8','SUN-10K-SG05LP3-EU-SM2','16.7/16','SUN-12K-SG05LP3-EU-SM2','20/19.2'),16),
+(210,'AC Input and Output','ac_passthrough','Maximum Continuous AC Passthrough','A','shared','45',NULL,17),
+(210,'AC Input and Output','peak_power','Peak Off-grid Power',NULL,'shared','2 times rated power for 10 seconds',NULL,18),
+(210,'AC Input and Output','rated_voltage','Rated Input/Output Voltage',NULL,'shared','220/380V or 230/400V AC, 3L+N+PE',NULL,19),
+(210,'AC Input and Output','grid_frequency','Grid Frequency Range','Hz','shared','50/45-55 or 60/55-65',NULL,20),
+(210,'AC Input and Output','current_thd','Total Current Harmonic Distortion',NULL,'shared','<3% at nominal power',NULL,21),
+(210,'Performance','maximum_efficiency','Maximum Efficiency','%','shared','97.6',NULL,22),
+(210,'Performance','euro_efficiency','Euro Efficiency','%','shared','97.0',NULL,23),
+(210,'Performance','mppt_efficiency','MPPT Efficiency','%','shared','>99',NULL,24),
+(210,'Protection','integrated_protection','Integrated Protection',NULL,'shared','DC reverse polarity, AC overcurrent, thermal, overvoltage, short circuit, anti-islanding, insulation and residual-current protection',NULL,25),
+(210,'Protection','surge_protection','Surge Protection',NULL,'shared','Type II DC / Type II AC',NULL,26),
+(210,'Interface','display','Display',NULL,'shared','LCD',NULL,27),
+(210,'Interface','communication','Communication',NULL,'shared','Wi-Fi / RS485 / CAN',NULL,28),
+(210,'General','operating_temperature','Operating Temperature','C','shared','-40 to +60; derating above 45',NULL,29),
+(210,'General','humidity','Permissible Ambient Humidity','%','shared','0-100',NULL,30),
+(210,'General','altitude','Permissible Altitude','m','shared','3000',NULL,31),
+(210,'General','noise','Noise','dB','shared','<=55',NULL,32),
+(210,'General','protection_rating','Ingress Protection',NULL,'shared','IP65',NULL,33),
+(210,'General','dimensions','Cabinet Dimensions','mm','shared','386 x 660 x 250',NULL,34),
+(210,'General','weight','Weight','kg','shared','35.2',NULL,35),
+(210,'General','cooling','Cooling',NULL,'shared','Intelligent air cooling',NULL,36);
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

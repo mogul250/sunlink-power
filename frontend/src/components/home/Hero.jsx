@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import { FiChevronDown, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 
 const sliderModules = import.meta.glob('../../assets/sliders/*.{png,PNG,jpg,JPG,jpeg,JPEG,webp,WEBP}', {
   eager: true,
@@ -10,6 +10,7 @@ const sliderModules = import.meta.glob('../../assets/sliders/*.{png,PNG,jpg,JPG,
 const Hero = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [hasUserInteracted, setHasUserInteracted] = useState(false);
+  const [isAtTop, setIsAtTop] = useState(true);
   const sliderImages = useMemo(
     () => Object.entries(sliderModules)
       .sort(([first], [second]) => first.localeCompare(second))
@@ -26,6 +27,14 @@ const Hero = () => {
 
     return () => window.clearInterval(interval);
   }, [hasUserInteracted, sliderImages.length]);
+
+  useEffect(() => {
+    const handleScroll = () => setIsAtTop(window.scrollY < 8);
+
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const showPreviousSlide = () => {
     setHasUserInteracted(true);
@@ -48,8 +57,15 @@ const Hero = () => {
     setCurrentSlide(index);
   };
 
+  const scrollToCategories = () => {
+    document.getElementById('browse-categories')?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    });
+  };
+
   return (
-    <section className="relative h-[52vw] min-h-[360px] max-h-[620px] overflow-hidden bg-white text-white">
+    <section className="relative h-[clamp(260px,36vw,440px)] overflow-hidden bg-white text-white">
       <div className="absolute inset-0">
         {sliderImages.map((image, index) => (
           <div
@@ -61,12 +77,7 @@ const Hero = () => {
             <img
               src={image}
               alt=""
-              className="absolute inset-0 h-full w-full scale-110 object-cover blur-2xl"
-            />
-            <img
-              src={image}
-              alt=""
-              className="relative h-full w-full object-contain"
+              className="h-full w-full object-cover"
             />
           </div>
         ))}
@@ -106,6 +117,17 @@ const Hero = () => {
             ))}
           </div>
         </>
+      )}
+
+      {isAtTop && (
+        <button
+          type="button"
+          onClick={scrollToCategories}
+          className="absolute bottom-4 left-1/2 z-40 flex h-11 w-11 -translate-x-1/2 items-center justify-center rounded-full border border-white/70 bg-black/35 text-white shadow-lg backdrop-blur-sm transition hover:bg-[#094fa4] focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-transparent md:h-12 md:w-12"
+          aria-label="Scroll to browse by category"
+        >
+          <FiChevronDown className="h-6 w-6 animate-bounce" />
+        </button>
       )}
     </section>
   );

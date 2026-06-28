@@ -43,7 +43,7 @@ const getCategoryBySlug = async (req, res, next) => {
 
     // Get products in this category
     const [products] = await promisePool.query(
-      'SELECT * FROM Products WHERE category_id = ? ORDER BY is_featured DESC, name ASC',
+      'SELECT * FROM Products WHERE category_id = ? ORDER BY name ASC',
       [category.id]
     );
 

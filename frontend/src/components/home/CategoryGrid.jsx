@@ -214,7 +214,8 @@ const CategoryGrid = () => {
 
   return (
     <section
-      className="relative z-10 -mt-32 bg-gray-50 pb-14 pt-8 md:-mt-44 md:pb-20 md:pt-10"
+      id="browse-categories"
+      className="relative z-10 scroll-mt-16 bg-gray-50 pb-14 pt-8 md:pb-20 md:pt-10 xl:scroll-mt-20"
       onPointerDown={stopCarouselMotion}
     >
       <div className="container-custom">

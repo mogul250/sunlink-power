@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { FiPlus, FiTrash2, FiSave } from 'react-icons/fi';
 import { categoryAPI, productAPI } from '../../services/adminApi';
 import { getImageUrl } from '../../services/imageUtils';
+import ProductModelEditor from '../../components/admin/ProductModelEditor';
 
 const ProductForm = () => {
   const { id } = useParams();
@@ -15,14 +16,11 @@ const ProductForm = () => {
   const [product, setProduct] = useState({
     name: '',
     category_id: '',
-    price: '',
     description: '',
     wattage: '',
     durability_rating: '',
     battery_type: '',
     warranty_info: '',
-    stock_status: 'in_stock',
-    is_featured: false,
     video_url: '',
   });
 
@@ -35,6 +33,9 @@ const ProductForm = () => {
 
   // Metadata State (for JSON field)
   const [metadata, setMetadata] = useState([{ key: '', value: '' }]);
+  const [hasModels, setHasModels] = useState(false);
+  const [models, setModels] = useState([]);
+  const [specifications, setSpecifications] = useState([]);
 
   useEffect(() => {
     fetchCategories();
@@ -61,19 +62,29 @@ const ProductForm = () => {
       setProduct({
         name: data.name,
         category_id: data.category_id,
-        price: data.price,
         description: data.description || '',
         wattage: data.wattage || '',
         durability_rating: data.durability_rating || '',
         battery_type: data.battery_type || '',
         warranty_info: data.warranty_info || '',
-        stock_status: data.stock_status,
-        is_featured: Boolean(data.is_featured),
         video_url: data.video_url || '',
       });
 
       if (data.image_url) setCurrentImage(data.image_url);
       if (data.gallery_images) setCurrentGallery(data.gallery_images);
+
+      if (data.models?.length > 0) {
+        const loadedModels = data.models.map((model) => ({ ...model, _key: model.model_code }));
+        setHasModels(true);
+        setModels(loadedModels);
+        setSpecifications((data.specifications || []).map((specification) => ({
+          ...specification,
+          model_values: loadedModels.reduce((values, model) => {
+            values[model._key] = specification.model_values?.[model.model_code] || '';
+            return values;
+          }, {}),
+        })));
+      }
 
       // Parse metadata object to array for form
       if (data.metadata && typeof data.metadata === 'object') {
@@ -135,6 +146,35 @@ const ProductForm = () => {
       }, {});
       formData.append('metadata', JSON.stringify(metadataObject));
 
+      const modelPayload = hasModels
+        ? models.filter((model) => model.model_code.trim()).map((model, index) => ({
+            model_code: model.model_code.trim(),
+            display_name: model.display_name || model.model_code.trim(),
+            nominal_power: model.nominal_power,
+            is_default: Boolean(model.is_default),
+            sort_order: index,
+          }))
+        : [];
+      const specificationPayload = hasModels
+        ? specifications.filter((specification) => specification.label.trim()).map((specification, index) => ({
+            section_name: specification.section_name || 'General',
+            spec_key: specification.spec_key || specification.label.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, ''),
+            label: specification.label.trim(),
+            unit: specification.unit,
+            value_mode: specification.value_mode,
+            shared_value: specification.shared_value,
+            model_values: specification.value_mode === 'custom'
+              ? models.reduce((values, model) => {
+                  if (model.model_code.trim()) values[model.model_code.trim()] = specification.model_values?.[model._key] || '';
+                  return values;
+                }, {})
+              : null,
+            sort_order: index,
+          }))
+        : [];
+      formData.append('models', JSON.stringify(modelPayload));
+      formData.append('specifications', JSON.stringify(specificationPayload));
+
       if (id) {
         await productAPI.update(id, formData);
         setMessage({ type: 'success', text: 'Product updated successfully!' });
@@ -164,7 +204,7 @@ const ProductForm = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-7xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-gray-900">{id ? 'Edit Product' : 'Add New Product'}</h1>
       </div>
@@ -204,41 +244,6 @@ const ProductForm = () => {
             </select>
           </div>
 
-          <div>
-            <label className="label">Price ($) <span className="text-xs text-gray-500">(Optional)</span></label>
-            <input
-              type="number"
-              step="0.01"
-              className="input-field w-full border p-2 rounded"
-              value={product.price}
-              onChange={(e) => setProduct({ ...product, price: e.target.value })}
-            />
-          </div>
-
-          <div>
-            <label className="label">Stock Status</label>
-            <select
-              className="input-field w-full border p-2 rounded"
-              value={product.stock_status}
-              onChange={(e) => setProduct({ ...product, stock_status: e.target.value })}
-            >
-              <option value="in_stock">In Stock</option>
-              <option value="out_of_stock">Out of Stock</option>
-              <option value="pre_order">Pre Order</option>
-            </select>
-          </div>
-
-          <div className="flex items-center pt-6">
-            <label className="flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                className="w-5 h-5 text-primary rounded"
-                checked={product.is_featured}
-                onChange={(e) => setProduct({ ...product, is_featured: e.target.checked })}
-              />
-              <span className="ml-2 text-gray-700">Feature this product</span>
-            </label>
-          </div>
         </div>
 
         {/* Technical Specs */}
@@ -313,7 +318,34 @@ const ProductForm = () => {
           />
         </div>
 
+        <div className="border-t pt-6">
+          <label className="flex items-start gap-3">
+            <input
+              type="checkbox"
+              className="mt-1 h-5 w-5 text-primary"
+              checked={hasModels}
+              onChange={(event) => setHasModels(event.target.checked)}
+            />
+            <span>
+              <span className="block font-semibold text-gray-900">This product has multiple models</span>
+              <span className="mt-1 block text-sm text-gray-500">Enable a comparison matrix with shared and model-specific specifications.</span>
+            </span>
+          </label>
+        </div>
+
+        {hasModels && (
+          <div className="border-t pt-6">
+            <ProductModelEditor
+              models={models}
+              setModels={setModels}
+              specifications={specifications}
+              setSpecifications={setSpecifications}
+            />
+          </div>
+        )}
+
         {/* Dynamic Metadata (JSON) */}
+        {!hasModels && (
         <div className="border-t pt-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold">Additional Metadata</h3>
@@ -345,6 +377,7 @@ const ProductForm = () => {
             ))}
           </div>
         </div>
+        )}
 
         {/* File Uploads */}
         <div className="border-t pt-6 grid grid-cols-1 md:grid-cols-2 gap-6">

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { FiShoppingCart, FiZap, FiAward } from 'react-icons/fi';
+import { FiEye, FiZap, FiAward } from 'react-icons/fi';
 import { FaWhatsapp } from 'react-icons/fa';
 import { generateWhatsAppLink } from '../../services/api';
 import { getImageUrl } from '../../services/imageUtils';
@@ -21,21 +21,6 @@ const ProductCard = ({ product }) => {
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           loading="lazy"
         />
-        
-        {/* Badges */}
-        <div className="absolute top-3 left-3 flex flex-col gap-2">
-          {product.is_featured && (
-            <span className="px-3 py-1 bg-accent text-white text-xs font-semibold rounded-full flex items-center gap-1">
-              <FiAward className="w-3 h-3" />
-              Featured
-            </span>
-          )}
-          {product.stock_status === 'in_stock' && (
-            <span className="px-3 py-1 bg-primary text-white text-xs font-semibold rounded-full">
-              In Stock
-            </span>
-          )}
-        </div>
       </Link>
 
       {/* Content */}
@@ -75,13 +60,13 @@ const ProductCard = ({ product }) => {
           )}
         </div>
 
-        {/* Price & Actions - Pricing hidden, contact for quotes */}
+        {/* Actions */}
         <div className="grid grid-cols-2 gap-2 pt-3 border-t border-gray-200 w-full">
           <Link
             to={`/product/${product.id}`}
             className="btn btn-outline py-1.5 px-1 text-xs flex items-center justify-center gap-1 w-full h-full"
           >
-            <FiShoppingCart className="w-3.5 h-3.5 shrink-0" />
+            <FiEye className="w-3.5 h-3.5 shrink-0" />
             <span className="truncate">Details</span>
           </Link>
           <button

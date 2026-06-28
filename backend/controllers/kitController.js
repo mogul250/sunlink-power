@@ -1,5 +1,20 @@
 import { promisePool } from '../config/db.js';
 
+const validateSelectedModels = async (products) => {
+  for (const product of products) {
+    if (!product.product_model_id) continue;
+    const [matches] = await promisePool.query(
+      'SELECT id FROM ProductModels WHERE id = ? AND product_id = ?',
+      [product.product_model_id, product.product_id]
+    );
+    if (matches.length === 0) {
+      const error = new Error('A selected model does not belong to its product family');
+      error.statusCode = 400;
+      throw error;
+    }
+  }
+};
+
 // @desc    Get all kits
 // @route   GET /api/kits
 // @access  Public
@@ -69,9 +84,11 @@ const getKitById = async (req, res, next) => {
 
     // Get products in this kit
     const [kitProducts] = await promisePool.query(
-      `SELECT p.*, kp.quantity, kp.sort_order
+      `SELECT p.*, kp.quantity, kp.sort_order, kp.product_model_id,
+              pm.model_code, pm.display_name AS model_name, pm.nominal_power AS model_nominal_power
        FROM KitProducts kp
        JOIN Products p ON kp.product_id = p.id
+       LEFT JOIN ProductModels pm ON kp.product_model_id = pm.id
        WHERE kp.kit_id = ?
        ORDER BY kp.sort_order ASC, p.name ASC`,
       [kit.id]
@@ -131,15 +148,17 @@ const createKit = async (req, res, next) => {
 
     // Add products to kit if provided
     if (products.length > 0) {
+      await validateSelectedModels(products);
       const productInserts = products.map((product, index) => [
         kitId,
         product.product_id,
+        product.product_model_id || null,
         product.quantity || 1,
         index
       ]);
 
       await promisePool.query(
-        'INSERT INTO KitProducts (kit_id, product_id, quantity, sort_order) VALUES ?',
+        'INSERT INTO KitProducts (kit_id, product_id, product_model_id, quantity, sort_order) VALUES ?',
         [productInserts]
       );
     }
@@ -168,9 +187,11 @@ const createKit = async (req, res, next) => {
     );
 
     const [kitProds] = await promisePool.query(
-      `SELECT p.*, kp.quantity, kp.sort_order
+      `SELECT p.*, kp.quantity, kp.sort_order, kp.product_model_id,
+              pm.model_code, pm.display_name AS model_name, pm.nominal_power AS model_nominal_power
        FROM KitProducts kp
        JOIN Products p ON kp.product_id = p.id
+       LEFT JOIN ProductModels pm ON kp.product_model_id = pm.id
        WHERE kp.kit_id = ?
        ORDER BY kp.sort_order ASC`,
       [kitId]
@@ -257,6 +278,7 @@ const updateKit = async (req, res, next) => {
 
     // Update kit products
     if (products.length > 0) {
+      await validateSelectedModels(products);
       // Delete existing products
       await promisePool.query(
         'DELETE FROM KitProducts WHERE kit_id = ?',
@@ -267,12 +289,13 @@ const updateKit = async (req, res, next) => {
       const productInserts = products.map((product, index) => [
         id,
         product.product_id,
+        product.product_model_id || null,
         product.quantity || 1,
         index
       ]);
 
       await promisePool.query(
-        'INSERT INTO KitProducts (kit_id, product_id, quantity, sort_order) VALUES ?',
+        'INSERT INTO KitProducts (kit_id, product_id, product_model_id, quantity, sort_order) VALUES ?',
         [productInserts]
       );
     }
@@ -304,9 +327,11 @@ const updateKit = async (req, res, next) => {
     );
 
     const [kitProds] = await promisePool.query(
-      `SELECT p.*, kp.quantity, kp.sort_order
+      `SELECT p.*, kp.quantity, kp.sort_order, kp.product_model_id,
+              pm.model_code, pm.display_name AS model_name, pm.nominal_power AS model_nominal_power
        FROM KitProducts kp
        JOIN Products p ON kp.product_id = p.id
+       LEFT JOIN ProductModels pm ON kp.product_model_id = pm.id
        WHERE kp.kit_id = ?
        ORDER BY kp.sort_order ASC`,
       [id]

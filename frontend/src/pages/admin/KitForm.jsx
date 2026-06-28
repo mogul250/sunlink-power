@@ -52,6 +52,7 @@ const KitForm = () => {
         description: data.description || '',
         products: data.products ? data.products.map(p => ({
           product_id: p.id,
+          product_model_id: p.product_model_id || null,
           quantity: p.quantity || 1
         })) : []
       });
@@ -65,9 +66,11 @@ const KitForm = () => {
   const handleAddProduct = (productId) => {
     const exists = formData.products.find(p => p.product_id === productId);
     if (!exists) {
+      const product = allProducts.find((item) => item.id === productId);
+      const defaultModel = product?.models?.find((model) => model.is_default) || product?.models?.[0];
       setFormData({
         ...formData,
-        products: [...formData.products, { product_id: productId, quantity: 1 }]
+        products: [...formData.products, { product_id: productId, product_model_id: defaultModel?.id || null, quantity: 1 }]
       });
     }
   };
@@ -85,6 +88,15 @@ const KitForm = () => {
       products: formData.products.map(p =>
         p.product_id === productId ? { ...p, quantity: parseInt(quantity) || 1 } : p
       )
+    });
+  };
+
+  const handleModelChange = (productId, modelId) => {
+    setFormData({
+      ...formData,
+      products: formData.products.map((product) => (
+        product.product_id === productId ? { ...product, product_model_id: modelId ? parseInt(modelId) : null } : product
+      )),
     });
   };
 
@@ -237,6 +249,19 @@ const KitForm = () => {
                     <div className="flex-1">
                       <p className="font-medium">{product?.name}</p>
                       <p className="text-sm text-gray-600">{product?.category_name}</p>
+                      {product?.models?.length > 0 && (
+                        <select
+                          required
+                          className="mt-2 w-full max-w-xs border bg-white p-1.5 text-sm"
+                          value={kitProduct.product_model_id || ''}
+                          onChange={(event) => handleModelChange(kitProduct.product_id, event.target.value)}
+                        >
+                          <option value="">Select exact model</option>
+                          {product.models.map((model) => (
+                            <option key={model.id} value={model.id}>{model.display_name || model.model_code} ({model.model_code})</option>
+                          ))}
+                        </select>
+                      )}
                     </div>
                     <div className="flex items-center gap-2">
                       <label className="text-sm">Qty:</label>

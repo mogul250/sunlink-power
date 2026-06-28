@@ -7,6 +7,7 @@ import { getImageUrl } from '../services/imageUtils';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import ErrorMessage from '../components/common/ErrorMessage';
 import ProductCard from '../components/browse/ProductCard';
+import ProductSpecificationTable from '../components/product/ProductSpecificationTable';
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -75,7 +76,7 @@ const ProductDetail = () => {
       </Helmet>
 
       <div className="min-h-screen bg-gray-50 py-8">
-        <div className="container mx-auto px-4 max-w-6xl">
+        <div className="container mx-auto max-w-[90rem] px-3 sm:px-4">
           <nav className="flex items-center gap-2 text-sm text-gray-500 mb-6">
             <Link to="/" className="hover:text-primary transition-colors">Home</Link>
             <span className="text-gray-400">/</span>
@@ -105,7 +106,7 @@ const ProductDetail = () => {
                         onClick={() => setActiveMedia({ type: 'image', url: product.image_url })}
                         className={`aspect-square w-full rounded-lg overflow-hidden border-2 transition-colors flex-shrink-0 ${activeMedia.type === 'image' && activeMedia.url === product.image_url ? 'border-primary' : 'border-transparent hover:border-gray-200'}`}
                       >
-                        <img src={getImageUrl(product.image_url)} alt="Main" className="w-full h-full object-cover" />
+                        <img src={getImageUrl(product.image_url)} alt="Main" className="w-full h-full object-contain bg-white p-1" />
                       </button>
                       {/* Gallery Thumbnails */}
                       {product.gallery_images?.map((img) => (
@@ -114,7 +115,7 @@ const ProductDetail = () => {
                           onClick={() => setActiveMedia({ type: 'image', url: img.image_url })}
                           className={`aspect-square w-full rounded-lg overflow-hidden border-2 transition-colors flex-shrink-0 ${activeMedia.type === 'image' && activeMedia.url === img.image_url ? 'border-primary' : 'border-transparent hover:border-gray-200'}`}
                         >
-                          <img src={getImageUrl(img.image_url)} alt="Gallery" className="w-full h-full object-cover" />
+                          <img src={getImageUrl(img.image_url)} alt="Gallery" className="w-full h-full object-contain bg-white p-1" />
                         </button>
                       ))}
                       {/* Video Thumbnail */}
@@ -134,7 +135,7 @@ const ProductDetail = () => {
                 )}
 
                 {/* Main Image */}
-                <div className="flex-1 bg-gray-50 border border-gray-100 overflow-hidden relative rounded-xl flex items-start justify-center min-h-[300px]">
+                <div className="flex-1 bg-gray-50 border border-gray-100 overflow-hidden relative rounded-xl flex h-[320px] items-center justify-center sm:h-[440px] lg:h-[560px]">
                   {activeMedia.type === 'video' ? (
                     <iframe
                       src={activeMedia.url}
@@ -145,7 +146,7 @@ const ProductDetail = () => {
                       allowFullScreen
                     />
                   ) : (
-                    <img src={getImageUrl(activeMedia.url || product.image_url)} alt={product.name} className="w-full h-auto max-h-[500px] lg:max-h-[600px]" />
+                    <img src={getImageUrl(activeMedia.url || product.image_url)} alt={product.name} className="h-full w-full object-contain p-2" />
                   )}
                 </div>
               </div>
@@ -155,16 +156,6 @@ const ProductDetail = () => {
                 <div className="mb-1 text-xs text-primary font-medium uppercase tracking-wider">{product.category_name}</div>
                 <h1 className="text-xl md:text-2xl font-heading font-bold text-gray-900 mb-2">{product.name}</h1>
                 
-                <div className="flex items-baseline gap-2 mb-3">
-                {/* Price hidden - available through contact */}
-                {/* <span className="text-3xl font-bold text-gray-900">${product.price}</span> */}
-                  <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                    product.stock_status === 'in_stock' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'
-                  }`}>
-                    {product.stock_status === 'in_stock' ? 'In Stock' : 'Pre-order'}
-                  </span>
-                </div>
-
                 {/* Key Features */}
                 <div className="grid grid-cols-2 gap-2 mb-4">
                   {product.wattage && (
@@ -193,6 +184,19 @@ const ProductDetail = () => {
                   )}
                 </div>
 
+                {product.models?.length > 0 && (
+                  <div className="mb-4">
+                    <div className="mb-2 text-[11px] font-semibold uppercase text-gray-500">Available models</div>
+                    <div className="flex flex-wrap gap-2">
+                      {product.models.map((model) => (
+                        <span key={model.id} className="border border-[#094fa4]/25 bg-[#094fa4]/5 px-2.5 py-1 text-xs font-semibold text-[#073b7a]">
+                          {model.nominal_power || model.display_name || model.model_code}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 <p className="text-gray-600 text-sm mb-5 leading-relaxed">{product.description}</p>
 
                 {/* Actions */}
@@ -220,7 +224,12 @@ const ProductDetail = () => {
             </div>
 
             {/* Technical Specifications Table */}
-            {product.metadata && (
+            {product.models?.length > 0 && product.specifications?.length > 0 ? (
+              <div className="border-t border-gray-100 bg-gray-50 p-2 sm:p-3 lg:p-4">
+                <h2 className="mb-3 text-lg font-heading font-bold text-gray-900">Technical Specifications</h2>
+                <ProductSpecificationTable models={product.models} specifications={product.specifications} />
+              </div>
+            ) : product.metadata && (
               <div className="border-t border-gray-100 p-3 lg:p-4 bg-gray-50">
                 <h2 className="text-lg font-heading font-bold text-gray-900 mb-3">Technical Specifications</h2>
                 <div className="bg-white rounded-xl shadow-sm overflow-hidden max-w-3xl">

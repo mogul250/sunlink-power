@@ -69,16 +69,14 @@ const ProductList = () => {
               <tr>
                 <th className="px-6 py-4">Product</th>
                 <th className="px-6 py-4">Category</th>
-                <th className="px-6 py-4">Price</th>
-                <th className="px-6 py-4">Stock</th>
                 <th className="px-6 py-4 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
               {loading ? (
-                <tr><td colSpan="5" className="px-6 py-8 text-center text-gray-500">Loading...</td></tr>
+                <tr><td colSpan="3" className="px-6 py-8 text-center text-gray-500">Loading...</td></tr>
               ) : filteredProducts.length === 0 ? (
-                <tr><td colSpan="5" className="px-6 py-8 text-center text-gray-500">No products found</td></tr>
+                <tr><td colSpan="3" className="px-6 py-8 text-center text-gray-500">No products found</td></tr>
               ) : (
                 filteredProducts.map((product) => (
                   <tr key={product.id} className="hover:bg-gray-50 transition-colors">
@@ -93,16 +91,6 @@ const ProductList = () => {
                       </div>
                     </td>
                     <td className="px-6 py-4 text-gray-600">{product.category_name}</td>
-                    <td className="px-6 py-4 text-gray-900 font-medium">{product.price ? `$${product.price}` : 'N/A'}</td>
-                    <td className="px-6 py-4">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        product.stock_status === 'in_stock' ? 'bg-green-100 text-green-800' :
-                        product.stock_status === 'out_of_stock' ? 'bg-red-100 text-red-800' :
-                        'bg-yellow-100 text-yellow-800'
-                      }`}>
-                        {product.stock_status.replace('_', ' ')}
-                      </span>
-                    </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
                         <Link 
