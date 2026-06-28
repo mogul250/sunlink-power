@@ -19,9 +19,9 @@ const ProductSpecificationTable = ({ models, specifications }) => {
   return (
     <div className="isolate overflow-x-auto border border-gray-200 bg-white shadow-sm">
       <table className="w-max min-w-full border-separate border-spacing-0 text-[11px] sm:text-xs lg:text-sm">
-        <thead className="sticky top-16 z-30 xl:top-20">
+        <thead>
           <tr className="bg-gray-950 text-white">
-            <th className="sticky left-0 z-10 min-w-[170px] max-w-[190px] border-b border-r border-gray-700 bg-gray-950 px-2.5 py-2.5 text-left sm:min-w-[190px]">Specification</th>
+            <th className="min-w-[170px] max-w-[190px] border-b border-r border-gray-700 bg-gray-950 px-2.5 py-2.5 text-left sm:min-w-[190px]">Specification</th>
             {models.map((model) => {
               const modelLabel = model.display_name || model.model_code;
               const showNominalPower = model.nominal_power && !isSameLabel(modelLabel, model.nominal_power);
@@ -54,7 +54,7 @@ const FragmentSection = ({ sectionName, specifications, models }) => (
     </tr>
     {specifications.map((specification) => (
       <tr key={specification.id || specification.spec_key} className="border-t border-gray-200 even:bg-gray-50">
-        <th className="sticky left-0 z-10 max-w-[190px] border-r border-gray-200 bg-inherit px-2.5 py-2 text-left font-semibold leading-snug text-gray-700">
+        <th className="max-w-[190px] border-r border-gray-200 bg-inherit px-2.5 py-2 text-left font-semibold leading-snug text-gray-700">
           {specification.label}
         </th>
         {specification.value_mode === 'shared' ? (
