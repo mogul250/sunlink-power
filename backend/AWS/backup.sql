@@ -670,6 +670,240 @@ INSERT INTO `KitProducts` (`kit_id`,`product_id`,`product_model_id`,`quantity`,`
 DROP TEMPORARY TABLE `CatalogKitBatteryAssignments`;
 -- END FINAL BATTERY CATALOG
 
+-- BEGIN HOME BATTERY SUPPLEMENT
+-- Residential battery families are merged by electrical configuration and enclosure type.
+UPDATE `Categories` SET `description`='Residential, rack-mounted, and integrated LiFePO4 battery systems for home, commercial, industrial, and containerized energy-storage applications.' WHERE `id`=3;
+
+UPDATE `Products` SET
+  `name`='3U Low-Voltage Rack LiFePO4 Battery 5.12kWh-16.076kWh',
+  `description`='Compact 51.2V rack-mounted LiFePO4 battery family for residential solar storage, telecom, UPS, backup power, and off-grid applications, with 100Ah, 200Ah, and 314Ah models, parallel expansion, and integrated BMS communication.',
+  `wattage`='5.12kWh-16.076kWh',
+  `metadata`=JSON_SET(COALESCE(`metadata`,JSON_OBJECT()),'$.home_catalog_series','WY-DY','$.home_catalog_page',9)
+WHERE `id`=308;
+INSERT INTO `ProductModels` (`id`,`product_id`,`model_code`,`display_name`,`nominal_power`,`price`,`stock_status`,`is_default`,`sort_order`) VALUES
+(410002,308,'WY-DY-51.2-314','51.2V 314Ah / 16.076kWh','16.076kWh',NULL,'in_stock',0,2);
+UPDATE `ProductSpecifications` SET `model_values`=JSON_SET(COALESCE(`model_values`,JSON_OBJECT()),'$."WY-DY-51.2-314"','314') WHERE `product_id`=308 AND `spec_key`='nominal_capacity';
+UPDATE `ProductSpecifications` SET `model_values`=JSON_SET(COALESCE(`model_values`,JSON_OBJECT()),'$."WY-DY-51.2-314"','16.076') WHERE `product_id`=308 AND `spec_key`='nominal_energy';
+UPDATE `ProductSpecifications` SET `model_values`=JSON_SET(COALESCE(`model_values`,JSON_OBJECT()),'$."WY-DY-51.2-314"','51.2V / 314Ah') WHERE `product_id`=308 AND `spec_key`='cell_type';
+UPDATE `ProductSpecifications` SET `model_values`=JSON_SET(COALESCE(`model_values`,JSON_OBJECT()),'$."WY-DY-51.2-314"','16S1P') WHERE `product_id`=308 AND `spec_key`='configuration';
+UPDATE `ProductSpecifications` SET `model_values`=JSON_SET(COALESCE(`model_values`,JSON_OBJECT()),'$."WY-DY-51.2-314"','100') WHERE `product_id`=308 AND `spec_key`='recommended_charge_current';
+UPDATE `ProductSpecifications` SET `model_values`=JSON_SET(COALESCE(`model_values`,JSON_OBJECT()),'$."WY-DY-51.2-314"','200') WHERE `product_id`=308 AND `spec_key`='maximum_discharge_current';
+UPDATE `ProductSpecifications` SET `model_values`=JSON_SET(COALESCE(`model_values`,JSON_OBJECT()),'$."WY-DY-51.2-314"','442 x 750 x 222') WHERE `product_id`=308 AND `spec_key`='dimensions';
+UPDATE `ProductSpecifications` SET `model_values`=JSON_SET(COALESCE(`model_values`,JSON_OBJECT()),'$."WY-DY-51.2-314"','116') WHERE `product_id`=308 AND `spec_key`='weight';
+INSERT INTO `ProductSpecifications` (`id`,`product_id`,`section_name`,`spec_key`,`label`,`unit`,`value_mode`,`shared_value`,`model_values`,`sort_order`) VALUES
+(22900,308,'System','certification','Certification',NULL,'shared','UN38.3 / CE',NULL,20),
+(22901,308,'Physical','installation','Installation',NULL,'shared','Stack or rack mounted',NULL,21);
+
+UPDATE `Products` SET `metadata`=JSON_SET(COALESCE(`metadata`,JSON_OBJECT()),'$.home_catalog_series','WY-GY','$.home_catalog_pages',JSON_ARRAY(11,12)) WHERE `id`=311;
+INSERT INTO `ProductModels` (`id`,`product_id`,`model_code`,`display_name`,`nominal_power`,`price`,`stock_status`,`is_default`,`sort_order`) VALUES
+(410024,311,'WY-GY-51.2-100','51.2V 100Ah / 5.12kWh','5.12kWh',NULL,'in_stock',0,-2),
+(410025,311,'WY-GY-51.2-200','51.2V 200Ah / 10.24kWh','10.24kWh',NULL,'in_stock',0,-1);
+UPDATE `ProductSpecifications` SET `model_values`=JSON_SET(COALESCE(`model_values`,JSON_OBJECT()),'$."WY-GY-51.2-100"','51.2','$."WY-GY-51.2-200"','51.2') WHERE `product_id`=311 AND `spec_key`='nominal_voltage';
+UPDATE `ProductSpecifications` SET `model_values`=JSON_SET(COALESCE(`model_values`,JSON_OBJECT()),'$."WY-GY-51.2-100"','100','$."WY-GY-51.2-200"','200') WHERE `product_id`=311 AND `spec_key`='nominal_capacity';
+UPDATE `ProductSpecifications` SET `model_values`=JSON_SET(COALESCE(`model_values`,JSON_OBJECT()),'$."WY-GY-51.2-100"','5.12','$."WY-GY-51.2-200"','10.24') WHERE `product_id`=311 AND `spec_key`='nominal_energy';
+UPDATE `ProductSpecifications` SET `model_values`=JSON_SET(COALESCE(`model_values`,JSON_OBJECT()),'$."WY-GY-51.2-100"','43.2-58.4','$."WY-GY-51.2-200"','43.2-58.4') WHERE `product_id`=311 AND `spec_key`='voltage_range';
+UPDATE `ProductSpecifications` SET `model_values`=JSON_SET(COALESCE(`model_values`,JSON_OBJECT()),'$."WY-GY-51.2-100"','100','$."WY-GY-51.2-200"','100','$."WY-307.2V-100Ah(3U)"','100','$."WY-409.6V-100Ah(3U)"','100','$."WY-512V-100Ah(3U)"','100','$."WY-614.4V-100Ah(3U)"','100','$."WY-307.2V-200Ah(3U)"','100','$."WY-409.6V-200Ah(3U)"','100','$."WY-512V-200Ah(3U)"','100','$."WY-614.4V-200Ah(3U)"','100') WHERE `product_id`=311 AND `spec_key`='recommended_charge_current';
+UPDATE `ProductSpecifications` SET `model_values`=JSON_SET(COALESCE(`model_values`,JSON_OBJECT()),'$."WY-GY-51.2-100"','50','$."WY-GY-51.2-200"','50','$."WY-307.2V-100Ah(3U)"','50','$."WY-409.6V-100Ah(3U)"','50','$."WY-512V-100Ah(3U)"','50','$."WY-614.4V-100Ah(3U)"','50','$."WY-307.2V-200Ah(3U)"','50','$."WY-409.6V-200Ah(3U)"','50','$."WY-512V-200Ah(3U)"','50','$."WY-614.4V-200Ah(3U)"','50') WHERE `product_id`=311 AND `spec_key`='recommended_discharge_current';
+UPDATE `ProductSpecifications` SET `model_values`=JSON_SET(COALESCE(`model_values`,JSON_OBJECT()),'$."WY-GY-51.2-100"','442 x 420 x 133.5','$."WY-GY-51.2-200"','442 x 745 x 133.5') WHERE `product_id`=311 AND `spec_key`='dimensions';
+UPDATE `ProductSpecifications` SET `model_values`=JSON_SET(COALESCE(`model_values`,JSON_OBJECT()),'$."WY-GY-51.2-100"','38.5','$."WY-GY-51.2-200"','81.5','$."WY-614.4V-100Ah(3U)"','580') WHERE `product_id`=311 AND `spec_key`='weight';
+INSERT INTO `ProductSpecifications` (`id`,`product_id`,`section_name`,`spec_key`,`label`,`unit`,`value_mode`,`shared_value`,`model_values`,`sort_order`) VALUES
+(22902,311,'System','protection_rating','Protection Rating',NULL,'shared','IP20',NULL,14),
+(22903,311,'System','certification','Certification',NULL,'shared','UN38.3 / CE',NULL,15),
+(22904,311,'Physical','installation','Installation',NULL,'shared','Stack or rack mounted',NULL,16);
+
+UPDATE `Products` SET `name`='5U High-Voltage Rack LiFePO4 Battery 26.8kWh-241kWh', `wattage`='26.8kWh-241kWh', `metadata`=JSON_SET(COALESCE(`metadata`,JSON_OBJECT()),'$.home_catalog_series','WY-GY','$.home_catalog_page',13) WHERE `id`=313;
+INSERT INTO `ProductModels` (`id`,`product_id`,`model_code`,`display_name`,`nominal_power`,`price`,`stock_status`,`is_default`,`sort_order`) VALUES
+(410037,313,'WY-GY-204.8-314','204.8V 314Ah / 64kWh','64kWh',NULL,'in_stock',0,20),
+(410038,313,'WY-GY-307.2-314','307.2V 314Ah / 96kWh','96kWh',NULL,'in_stock',0,21),
+(410039,313,'WY-GY-512-314','512V 314Ah / 160kWh','160kWh',NULL,'in_stock',0,23),
+(410040,313,'WY-GY-614.4-314','614.4V 314Ah / 192kWh','192kWh',NULL,'in_stock',0,24),
+(410041,313,'WY-GY-716.8-314','716.8V 314Ah / 241kWh','241kWh',NULL,'in_stock',0,25);
+UPDATE `ProductSpecifications` SET `model_values`=JSON_SET(COALESCE(`model_values`,JSON_OBJECT()),'$."WY-GY-204.8-314"','204.8','$."WY-GY-307.2-314"','307.2','$."WY-GY-512-314"','512','$."WY-GY-614.4-314"','614.4','$."WY-GY-716.8-314"','716.8') WHERE `product_id`=313 AND `spec_key`='nominal_voltage';
+UPDATE `ProductSpecifications` SET `model_values`=JSON_SET(COALESCE(`model_values`,JSON_OBJECT()),'$."WY-GY-204.8-314"','314','$."WY-GY-307.2-314"','314','$."WY-GY-512-314"','314','$."WY-GY-614.4-314"','314','$."WY-GY-716.8-314"','314') WHERE `product_id`=313 AND `spec_key`='nominal_capacity';
+UPDATE `ProductSpecifications` SET `model_values`=JSON_SET(COALESCE(`model_values`,JSON_OBJECT()),'$."WY-GY-204.8-314"','64','$."WY-GY-307.2-314"','96','$."WY-GY-512-314"','160','$."WY-GY-614.4-314"','192','$."WY-GY-716.8-314"','241') WHERE `product_id`=313 AND `spec_key`='nominal_energy';
+UPDATE `ProductSpecifications` SET `model_values`=JSON_SET(COALESCE(`model_values`,JSON_OBJECT()),'$."WY-GY-204.8-314"','172.8-230.4','$."WY-GY-307.2-314"','259.2-345.6','$."WY-GY-512-314"','432-576','$."WY-GY-614.4-314"','518.4-691.2','$."WY-GY-716.8-314"','604.8-817.6') WHERE `product_id`=313 AND `spec_key`='voltage_range';
+UPDATE `ProductSpecifications` SET `value_mode`='custom', `shared_value`=NULL, `model_values`=JSON_SET(COALESCE(JSON_OBJECT(),JSON_OBJECT()),'$."WY-96V-280Ah(5U)"','200','$."WY-192V-280Ah(5U)"','200','$."WY-288V-280Ah(5U)"','200','$."WY-384V-280Ah(5U)"','200','$."WY-480V-280Ah(5U)"','200','$."WY-576V-280Ah(5U)"','200','$."WY-409.6V-314Ah(5U)"','50','$."WY-GY-204.8-314"','50','$."WY-GY-307.2-314"','50','$."WY-GY-512-314"','50','$."WY-GY-614.4-314"','50','$."WY-GY-716.8-314"','50') WHERE `product_id`=313 AND `spec_key`='recommended_discharge_current';
+UPDATE `ProductSpecifications` SET `model_values`=JSON_SET(COALESCE(`model_values`,JSON_OBJECT()),'$."WY-GY-204.8-314"','442 x 745 x 944','$."WY-GY-307.2-314"','442 x 745 x 1291','$."WY-GY-512-314"','442 x 745 x 1117.5 + 442 x 745 x 967.5','$."WY-GY-614.4-314"','442 x 745 x 1291 + 442 x 745 x 1041','$."WY-GY-716.8-314"','442 x 745 x 1291 + 442 x 745 x 1291') WHERE `product_id`=313 AND `spec_key`='dimensions';
+UPDATE `ProductSpecifications` SET `model_values`=JSON_SET(COALESCE(`model_values`,JSON_OBJECT()),'$."WY-GY-204.8-314"','468','$."WY-GY-307.2-314"','692','$."WY-GY-512-314"','1140','$."WY-GY-614.4-314"','1362','$."WY-GY-716.8-314"','1584') WHERE `product_id`=313 AND `spec_key`='weight';
+INSERT INTO `ProductSpecifications` (`id`,`product_id`,`section_name`,`spec_key`,`label`,`unit`,`value_mode`,`shared_value`,`model_values`,`sort_order`) VALUES
+(22905,313,'System','protection_rating','Protection Rating',NULL,'shared','IP20',NULL,16),
+(22906,313,'System','certification','Certification',NULL,'shared','UN38.3 / CE',NULL,17),
+(22907,313,'Physical','installation','Installation',NULL,'shared','Stack or rack mounted',NULL,18);
+
+INSERT INTO `Products` (`id`,`category_id`,`name`,`price`,`description`,`wattage`,`durability_rating`,`battery_type`,`warranty_info`,`image_url`,`manual_pdf_url`,`video_url`,`metadata`,`is_featured`,`stock_status`) VALUES
+('317','3','Floor-Standing LiFePO4 Battery 5kWh-16kWh',NULL,'Floor-standing residential LiFePO4 battery family with five 25.6V, 48V, and 51.2V configurations, integrated BMS protection, LCD/LED display, wireless monitoring, and parallel expansion.','5kWh-16kWh','>=6000 Cycles at 90% DOD','LiFePO4','5 years',NULL,NULL,NULL,'{"source":"Residential battery catalogue","source_page":6,"catalogued_at":"2026-06-29"}','0','in_stock'),
+('318','3','Wall/Floor LiFePO4 Battery 2.56kWh-16kWh',NULL,'Compact residential LiFePO4 battery family for wall or floor installation, with 25.6V and 51.2V configurations, integrated BMS protection, LCD/LED display, wireless monitoring, and parallel expansion.','2.56kWh-16kWh','>=6000 Cycles at 90% DOD','LiFePO4','5 years',NULL,NULL,NULL,'{"source":"Residential battery catalogue","source_page":7,"catalogued_at":"2026-06-29"}','0','in_stock'),
+('319','3','IP65 Residential LiFePO4 Battery 51.2V 314Ah / 16.076kWh',NULL,'Weather-resistant 16.076kWh residential LiFePO4 battery with 15.272kWh usable energy, 95% depth of discharge, integrated aerosol fire protection, wireless monitoring, and wall or floor installation.','16.076kWh','6000 Cycles','LiFePO4','5 years',NULL,NULL,NULL,'{"source":"Residential battery catalogue","source_page":8,"catalogued_at":"2026-06-29"}','0','in_stock');
+INSERT INTO `ProductModels` (`id`,`product_id`,`model_code`,`display_name`,`nominal_power`,`price`,`stock_status`,`is_default`,`sort_order`) VALUES
+('440000','317','WY-B-25.6-314','25.6V 314Ah / 8kWh','8kWh',NULL,'in_stock','0','0'),
+('440001','317','WY-B-51.2-100','51.2V 100Ah / 5kWh','5kWh',NULL,'in_stock','1','1'),
+('440002','317','WY-B-51.2-200','51.2V 200Ah / 10kWh','10kWh',NULL,'in_stock','0','2'),
+('440003','317','WY-B-48-314','48V 314Ah / 15kWh','15kWh',NULL,'in_stock','0','3'),
+('440004','317','WY-B-51.2-314','51.2V 314Ah / 16kWh','16kWh',NULL,'in_stock','0','4'),
+('440010','318','WY-J-25.6-100','25.6V 100Ah / 2.56kWh','2.56kWh',NULL,'in_stock','0','0'),
+('440011','318','WY-J-25.6-200','25.6V 200Ah / 5kWh','5kWh',NULL,'in_stock','0','1'),
+('440012','318','WY-J-51.2-100','51.2V 100Ah / 5kWh','5kWh',NULL,'in_stock','1','2'),
+('440013','318','WY-J-51.2-200','51.2V 200Ah / 10kWh','10kWh',NULL,'in_stock','0','3'),
+('440014','318','WY-J-51.2-280','51.2V 280Ah / 14.3kWh','14.3kWh',NULL,'in_stock','0','4'),
+('440015','318','WY-J-51.2-314','51.2V 314Ah / 16kWh','16kWh',NULL,'in_stock','0','5'),
+('440020','319','EU-L1','51.2V 314Ah / 16.076kWh IP65','16.076kWh',NULL,'in_stock','1','0');
+INSERT INTO `ProductSpecifications` (`id`,`product_id`,`section_name`,`spec_key`,`label`,`unit`,`value_mode`,`shared_value`,`model_values`,`sort_order`) VALUES
+('23000','317','Battery','chemistry','Battery Chemistry',NULL,'shared','LiFePO4',NULL,'0'),
+('23001','317','Battery','nominal_energy','Nominal Energy','kWh','custom',NULL,'{"WY-B-25.6-314":"8","WY-B-51.2-100":"5","WY-B-51.2-200":"10","WY-B-48-314":"15","WY-B-51.2-314":"16"}','1'),
+('23002','317','Battery','nominal_voltage','Nominal Voltage','V','custom',NULL,'{"WY-B-25.6-314":"25.6","WY-B-51.2-100":"51.2","WY-B-51.2-200":"51.2","WY-B-48-314":"48","WY-B-51.2-314":"51.2"}','2'),
+('23003','317','Battery','operating_voltage','Operating Voltage','V','custom',NULL,'{"WY-B-25.6-314":"21.6-28.8","WY-B-51.2-100":"43.2-57.6","WY-B-51.2-200":"43.2-57.6","WY-B-48-314":"40.5-54","WY-B-51.2-314":"43.2-57.6"}','3'),
+('23004','317','Charging','recommended_current','Recommended Charge / Discharge Current','A','custom',NULL,'{"WY-B-25.6-314":"157","WY-B-51.2-100":"50","WY-B-51.2-200":"100","WY-B-48-314":"157","WY-B-51.2-314":"157"}','4'),
+('23005','317','Charging','recommended_power','Recommended Charge / Discharge Power','W','custom',NULL,'{"WY-B-25.6-314":"4000","WY-B-51.2-100":"2560","WY-B-51.2-200":"5120","WY-B-48-314":"7536","WY-B-51.2-314":"8038"}','5'),
+('23006','317','Charging','maximum_current','Maximum Charge / Discharge Current for 15s','A','custom',NULL,'{"WY-B-25.6-314":"200","WY-B-51.2-100":"100","WY-B-51.2-200":"200","WY-B-48-314":"200","WY-B-51.2-314":"200"}','6'),
+('23007','317','Charging','maximum_power','Maximum Charge / Discharge Power for 15s','W','custom',NULL,'{"WY-B-25.6-314":"5000","WY-B-51.2-100":"5000","WY-B-51.2-200":"10000","WY-B-48-314":"9500","WY-B-51.2-314":"10000"}','7'),
+('23008','317','System','parallel_expansion','Maximum Parallel Expansion','kWh','custom',NULL,'{"WY-B-25.6-314":"128","WY-B-51.2-100":"80","WY-B-51.2-200":"160","WY-B-48-314":"240","WY-B-51.2-314":"256"}','8'),
+('23009','317','System','depth_of_discharge','Depth of Discharge',NULL,'shared','>=90%',NULL,'9'),
+('23010','317','System','communication','Communication',NULL,'shared','RS485 / CAN / Bluetooth / Wi-Fi monitoring',NULL,'10'),
+('23011','317','System','protection_rating','Protection Rating',NULL,'shared','IP21',NULL,'11'),
+('23012','317','System','cycle_life','Cycle Life',NULL,'shared','>=6000 cycles at 90% DOD, 25C, 70% EOL',NULL,'12'),
+('23013','317','System','display','Display',NULL,'shared','LCD + LED',NULL,'13'),
+('23014','317','System','protection','Protection',NULL,'shared','Smart BMS, breaker and fuse',NULL,'14'),
+('23015','317','System','warranty','Warranty',NULL,'shared','5 years',NULL,'15'),
+('23016','317','System','certification','Certification',NULL,'shared','UN38.3 / CE / IEC 62619',NULL,'16'),
+('23017','317','Environment','charging_temperature','Charging Temperature',NULL,'shared','0C to 55C',NULL,'17'),
+('23018','317','Environment','discharging_temperature','Discharging Temperature',NULL,'shared','-20C to 55C',NULL,'18'),
+('23019','317','Physical','installation','Installation',NULL,'shared','Wall-mounted or floor-mounted',NULL,'19'),
+('23020','317','Physical','dimensions','Dimensions (L x W x H)','mm','custom',NULL,'{"WY-B-25.6-314":"470 x 400 x 236","WY-B-51.2-100":"610 x 350 x 150","WY-B-51.2-200":"620 x 400 x 250","WY-B-48-314":"820 x 450 x 250","WY-B-51.2-314":"820 x 450 x 250"}','20'),
+('23021','317','Physical','gross_weight','Gross Weight','kg','custom',NULL,'{"WY-B-25.6-314":"57","WY-B-51.2-100":"40","WY-B-51.2-200":"82","WY-B-48-314":"112","WY-B-51.2-314":"115"}','21'),
+('23022','318','Battery','chemistry','Battery Chemistry',NULL,'shared','LiFePO4',NULL,'0'),
+('23023','318','Battery','nominal_energy','Nominal Energy','kWh','custom',NULL,'{"WY-J-25.6-100":"2.56","WY-J-25.6-200":"5","WY-J-51.2-100":"5","WY-J-51.2-200":"10","WY-J-51.2-280":"14.3","WY-J-51.2-314":"16"}','1'),
+('23024','318','Battery','nominal_voltage','Nominal Voltage','V','custom',NULL,'{"WY-J-25.6-100":"25.6","WY-J-25.6-200":"25.6","WY-J-51.2-100":"51.2","WY-J-51.2-200":"51.2","WY-J-51.2-280":"51.2","WY-J-51.2-314":"51.2"}','2'),
+('23025','318','Battery','operating_voltage','Operating Voltage','V','custom',NULL,'{"WY-J-25.6-100":"21.6-28.8","WY-J-25.6-200":"21.6-28.8","WY-J-51.2-100":"43.2-57.6","WY-J-51.2-200":"43.2-57.6","WY-J-51.2-280":"43.2-57.6","WY-J-51.2-314":"43.2-57.6"}','3'),
+('23026','318','Charging','recommended_current','Recommended Charge / Discharge Current','A','custom',NULL,'{"WY-J-25.6-100":"50","WY-J-25.6-200":"100","WY-J-51.2-100":"50","WY-J-51.2-200":"100","WY-J-51.2-280":"140","WY-J-51.2-314":"157"}','4'),
+('23027','318','Charging','recommended_power','Recommended Charge / Discharge Power','W','custom',NULL,'{"WY-J-25.6-100":"1280","WY-J-25.6-200":"2560","WY-J-51.2-100":"2560","WY-J-51.2-200":"5120","WY-J-51.2-280":"7168","WY-J-51.2-314":"8038"}','5'),
+('23028','318','Charging','maximum_current','Maximum Charge / Discharge Current for 15s','A','custom',NULL,'{"WY-J-25.6-100":"100","WY-J-25.6-200":"200","WY-J-51.2-100":"100","WY-J-51.2-200":"200","WY-J-51.2-280":"200","WY-J-51.2-314":"200"}','6'),
+('23029','318','Charging','maximum_power','Maximum Charge / Discharge Power for 15s','W','custom',NULL,'{"WY-J-25.6-100":"2560","WY-J-25.6-200":"5000","WY-J-51.2-100":"5000","WY-J-51.2-200":"10000","WY-J-51.2-280":"10000","WY-J-51.2-314":"10000"}','7'),
+('23030','318','System','parallel_expansion','Maximum Parallel Expansion','kWh','custom',NULL,'{"WY-J-25.6-100":"40","WY-J-25.6-200":"80","WY-J-51.2-100":"80","WY-J-51.2-200":"160","WY-J-51.2-280":"224","WY-J-51.2-314":"256"}','8'),
+('23031','318','System','depth_of_discharge','Depth of Discharge',NULL,'shared','>=90%',NULL,'9'),
+('23032','318','System','communication','Communication',NULL,'shared','RS485 / CAN / Bluetooth / Wi-Fi monitoring',NULL,'10'),
+('23033','318','System','protection_rating','Protection Rating',NULL,'shared','IP21',NULL,'11'),
+('23034','318','System','cycle_life','Cycle Life',NULL,'shared','>=6000 cycles at 90% DOD, 25C, 70% EOL',NULL,'12'),
+('23035','318','System','display','Display',NULL,'shared','LCD + LED',NULL,'13'),
+('23036','318','System','protection','Protection',NULL,'shared','Smart BMS, breaker and fuse',NULL,'14'),
+('23037','318','System','warranty','Warranty',NULL,'shared','5 years',NULL,'15'),
+('23038','318','System','certification','Certification',NULL,'shared','UN38.3 / CE / IEC 62619',NULL,'16'),
+('23039','318','Environment','charging_temperature','Charging Temperature',NULL,'shared','0C to 55C',NULL,'17'),
+('23040','318','Environment','discharging_temperature','Discharging Temperature',NULL,'shared','-20C to 55C',NULL,'18'),
+('23041','318','Physical','installation','Installation',NULL,'shared','Wall-mounted or floor-mounted',NULL,'19'),
+('23042','318','Physical','dimensions','Dimensions (L x W x H)','mm','custom',NULL,'{"WY-J-25.6-100":"390 x 370 x 160","WY-J-25.6-200":"600 x 370 x 170","WY-J-51.2-100":"600 x 370 x 170","WY-J-51.2-200":"850 x 500 x 160","WY-J-51.2-280":"850 x 583 x 260","WY-J-51.2-314":"850 x 583 x 260"}','20'),
+('23043','318','Physical','gross_weight','Gross Weight','kg','custom',NULL,'{"WY-J-25.6-100":"26","WY-J-25.6-200":"44","WY-J-51.2-100":"44","WY-J-51.2-200":"83","WY-J-51.2-280":"123","WY-J-51.2-314":"130"}','21'),
+('23044','319','Battery','chemistry','Battery Chemistry',NULL,'shared','LiFePO4',NULL,'0'),
+('23045','319','Battery','nominal_energy','Nominal Energy','kWh','shared','16.076',NULL,'1'),
+('23046','319','Battery','usable_energy','Usable Energy','kWh','shared','15.272',NULL,'2'),
+('23047','319','Battery','nominal_voltage','Nominal Voltage','V','shared','51.2',NULL,'3'),
+('23048','319','Battery','operating_voltage','Operating Voltage','V','shared','43.2-57.6',NULL,'4'),
+('23049','319','Charging','recommended_rate','Recommended Charge / Discharge Rate',NULL,'shared','0.45C / 140A',NULL,'5'),
+('23050','319','Charging','maximum_charge_current','Maximum Charging Current',NULL,'shared','0.64C / 200A',NULL,'6'),
+('23051','319','Charging','maximum_discharge_current','Maximum Discharging Current',NULL,'shared','0.64C / 200A',NULL,'7'),
+('23052','319','Charging','recommended_charging_power','Recommended Charging Power','kW','shared','7.168',NULL,'8'),
+('23053','319','Charging','maximum_charging_power','Maximum Charging Power','kW','shared','10.24',NULL,'9'),
+('23054','319','Charging','maximum_discharging_power','Maximum Discharging Power','kW','shared','10.24',NULL,'10'),
+('23055','319','System','depth_of_discharge','Depth of Discharge',NULL,'shared','95%',NULL,'11'),
+('23056','319','System','protection_rating','Ingress Protection',NULL,'shared','IP65',NULL,'12'),
+('23057','319','System','communication','Communication',NULL,'shared','CAN / RS485',NULL,'13'),
+('23058','319','System','cycle_life','Cycle Life',NULL,'shared','6000 cycles',NULL,'14'),
+('23059','319','System','interface','User Interface',NULL,'shared','Wi-Fi / Bluetooth / app',NULL,'15'),
+('23060','319','System','fire_protection','Safety Protection',NULL,'shared','Built-in aerosol fire extinguisher',NULL,'16'),
+('23061','319','System','parallel_expansion','Parallel Expansion',NULL,'shared','Maximum 15 units',NULL,'17'),
+('23062','319','System','warranty','Warranty',NULL,'shared','5 years',NULL,'18'),
+('23063','319','System','certification','Certification',NULL,'shared','UN38.3 / IEC 62619',NULL,'19'),
+('23064','319','Environment','charging_temperature','Charging Temperature',NULL,'shared','0C to 55C; optional -20C to 55C',NULL,'20'),
+('23065','319','Environment','discharging_temperature','Discharging Temperature',NULL,'shared','-20C to 55C',NULL,'21'),
+('23066','319','Physical','installation','Installation',NULL,'shared','Wall-mounted or floor-standing',NULL,'22'),
+('23067','319','Physical','dimensions','Dimensions (L x W x H)','mm','shared','435 x 233 x 857',NULL,'23'),
+('23068','319','Physical','net_weight','Net Weight','kg','shared','116',NULL,'24');
+-- END HOME BATTERY SUPPLEMENT
+
+-- BEGIN COMBINER BOX CATALOG
+-- Catalogue variants are one product family. Shared values render as spanning
+-- specification cells, while electrical and dimensional differences remain model-specific.
+UPDATE `Categories` SET
+  `description`='PV combiner boxes for one to sixteen solar strings with fused inputs, Type II surge protection, DC isolation, and IP65 wall-mounted enclosures.'
+WHERE `id`=19;
+
+UPDATE `Products` SET
+  `name`='PV Combiner Box 1-16 Inputs / 1 Output, 550V-1000V',
+  `description`='Wall-mounted IP65 photovoltaic combiner-box family for combining one to sixteen protected PV strings into one inverter input, with per-string DC fuses, Type II surge protection, and a standard DC isolation switch or optional circuit breaker.',
+  `wattage`='1-16 PV strings',
+  `durability_rating`='IP65',
+  `battery_type`=NULL,
+  `warranty_info`=NULL,
+  `metadata`=JSON_OBJECT('configuration','1-16 inputs / 1 output','voltage_range','550V-1000V DC','catalogued_at','2026-06-29')
+WHERE `id`=1801;
+
+DELETE FROM `ProductSpecifications` WHERE `product_id`=1801;
+DELETE FROM `ProductModels` WHERE `product_id`=1801;
+
+INSERT INTO `ProductModels`
+  (`id`,`product_id`,`model_code`,`display_name`,`nominal_power`,`price`,`stock_status`,`is_default`,`sort_order`) VALUES
+(450000,1801,'DC MY-PV1/1 550V','1 Input / 1 Output, 550V DC',NULL,NULL,'in_stock',0,0),
+(450001,1801,'DC MY-PV1/1 1000V','1 Input / 1 Output, 1000V DC',NULL,NULL,'in_stock',1,1),
+(450002,1801,'DC MY-PV2/1 550V','2 Inputs / 1 Output, 550V DC',NULL,NULL,'in_stock',0,2),
+(450003,1801,'DC MY-PV2/1 1000V','2 Inputs / 1 Output, 1000V DC',NULL,NULL,'in_stock',0,3),
+(450004,1801,'DC MY-PV4/1 550V','4 Inputs / 1 Output, 550V DC',NULL,NULL,'in_stock',0,4),
+(450005,1801,'DC MY-PV4/1 1000V','4 Inputs / 1 Output, 1000V DC',NULL,NULL,'in_stock',0,5),
+(450006,1801,'DC MY-PV6/1 1000V','6 Inputs / 1 Output, 1000V DC',NULL,NULL,'in_stock',0,6),
+(450007,1801,'DC MY-PV8/1 1000V','8 Inputs / 1 Output, 1000V DC',NULL,NULL,'in_stock',0,7),
+(450008,1801,'DC MY-PV12/1 1000V','12 Inputs / 1 Output, 1000V DC',NULL,NULL,'in_stock',0,8),
+(450009,1801,'DC MY-PV16/1 1000V','16 Inputs / 1 Output, 1000V DC',NULL,NULL,'in_stock',0,9);
+
+INSERT INTO `ProductSpecifications`
+  (`product_id`,`section_name`,`spec_key`,`label`,`unit`,`value_mode`,`shared_value`,`model_values`,`sort_order`) VALUES
+(1801,'Electrical','system_maximum_dc_voltage','System Maximum DC Voltage','V','custom',NULL,
+  JSON_OBJECT('DC MY-PV1/1 550V','550','DC MY-PV1/1 1000V','1000','DC MY-PV2/1 550V','550','DC MY-PV2/1 1000V','1000','DC MY-PV4/1 550V','550','DC MY-PV4/1 1000V','1000','DC MY-PV6/1 1000V','1000','DC MY-PV8/1 1000V','1000','DC MY-PV12/1 1000V','1000','DC MY-PV16/1 1000V','1000'),0),
+(1801,'Electrical','maximum_input_current_per_string','Maximum Input Current per String','A','shared','15',NULL,1),
+(1801,'Electrical','maximum_input_strings','Maximum Input Strings',NULL,'custom',NULL,
+  JSON_OBJECT('DC MY-PV1/1 550V','1','DC MY-PV1/1 1000V','1','DC MY-PV2/1 550V','2','DC MY-PV2/1 1000V','2','DC MY-PV4/1 550V','4','DC MY-PV4/1 1000V','4','DC MY-PV6/1 1000V','6','DC MY-PV8/1 1000V','8','DC MY-PV12/1 1000V','12','DC MY-PV16/1 1000V','16'),2),
+(1801,'Electrical','maximum_output_switch_current','Maximum Output Switch Current','A','custom',NULL,
+  JSON_OBJECT('DC MY-PV1/1 550V','16','DC MY-PV1/1 1000V','20','DC MY-PV2/1 550V','20','DC MY-PV2/1 1000V','32','DC MY-PV4/1 550V','50','DC MY-PV4/1 1000V','63','DC MY-PV6/1 1000V','80 / 90','DC MY-PV8/1 1000V','125','DC MY-PV12/1 1000V','180','DC MY-PV16/1 1000V','240'),3),
+(1801,'Electrical','inverter_mppt_count','Number of Inverter MPPTs',NULL,'shared','1',NULL,4),
+(1801,'Electrical','output_strings','Number of Output Strings',NULL,'shared','1',NULL,5),
+(1801,'Lightning Protection','surge_protection_class','Surge Protection Class',NULL,'shared','Type II',NULL,6),
+(1801,'Lightning Protection','nominal_discharge_current','Nominal Discharge Current','kA','shared','20',NULL,7),
+(1801,'Lightning Protection','maximum_discharge_current','Maximum Discharge Current','kA','shared','40',NULL,8),
+(1801,'Lightning Protection','voltage_protection_level','Voltage Protection Level','kV','custom',NULL,
+  JSON_OBJECT('DC MY-PV1/1 550V','2.8','DC MY-PV1/1 1000V','3.8','DC MY-PV2/1 550V','2.5','DC MY-PV2/1 1000V','3.8','DC MY-PV4/1 550V','2.8','DC MY-PV4/1 1000V','3.8','DC MY-PV6/1 1000V','3.8','DC MY-PV8/1 1000V','3.8','DC MY-PV12/1 1000V','3.8','DC MY-PV16/1 1000V','3.8'),9),
+(1801,'Lightning Protection','maximum_continuous_operating_voltage','Maximum Continuous Operating Voltage Uc','V','custom',NULL,
+  JSON_OBJECT('DC MY-PV1/1 550V','630','DC MY-PV1/1 1000V','1050','DC MY-PV2/1 550V','630','DC MY-PV2/1 1000V','1050','DC MY-PV4/1 550V','630','DC MY-PV4/1 1000V','1050','DC MY-PV6/1 1000V','1050','DC MY-PV8/1 1000V','1050','DC MY-PV12/1 1000V','1050','DC MY-PV16/1 1000V','1050'),10),
+(1801,'Lightning Protection','surge_protector_poles','Surge Protector Poles',NULL,'custom',NULL,
+  JSON_OBJECT('DC MY-PV1/1 550V','2P','DC MY-PV1/1 1000V','3P','DC MY-PV2/1 550V','2P','DC MY-PV2/1 1000V','3P','DC MY-PV4/1 550V','2P','DC MY-PV4/1 1000V','3P','DC MY-PV6/1 1000V','3P','DC MY-PV8/1 1000V','3P','DC MY-PV12/1 1000V','3P','DC MY-PV16/1 1000V','3P'),11),
+(1801,'Lightning Protection','surge_protector_structure','Surge Protector Structure',NULL,'shared','Plug-in module',NULL,12),
+(1801,'Protection and Components','protection_rating','Ingress Protection',NULL,'shared','IP65',NULL,13),
+(1801,'Protection and Components','output_switch','Output Switch',NULL,'shared','DC isolation switch standard; DC circuit breaker optional',NULL,14),
+(1801,'Protection and Components','waterproof_connectors','Waterproof PV Connectors',NULL,'shared','Standard',NULL,15),
+(1801,'Protection and Components','pv_dc_fuse','PV DC Fuse',NULL,'shared','Standard',NULL,16),
+(1801,'Protection and Components','pv_surge_protector','PV Surge Protector',NULL,'shared','Standard',NULL,17),
+(1801,'Protection and Components','monitoring_module','Monitoring Module',NULL,'shared','Optional',NULL,18),
+(1801,'Protection and Components','blocking_diode','Blocking Diode',NULL,'shared','Optional',NULL,19),
+(1801,'Construction','box_material','Enclosure Material',NULL,'shared','PVC engineering material',NULL,20),
+(1801,'Construction','installation_method','Installation Method',NULL,'shared','Wall mounted',NULL,21),
+(1801,'Environment','operating_temperature','Operating Temperature',NULL,'shared','-25C to +55C',NULL,22),
+(1801,'Environment','maximum_installation_altitude','Maximum Installation Altitude',NULL,'shared','2km',NULL,23),
+(1801,'Environment','permissible_relative_humidity','Permissible Relative Humidity',NULL,'shared','0-95%, non-condensing',NULL,24),
+(1801,'Physical','dimensions','Dimensions (W x H x D)','mm','custom',NULL,
+  JSON_OBJECT('DC MY-PV1/1 550V','200 x 172 x 110','DC MY-PV1/1 1000V','200 x 226 x 110','DC MY-PV2/1 550V','226 x 200 x 110','DC MY-PV2/1 1000V','280 x 230 x 120','DC MY-PV4/1 550V','410 x 285 x 140','DC MY-PV4/1 1000V','410 x 285 x 140','DC MY-PV6/1 1000V','440 x 400 x 180','DC MY-PV8/1 1000V','500 x 400 x 190','DC MY-PV12/1 1000V','640 x 450 x 180','DC MY-PV16/1 1000V','800 x 500 x 180'),25);
+
+UPDATE `KitProducts` SET
+  `product_model_id`=CASE `product_id`
+    WHEN 1802 THEN 450003
+    WHEN 1803 THEN 450005
+    WHEN 1804 THEN 450007
+    WHEN 1805 THEN 450009
+  END,
+  `product_id`=1801
+WHERE `product_id` IN (1802,1803,1804,1805);
+
+UPDATE `KitProducts` SET `product_model_id`=450001
+WHERE `product_id`=1801 AND `product_model_id` IS NULL;
+
+DELETE FROM `Products` WHERE `id` IN (1802,1803,1804,1805);
+-- END COMBINER BOX CATALOG
+
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
