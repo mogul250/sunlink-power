@@ -243,7 +243,7 @@ const KitForm = () => {
                       <img
                         src={getImageUrl(product.image_url)}
                         alt={product.name}
-                        className="h-12 w-12 object-cover rounded"
+                        className="aspect-square w-12 shrink-0 object-cover rounded"
                       />
                     )}
                     <div className="flex-1">

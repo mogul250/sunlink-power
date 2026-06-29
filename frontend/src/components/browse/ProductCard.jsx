@@ -14,7 +14,7 @@ const ProductCard = ({ product }) => {
   return (
     <div className="group border border-gray-200 bg-white shadow-sm transition hover:border-primary-200 hover:shadow-md">
       {/* Image */}
-      <Link to={`/product/${product.id}`} className="block relative h-48 overflow-hidden bg-gray-100">
+      <Link to={`/product/${product.id}`} className="relative block aspect-square w-full overflow-hidden bg-gray-100">
         <img
           src={getImageUrl(product.image_url) || 'https://images.unsplash.com/photo-1509391366360-2e959784a276?w=400'}
           alt={product.name}

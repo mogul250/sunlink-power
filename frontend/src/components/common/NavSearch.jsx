@@ -301,7 +301,7 @@ const NavSearch = ({ onNavigate, isTransparent = false }) => {
                     index === activeIndex ? 'bg-primary-50' : 'hover:bg-gray-50'
                   }`}
                 >
-                  <div className="h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-gray-100">
+                  <div className="aspect-square w-12 shrink-0 overflow-hidden rounded-lg bg-gray-100">
                     {item.image_url ? (
                       <img
                         src={getImageUrl(item.image_url)}

@@ -82,7 +82,7 @@ const ProductList = () => {
                   <tr key={product.id} className="hover:bg-gray-50 transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-gray-100 overflow-hidden">
+                        <div className="aspect-square w-10 shrink-0 rounded-lg bg-gray-100 overflow-hidden">
                           {product.image_url && (
                             <img src={getImageUrl(product.image_url)} alt="" className="w-full h-full object-cover" />
                           )}
