@@ -15,6 +15,26 @@ const validateSelectedModels = async (products) => {
   }
 };
 
+const normalizeTechnicalSpecs = (value) => {
+  if (value === undefined) return undefined;
+  if (value === null || value === '') return null;
+
+  let parsed;
+  try {
+    parsed = typeof value === 'string' ? JSON.parse(value) : value;
+  } catch {
+    const error = new Error('Technical specifications must contain valid JSON');
+    error.statusCode = 400;
+    throw error;
+  }
+  if (Array.isArray(parsed) || typeof parsed !== 'object') {
+    const error = new Error('Technical specifications must be a JSON object');
+    error.statusCode = 400;
+    throw error;
+  }
+  return JSON.stringify(parsed);
+};
+
 // @desc    Get all kits
 // @route   GET /api/kits
 // @access  Public
@@ -119,6 +139,7 @@ const getKitById = async (req, res, next) => {
 const createKit = async (req, res, next) => {
   try {
     let { name, description, slug, products = [] } = req.body;
+    const technicalSpecs = normalizeTechnicalSpecs(req.body.technical_specs);
     let image_url = req.body.image_url;
     if (typeof products == 'string') {
       products = JSON.parse(products);
@@ -140,8 +161,8 @@ const createKit = async (req, res, next) => {
 
     // Insert kit
     const [result] = await promisePool.query(
-      'INSERT INTO Kits (name, description, image_url, slug) VALUES (?, ?, ?, ?)',
-      [name, description, image_url, slug]
+      'INSERT INTO Kits (name, description, image_url, slug, technical_specs) VALUES (?, ?, ?, ?, ?)',
+      [name, description, image_url, slug, technicalSpecs || null]
     );
 
     const kitId = result.insertId;
@@ -223,6 +244,7 @@ const updateKit = async (req, res, next) => {
   try {
     const { id } = req.params;
     let { name, description, slug, products = [] } = req.body;
+    const technicalSpecs = normalizeTechnicalSpecs(req.body.technical_specs);
     let image_url = req.body.image_url;
 
     // Handle main image
@@ -266,6 +288,10 @@ const updateKit = async (req, res, next) => {
     if (slug) {
       updates.push('slug = ?');
       values.push(slug);
+    }
+    if (technicalSpecs !== undefined) {
+      updates.push('technical_specs = ?');
+      values.push(technicalSpecs);
     }
 
     if (updates.length > 0) {

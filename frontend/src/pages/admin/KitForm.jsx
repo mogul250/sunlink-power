@@ -20,6 +20,7 @@ const KitForm = () => {
     name: '',
     slug: '',
     description: '',
+    technical_specs: '{}',
     products: []
   });
 
@@ -46,10 +47,14 @@ const KitForm = () => {
     try {
       const res = await kitAPI.getById(id);
       const data = res.data.data;
+      const technicalSpecs = typeof data.technical_specs === 'string'
+        ? JSON.parse(data.technical_specs)
+        : data.technical_specs;
       setFormData({
         name: data.name,
         slug: data.slug,
         description: data.description || '',
+        technical_specs: JSON.stringify(technicalSpecs || {}, null, 2),
         products: data.products ? data.products.map(p => ({
           product_id: p.id,
           product_model_id: p.product_model_id || null,
@@ -110,6 +115,7 @@ const KitForm = () => {
       data.append('name', formData.name);
       data.append('slug', formData.slug);
       data.append('description', formData.description);
+      data.append('technical_specs', formData.technical_specs);
       data.append('products', JSON.stringify(formData.products));
       if (imageFile) data.append('image', imageFile);
 
@@ -181,6 +187,16 @@ const KitForm = () => {
             className="input-field w-full border p-2 rounded"
             value={formData.description}
             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+          />
+        </div>
+
+        <div>
+          <label className="label">Technical Specifications</label>
+          <textarea
+            rows="12"
+            className="input-field w-full border p-2 rounded font-mono text-sm"
+            value={formData.technical_specs}
+            onChange={(e) => setFormData({ ...formData, technical_specs: e.target.value })}
           />
         </div>
 

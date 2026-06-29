@@ -448,6 +448,228 @@ UPDATE `Products` SET `name`='Single-Phase String Inverter 7kW-8kW, 2 MPPT, Gen 
 UPDATE `Products` SET `name`='Three-Phase String Inverter 70kW-110kW, 4-6 MPPT, Gen 3', `description`='A three-phase grid-connected string inverter family spanning 70kW-110kW with 4-6 MPPT. It converts photovoltaic DC power for commercial, residential, or utility applications according to the model capacity.', `wattage`='70kW-110kW', `durability_rating`='String Inverter' WHERE `id`=2325;
 UPDATE `Products` SET `name`='Single-Phase String Inverter 9kW-10.5kW, 2 MPPT, Gen 2', `description`='A single-phase grid-connected string inverter family spanning 9kW-10.5kW with 2 MPPT. It converts photovoltaic DC power for commercial, residential, or utility applications according to the model capacity.', `wattage`='9kW-10.5kW', `durability_rating`='String Inverter' WHERE `id`=2326;
 -- END READABLE INVERTER PRODUCT NAMES
+-- BEGIN FINAL BATTERY CATALOG
+-- Reconciled against the final energy-storage catalogue dated 2026-06-29.
+-- Standalone battery families remain Products; integrated ESS combinations are Kits.
+ALTER TABLE `Kits` ADD COLUMN `technical_specs` json DEFAULT NULL AFTER `stock_status`;
+
+DROP TEMPORARY TABLE IF EXISTS `CatalogKitBatteryAssignments`;
+CREATE TEMPORARY TABLE `CatalogKitBatteryAssignments` AS
+SELECT kp.`id` AS `kit_product_id`, kp.`kit_id`, kp.`product_id` AS `old_product_id`, kp.`quantity`, kp.`sort_order`
+FROM `KitProducts` kp JOIN `Products` p ON p.`id`=kp.`product_id`
+WHERE p.`category_id`=3 AND kp.`kit_id` NOT IN (13,14,15,26,27,28,29);
+
+DELETE FROM `KitImages` WHERE `kit_id` IN (13,14,15,26,27,28,29);
+DELETE FROM `KitProducts` WHERE `kit_id` IN (13,14,15,26,27,28,29);
+DELETE FROM `Kits` WHERE `id` IN (13,14,15,26,27,28,29);
+DELETE kp FROM `KitProducts` kp JOIN `Products` p ON p.`id`=kp.`product_id` WHERE p.`category_id`=3;
+DELETE pi FROM `ProductImages` pi JOIN `Products` p ON p.`id`=pi.`product_id` WHERE p.`category_id`=3 AND p.`id` NOT IN (308,311,313);
+DELETE ps FROM `ProductSpecifications` ps JOIN `Products` p ON p.`id`=ps.`product_id` WHERE p.`category_id`=3;
+DELETE pm FROM `ProductModels` pm JOIN `Products` p ON p.`id`=pm.`product_id` WHERE p.`category_id`=3;
+DELETE FROM `Products` WHERE `category_id`=3;
+
+UPDATE `Categories` SET `name`='Batteries', `description`='Rack-mounted and integrated LiFePO4 battery systems for residential, commercial, industrial, and containerized energy-storage applications.', `slug`='batteries' WHERE `id`=3;
+INSERT INTO `Categories` (`id`,`name`,`description`,`image_url`,`slug`) VALUES
+(25,'Power Conversion Systems','Bidirectional power conversion systems for battery storage, grid support, microgrids, and integrated energy-storage installations.',NULL,'power-conversion-systems')
+ON DUPLICATE KEY UPDATE `name`=VALUES(`name`),`description`=VALUES(`description`),`slug`=VALUES(`slug`);
+
+INSERT INTO `Products` (`id`,`category_id`,`name`,`price`,`description`,`wattage`,`durability_rating`,`battery_type`,`warranty_info`,`image_url`,`manual_pdf_url`,`video_url`,`metadata`,`is_featured`,`stock_status`) VALUES
+('308','3','3U Low-Voltage Rack LiFePO4 Battery 5.12kWh-10.24kWh',NULL,'Compact 51.2V rack-mounted LiFePO4 battery family for residential solar storage, telecom, UPS, backup power, and off-grid applications, with parallel expansion and integrated BMS communication.','5.12kWh-10.24kWh','>=6000 Cycles','LiFePO4',NULL,'/uploads/products/WhatsApp-Image-2026-06-28-at-09-38-42-1782645428034-378700918.jpeg',NULL,NULL,'{"source":"Final energy storage catalogue","source_page":9,"catalogued_at":"2026-06-29"}','0','in_stock'),
+('311','3','3U High-Voltage Rack LiFePO4 Battery 10.24kWh-143.36kWh',NULL,'Modular high-voltage 3U rack LiFePO4 battery family for commercial storage, three-phase systems, and scalable backup applications, spanning 102.4V-716.8V and 100Ah-200Ah configurations.','10.24kWh-143.36kWh','>=6000 Cycles','LiFePO4',NULL,'/uploads/products/battery-rack-1782548844542-657440806.jpg',NULL,NULL,'{"source":"Final energy storage catalogue","source_page":10,"catalogued_at":"2026-06-29"}','0','in_stock'),
+('313','3','5U High-Voltage Rack LiFePO4 Battery 26.8kWh-161kWh',NULL,'High-capacity 5U rack-mounted LiFePO4 battery family for commercial and industrial storage, with 96V-576V 280Ah configurations and support for compatible 314Ah modules.','26.8kWh-161kWh','>=6000 Cycles','LiFePO4',NULL,'/uploads/products/battery-rack-2-1782549208850-753034550.jpg',NULL,NULL,'{"source":"Final energy storage catalogue","source_page":11,"catalogued_at":"2026-06-29"}','0','in_stock'),
+('316','3','Integrated High-Voltage ESS Battery Assembly 233kWh-5.016MWh',NULL,'High-voltage LiFePO4 battery assemblies configured for integrated commercial, industrial, and containerized energy storage systems, with capacities from 233kWh to 5.016MWh.','233kWh-5.016MWh','Integrated ESS Battery Assembly','LiFePO4',NULL,NULL,NULL,NULL,'{"source":"Final energy storage catalogue","source_pages":"15-24","catalogued_at":"2026-06-29"}','0','in_stock'),
+('2601','25','Bidirectional Power Conversion System 30kW-2.5MW',NULL,'Three-phase bidirectional power conversion system family for battery energy storage, grid-connected operation, microgrids, and integrated commercial and industrial ESS configurations.','30kW-2.5MW','Energy Storage PCS',NULL,NULL,NULL,NULL,NULL,'{"source":"Final energy storage catalogue","source_pages":"12-24","catalogued_at":"2026-06-29"}','0','in_stock')
+ON DUPLICATE KEY UPDATE `category_id`=VALUES(`category_id`),`name`=VALUES(`name`),`description`=VALUES(`description`),`wattage`=VALUES(`wattage`),`durability_rating`=VALUES(`durability_rating`),`battery_type`=VALUES(`battery_type`),`image_url`=VALUES(`image_url`),`metadata`=VALUES(`metadata`),`is_featured`=0;
+
+INSERT INTO `ProductModels` (`id`,`product_id`,`model_code`,`display_name`,`nominal_power`,`price`,`stock_status`,`is_default`,`sort_order`) VALUES
+('410000','308','WY-51.2V-100Ah(3U)','51.2V 100Ah / 5.12kWh','5.12kWh',NULL,'in_stock','1','410000'),
+('410001','308','WY-51.2V-200Ah(3U)','51.2V 200Ah / 10.24kWh','10.24kWh',NULL,'in_stock','0','410001'),
+('410010','311','WY-102.4V-100Ah(3U)','102.4V 100Ah / 10.24kWh','10.24kWh',NULL,'in_stock','0','410010'),
+('410011','311','WY-204.8V-100Ah(3U)','204.8V 100Ah / 20.48kWh','20.48kWh',NULL,'in_stock','0','410011'),
+('410012','311','WY-307.2V-100Ah(3U)','307.2V 100Ah / 30.72kWh','30.72kWh',NULL,'in_stock','0','410012'),
+('410013','311','WY-409.6V-100Ah(3U)','409.6V 100Ah / 40.96kWh','40.96kWh',NULL,'in_stock','0','410013'),
+('410014','311','WY-512V-100Ah(3U)','512V 100Ah / 51.2kWh','51.2kWh',NULL,'in_stock','1','410014'),
+('410015','311','WY-614.4V-100Ah(3U)','614.4V 100Ah / 61.44kWh','61.44kWh',NULL,'in_stock','0','410015'),
+('410016','311','WY-716.8V-100Ah(3U)','716.8V 100Ah / 71.68kWh','71.68kWh',NULL,'in_stock','0','410016'),
+('410017','311','WY-102.4V-200Ah(3U)','102.4V 200Ah / 20.48kWh','20.48kWh',NULL,'in_stock','0','410017'),
+('410018','311','WY-204.8V-200Ah(3U)','204.8V 200Ah / 40.96kWh','40.96kWh',NULL,'in_stock','0','410018'),
+('410019','311','WY-307.2V-200Ah(3U)','307.2V 200Ah / 61.4kWh','61.4kWh',NULL,'in_stock','0','410019'),
+('410020','311','WY-409.6V-200Ah(3U)','409.6V 200Ah / 81.9kWh','81.9kWh',NULL,'in_stock','0','410020'),
+('410021','311','WY-512V-200Ah(3U)','512V 200Ah / 102.4kWh','102.4kWh',NULL,'in_stock','0','410021'),
+('410022','311','WY-614.4V-200Ah(3U)','614.4V 200Ah / 122.8kWh','122.8kWh',NULL,'in_stock','0','410022'),
+('410023','311','WY-716.8V-200Ah(3U)','716.8V 200Ah / 143.36kWh','143.36kWh',NULL,'in_stock','0','410023'),
+('410030','313','WY-96V-280Ah(5U)','96V 280Ah / 26.8kWh','26.8kWh',NULL,'in_stock','1','410030'),
+('410031','313','WY-192V-280Ah(5U)','192V 280Ah / 53.6kWh','53.6kWh',NULL,'in_stock','0','410031'),
+('410032','313','WY-288V-280Ah(5U)','288V 280Ah / 80.4kWh','80.4kWh',NULL,'in_stock','0','410032'),
+('410033','313','WY-384V-280Ah(5U)','384V 280Ah / 107.2kWh','107.2kWh',NULL,'in_stock','0','410033'),
+('410034','313','WY-480V-280Ah(5U)','480V 280Ah / 134kWh','134kWh',NULL,'in_stock','0','410034'),
+('410035','313','WY-576V-280Ah(5U)','576V 280Ah / 161kWh','161kWh',NULL,'in_stock','0','410035'),
+('410036','313','WY-409.6V-314Ah(5U)','409.6V 314Ah / 128.6kWh','128.6kWh',NULL,'in_stock','0','410036'),
+('420000','316','VES233-BAT','832V 280Ah / 233kWh','233kWh',NULL,'in_stock','1','420000'),
+('420001','316','VES241-BAT','768V 314Ah / 241kWh','241kWh',NULL,'in_stock','0','420001'),
+('420002','316','VES261-BAT','832V 314Ah / 261kWh','261kWh',NULL,'in_stock','0','420002'),
+('420003','316','VES418-BAT','1331.2V 314Ah / 418kWh','418kWh',NULL,'in_stock','0','420003'),
+('420004','316','VES522-BAT','832V 628Ah / 522kWh','522kWh',NULL,'in_stock','0','420004'),
+('420005','316','VES1000-BAT','768V 1256Ah / 1MWh','1MWh',NULL,'in_stock','0','420005'),
+('420006','316','VES2000-BAT','768V 2512Ah / 2MWh','2MWh',NULL,'in_stock','0','420006'),
+('420007','316','VES3354-BAT','1331.2V / 3.354MWh','3.354MWh',NULL,'in_stock','0','420007'),
+('420008','316','VES3762-BAT','1331.2V / 3.762MWh','3.762MWh',NULL,'in_stock','0','420008'),
+('420009','316','VES5016-BAT','1331.2V / 5.016MWh','5.016MWh',NULL,'in_stock','0','420009'),
+('430000','2601','PCS-30KW','30kW Bidirectional PCS','30kW',NULL,'in_stock','1','0'),
+('430001','2601','PCS-50KW','50kW Bidirectional PCS','50kW',NULL,'in_stock','0','1'),
+('430002','2601','PCS-105KW','105kW Bidirectional PCS','105kW',NULL,'in_stock','0','2'),
+('430003','2601','PCS-125KW','125kW Bidirectional PCS','125kW',NULL,'in_stock','0','3'),
+('430004','2601','PCS-210KW','210kW Bidirectional PCS','210kW',NULL,'in_stock','0','4'),
+('430005','2601','PCS-250KW','250kW Bidirectional PCS','250kW',NULL,'in_stock','0','5'),
+('430006','2601','PCS-500KW','500kW Bidirectional PCS','500kW',NULL,'in_stock','0','6'),
+('430007','2601','PCS-875KW','875kW Bidirectional PCS','875kW',NULL,'in_stock','0','7'),
+('430008','2601','PCS-1250KW','1.25MW Bidirectional PCS','1.25MW',NULL,'in_stock','0','8'),
+('430009','2601','PCS-2500KW','2.5MW Bidirectional PCS','2.5MW',NULL,'in_stock','0','9');
+
+INSERT INTO `ProductSpecifications` (`id`,`product_id`,`section_name`,`spec_key`,`label`,`unit`,`value_mode`,`shared_value`,`model_values`,`sort_order`) VALUES
+('22000','308','Battery','nominal_voltage','Nominal Voltage','V','shared','51.2',NULL,'0'),
+('22001','308','Battery','nominal_capacity','Nominal Capacity','Ah','custom',NULL,'{"WY-51.2V-100Ah(3U)":"100","WY-51.2V-200Ah(3U)":"200"}','1'),
+('22002','308','Battery','nominal_energy','Nominal Energy','kWh','custom',NULL,'{"WY-51.2V-100Ah(3U)":"5.12","WY-51.2V-200Ah(3U)":"10.24"}','2'),
+('22003','308','Battery','cell_type','Cell Type',NULL,'custom',NULL,'{"WY-51.2V-100Ah(3U)":"3.2V / 100Ah","WY-51.2V-200Ah(3U)":"3.2V / 200Ah"}','3'),
+('22004','308','Battery','configuration','Configuration',NULL,'custom',NULL,'{"WY-51.2V-100Ah(3U)":"16S1P","WY-51.2V-200Ah(3U)":"16S1P"}','4'),
+('22005','308','Protection','overvoltage','Overvoltage Protection','V','shared','57.6',NULL,'5'),
+('22006','308','Protection','undervoltage','Undervoltage Protection','V','shared','43.2',NULL,'6'),
+('22007','308','Charging','recommended_charge_current','Recommended Charge Current','A','custom',NULL,'{"WY-51.2V-100Ah(3U)":"50","WY-51.2V-200Ah(3U)":"100"}','7'),
+('22008','308','Charging','maximum_discharge_current','Maximum Discharge Current','A','custom',NULL,'{"WY-51.2V-100Ah(3U)":"100","WY-51.2V-200Ah(3U)":"200"}','8'),
+('22009','308','System','parallel_support','Module Connection',NULL,'shared','Maximum 16 in parallel',NULL,'9'),
+('22010','308','System','communication','BMS Communication',NULL,'shared','RS485 / CAN',NULL,'10'),
+('22011','308','System','design_life','Design Life',NULL,'shared','15 years',NULL,'11'),
+('22012','308','System','cycle_life','Cycle Life',NULL,'shared','>=6000 cycles',NULL,'12'),
+('22013','308','System','charging_efficiency','Charging Efficiency',NULL,'shared','>=98%',NULL,'13'),
+('22014','308','System','shipping_soc','Shipping State of Charge',NULL,'shared','30-50% SOC',NULL,'14'),
+('22015','308','Environment','charging_temperature','Charging Temperature',NULL,'shared','0C to 55C',NULL,'15'),
+('22016','308','Environment','discharging_temperature','Discharging Temperature',NULL,'shared','-10C to 55C',NULL,'16'),
+('22017','308','Environment','storage_temperature','Storage Temperature',NULL,'shared','-20C to 65C',NULL,'17'),
+('22018','308','Physical','dimensions','Dimensions (L x W x H)','mm','custom',NULL,'{"WY-51.2V-100Ah(3U)":"442 x 420 x 133.5","WY-51.2V-200Ah(3U)":"442 x 745 x 133.5"}','18'),
+('22019','308','Physical','weight','Weight','kg','custom',NULL,'{"WY-51.2V-100Ah(3U)":"40","WY-51.2V-200Ah(3U)":"82"}','19'),
+('22020','311','Battery','nominal_voltage','Nominal Voltage','V','custom',NULL,'{"WY-102.4V-100Ah(3U)":"102.4","WY-204.8V-100Ah(3U)":"204.8","WY-307.2V-100Ah(3U)":"307.2","WY-409.6V-100Ah(3U)":"409.6","WY-512V-100Ah(3U)":"512","WY-614.4V-100Ah(3U)":"614.4","WY-716.8V-100Ah(3U)":"716.8","WY-102.4V-200Ah(3U)":"102.4","WY-204.8V-200Ah(3U)":"204.8","WY-307.2V-200Ah(3U)":"307.2","WY-409.6V-200Ah(3U)":"409.6","WY-512V-200Ah(3U)":"512","WY-614.4V-200Ah(3U)":"614.4","WY-716.8V-200Ah(3U)":"716.8"}','0'),
+('22021','311','Battery','nominal_capacity','Nominal Capacity','Ah','custom',NULL,'{"WY-102.4V-100Ah(3U)":"100","WY-204.8V-100Ah(3U)":"100","WY-307.2V-100Ah(3U)":"100","WY-409.6V-100Ah(3U)":"100","WY-512V-100Ah(3U)":"100","WY-614.4V-100Ah(3U)":"100","WY-716.8V-100Ah(3U)":"100","WY-102.4V-200Ah(3U)":"200","WY-204.8V-200Ah(3U)":"200","WY-307.2V-200Ah(3U)":"200","WY-409.6V-200Ah(3U)":"200","WY-512V-200Ah(3U)":"200","WY-614.4V-200Ah(3U)":"200","WY-716.8V-200Ah(3U)":"200"}','1'),
+('22022','311','Battery','nominal_energy','Nominal Energy','kWh','custom',NULL,'{"WY-102.4V-100Ah(3U)":"10.24","WY-204.8V-100Ah(3U)":"20.48","WY-307.2V-100Ah(3U)":"30.72","WY-409.6V-100Ah(3U)":"40.96","WY-512V-100Ah(3U)":"51.2","WY-614.4V-100Ah(3U)":"61.44","WY-716.8V-100Ah(3U)":"71.68","WY-102.4V-200Ah(3U)":"20.48","WY-204.8V-200Ah(3U)":"40.96","WY-307.2V-200Ah(3U)":"61.4","WY-409.6V-200Ah(3U)":"81.9","WY-512V-200Ah(3U)":"102.4","WY-614.4V-200Ah(3U)":"122.8","WY-716.8V-200Ah(3U)":"143.36"}','2'),
+('22023','311','Battery','voltage_range','Operating Voltage Range','V','custom',NULL,'{"WY-102.4V-100Ah(3U)":"86.4-114.4","WY-204.8V-100Ah(3U)":"172.8-230.4","WY-307.2V-100Ah(3U)":"259.2-345.6","WY-409.6V-100Ah(3U)":"345.6-460.8","WY-512V-100Ah(3U)":"432-576","WY-614.4V-100Ah(3U)":"518.4-691.2","WY-716.8V-100Ah(3U)":"604.8-806.4","WY-102.4V-200Ah(3U)":"86.4-114.4","WY-204.8V-200Ah(3U)":"172.8-230.4","WY-307.2V-200Ah(3U)":"259.2-345.6","WY-409.6V-200Ah(3U)":"345.6-460.8","WY-512V-200Ah(3U)":"432-576","WY-614.4V-200Ah(3U)":"518.4-691.2","WY-716.8V-200Ah(3U)":"604.8-806.4"}','3'),
+('22024','311','Charging','recommended_charge_current','Recommended Charge Current','A','custom',NULL,'{"WY-102.4V-100Ah(3U)":"50","WY-204.8V-100Ah(3U)":"50","WY-307.2V-100Ah(3U)":"50","WY-409.6V-100Ah(3U)":"50","WY-512V-100Ah(3U)":"50","WY-614.4V-100Ah(3U)":"50","WY-716.8V-100Ah(3U)":"50","WY-102.4V-200Ah(3U)":"100","WY-204.8V-200Ah(3U)":"100","WY-307.2V-200Ah(3U)":"100","WY-409.6V-200Ah(3U)":"100","WY-512V-200Ah(3U)":"100","WY-614.4V-200Ah(3U)":"100","WY-716.8V-200Ah(3U)":"100"}','4'),
+('22025','311','Charging','recommended_discharge_current','Recommended Discharge Current','A','custom',NULL,'{"WY-102.4V-100Ah(3U)":"100","WY-204.8V-100Ah(3U)":"100","WY-307.2V-100Ah(3U)":"100","WY-409.6V-100Ah(3U)":"100","WY-512V-100Ah(3U)":"100","WY-614.4V-100Ah(3U)":"100","WY-716.8V-100Ah(3U)":"100","WY-102.4V-200Ah(3U)":"200","WY-204.8V-200Ah(3U)":"200","WY-307.2V-200Ah(3U)":"200","WY-409.6V-200Ah(3U)":"200","WY-512V-200Ah(3U)":"200","WY-614.4V-200Ah(3U)":"200","WY-716.8V-200Ah(3U)":"200"}','5'),
+('22026','311','System','cycle_life','Cycle Life',NULL,'shared','>=6000 cycles',NULL,'6'),
+('22027','311','System','design_life','Design Life',NULL,'shared','15 years',NULL,'7'),
+('22028','311','Environment','charging_temperature','Charging Temperature',NULL,'shared','0C to 65C',NULL,'8'),
+('22029','311','Environment','discharging_temperature','Discharging Temperature',NULL,'shared','-20C to 65C',NULL,'9'),
+('22030','311','Environment','installation_altitude','Installation Altitude',NULL,'shared','<=3000m',NULL,'10'),
+('22031','311','Environment','relative_humidity','Relative Humidity',NULL,'shared','5-90%, non-condensing',NULL,'11'),
+('22032','311','Physical','dimensions','Dimensions (L x W x H)','mm','custom',NULL,'{"WY-102.4V-100Ah(3U)":"442 x 420 x 587","WY-204.8V-100Ah(3U)":"442 x 420 x 934","WY-307.2V-100Ah(3U)":"442 x 420 x 1281","WY-409.6V-100Ah(3U)":"442 x 420 x 934 + 442 x 420 x 684","WY-512V-100Ah(3U)":"442 x 420 x 1107.5 + 442 x 420 x 847.5","WY-614.4V-100Ah(3U)":"442 x 420 x 1281 + 442 x 420 x 1031","WY-716.8V-100Ah(3U)":"442 x 420 x 1454.5 + 442 x 420 x 1204.5","WY-102.4V-200Ah(3U)":"442 x 745 x 597","WY-204.8V-200Ah(3U)":"442 x 745 x 944","WY-307.2V-200Ah(3U)":"442 x 745 x 1291","WY-409.6V-200Ah(3U)":"442 x 745 x 944 + 442 x 745 x 694","WY-512V-200Ah(3U)":"442 x 745 x 1117.5 + 442 x 745 x 967.5","WY-614.4V-200Ah(3U)":"442 x 745 x 1291 + 442 x 745 x 1041","WY-716.8V-200Ah(3U)":"442 x 745 x 1464.5 + 442 x 745 x 1214.5"}','12'),
+('22033','311','Physical','weight','Weight','kg','custom',NULL,'{"WY-102.4V-100Ah(3U)":"100","WY-204.8V-100Ah(3U)":"180","WY-307.2V-100Ah(3U)":"260","WY-409.6V-100Ah(3U)":"340","WY-512V-100Ah(3U)":"420","WY-614.4V-100Ah(3U)":"500","WY-716.8V-100Ah(3U)":"540","WY-102.4V-200Ah(3U)":"180","WY-204.8V-200Ah(3U)":"340","WY-307.2V-200Ah(3U)":"500","WY-409.6V-200Ah(3U)":"660","WY-512V-200Ah(3U)":"820","WY-614.4V-200Ah(3U)":"980","WY-716.8V-200Ah(3U)":"1140"}','13'),
+('22034','313','Battery','nominal_voltage','Nominal Voltage','V','custom',NULL,'{"WY-96V-280Ah(5U)":"96","WY-192V-280Ah(5U)":"192","WY-288V-280Ah(5U)":"288","WY-384V-280Ah(5U)":"384","WY-480V-280Ah(5U)":"480","WY-576V-280Ah(5U)":"576","WY-409.6V-314Ah(5U)":"409.6"}','0'),
+('22035','313','Battery','nominal_capacity','Nominal Capacity','Ah','custom',NULL,'{"WY-96V-280Ah(5U)":"280","WY-192V-280Ah(5U)":"280","WY-288V-280Ah(5U)":"280","WY-384V-280Ah(5U)":"280","WY-480V-280Ah(5U)":"280","WY-576V-280Ah(5U)":"280","WY-409.6V-314Ah(5U)":"314"}','1'),
+('22036','313','Battery','nominal_energy','Nominal Energy','kWh','custom',NULL,'{"WY-96V-280Ah(5U)":"26.8","WY-192V-280Ah(5U)":"53.6","WY-288V-280Ah(5U)":"80.4","WY-384V-280Ah(5U)":"107.2","WY-480V-280Ah(5U)":"134","WY-576V-280Ah(5U)":"161","WY-409.6V-314Ah(5U)":"128.6"}','2'),
+('22037','313','Battery','voltage_range','Operating Voltage Range','V','custom',NULL,'{"WY-96V-280Ah(5U)":"81-108","WY-192V-280Ah(5U)":"162-216","WY-288V-280Ah(5U)":"243-324","WY-384V-280Ah(5U)":"324-432","WY-480V-280Ah(5U)":"405-540","WY-576V-280Ah(5U)":"486-648","WY-409.6V-314Ah(5U)":"358.4-467.2"}','3'),
+('22038','313','Charging','recommended_charge_current','Recommended Charge Current','A','shared','100',NULL,'4'),
+('22039','313','Charging','recommended_discharge_current','Recommended Discharge Current','A','shared','200',NULL,'5'),
+('22040','313','System','cycle_life','Cycle Life',NULL,'shared','>=6000 cycles',NULL,'6'),
+('22041','313','System','design_life','Design Life',NULL,'shared','15 years',NULL,'7'),
+('22042','313','System','communication','Communication',NULL,'shared','RS485 / CAN',NULL,'8'),
+('22043','313','System','shell_compatibility','Shell Compatibility',NULL,'shared','51.2V 280Ah and 51.2V 314Ah modules',NULL,'9'),
+('22044','313','Environment','charging_temperature','Charging Temperature',NULL,'shared','0C to 65C',NULL,'10'),
+('22045','313','Environment','discharging_temperature','Discharging Temperature',NULL,'shared','-20C to 65C',NULL,'11'),
+('22046','313','Environment','installation_altitude','Installation Altitude',NULL,'shared','<=3000m',NULL,'12'),
+('22047','313','Environment','relative_humidity','Relative Humidity',NULL,'shared','5-90%, non-condensing',NULL,'13'),
+('22048','313','Physical','dimensions','Dimensions (L x W x H)','mm','custom',NULL,'{"WY-96V-280Ah(5U)":"442 x 750 x 222","WY-192V-280Ah(5U)":"442 x 750 x 774","WY-288V-280Ah(5U)":"442 x 750 x 774","WY-384V-280Ah(5U)":"442 x 750 x 774","WY-480V-280Ah(5U)":"442 x 750 x 774","WY-576V-280Ah(5U)":"442 x 750 x 774","WY-409.6V-314Ah(5U)":"-"}','14'),
+('22049','313','Physical','weight','Weight','kg','custom',NULL,'{"WY-96V-280Ah(5U)":"102.5","WY-192V-280Ah(5U)":"244","WY-288V-280Ah(5U)":"456","WY-384V-280Ah(5U)":"536","WY-480V-280Ah(5U)":"886","WY-576V-280Ah(5U)":"1306","WY-409.6V-314Ah(5U)":"-"}','15'),
+('22050','316','Battery','nominal_voltage','Nominal Voltage','V','custom',NULL,'{"VES233-BAT":"832","VES241-BAT":"768","VES261-BAT":"832","VES418-BAT":"1331.2","VES522-BAT":"832","VES1000-BAT":"768","VES2000-BAT":"768","VES3354-BAT":"1331.2","VES3762-BAT":"1331.2","VES5016-BAT":"1331.2"}','0'),
+('22051','316','Battery','nominal_capacity','Nominal Capacity','Ah','custom',NULL,'{"VES233-BAT":"280","VES241-BAT":"314","VES261-BAT":"314","VES418-BAT":"314","VES522-BAT":"628","VES1000-BAT":"1256","VES2000-BAT":"2512","VES3354-BAT":"-","VES3762-BAT":"-","VES5016-BAT":"-"}','1'),
+('22052','316','Battery','nominal_energy','Nominal Energy','kWh','custom',NULL,'{"VES233-BAT":"233","VES241-BAT":"241","VES261-BAT":"261","VES418-BAT":"418","VES522-BAT":"522","VES1000-BAT":"1000","VES2000-BAT":"2000","VES3354-BAT":"3354","VES3762-BAT":"3762","VES5016-BAT":"5016"}','2'),
+('22053','316','Battery','voltage_range','Operating Voltage Range','V','custom',NULL,'{"VES233-BAT":"650-949","VES241-BAT":"672-876","VES261-BAT":"728-949","VES418-BAT":"1040-1518.4","VES522-BAT":"650-949","VES1000-BAT":"672-876","VES2000-BAT":"672-876","VES3354-BAT":"1040-1518.4","VES3762-BAT":"1040-1518.4","VES5016-BAT":"1040-1518.4"}','3'),
+('22054','316','Battery','rated_power','Rated System Power','kW','custom',NULL,'{"VES233-BAT":"105","VES241-BAT":"125","VES261-BAT":"125","VES418-BAT":"210","VES522-BAT":"250","VES1000-BAT":"500","VES2000-BAT":"875","VES3354-BAT":"1250","VES3762-BAT":"1250","VES5016-BAT":"2500"}','4'),
+('22055','316','Battery','composition','Battery Composition',NULL,'custom',NULL,'{"VES233-BAT":"1P260S","VES241-BAT":"10 x 76.8V 314Ah","VES261-BAT":"5 x 166.4V 314Ah","VES418-BAT":"1P416S","VES522-BAT":"2P260S","VES1000-BAT":"768V 1256Ah","VES2000-BAT":"768V 2512Ah","VES3354-BAT":"9P416S","VES3762-BAT":"9P416S","VES5016-BAT":"12P416S"}','5'),
+('22056','316','Battery','charge_discharge_rate','Charge / Discharge Rate',NULL,'custom',NULL,'{"VES233-BAT":"0.5C","VES241-BAT":"0.5C","VES261-BAT":"0.5C","VES418-BAT":"0.5C","VES522-BAT":"0.5C","VES1000-BAT":"0.5C","VES2000-BAT":"0.5C","VES3354-BAT":"0.33C","VES3762-BAT":"0.33C","VES5016-BAT":"0.5C"}','6'),
+('22057','316','System','chemistry','Battery Chemistry',NULL,'shared','LiFePO4',NULL,'7'),
+('22058','316','System','application','Application',NULL,'shared','Integrated commercial and industrial ESS battery assembly',NULL,'8'),
+('22059','2601','Electrical','rated_power','Rated Power',NULL,'custom',NULL,'{"PCS-30KW":"30kW","PCS-50KW":"50kW","PCS-105KW":"105kW","PCS-125KW":"125kW","PCS-210KW":"210kW","PCS-250KW":"250kW","PCS-500KW":"500kW","PCS-875KW":"875kW","PCS-1250KW":"1.25MW","PCS-2500KW":"2.5MW"}','0'),
+('22060','2601','Electrical','topology','Topology',NULL,'shared','Bidirectional energy-storage power conversion system',NULL,'1'),
+('22061','2601','Electrical','phase','Phase',NULL,'shared','Three-phase',NULL,'2'),
+('22062','2601','System','application','Application',NULL,'shared','Battery energy storage and microgrid power conversion',NULL,'3');
+
+DELETE FROM `CatalogKitBatteryAssignments` WHERE `kit_id`=19 AND `old_product_id`=302;
+INSERT INTO `KitProducts` (`kit_id`,`product_id`,`product_model_id`,`quantity`,`sort_order`)
+SELECT assignment.`kit_id`, pm.`product_id`, pm.`id`,
+  SUM(assignment.`quantity` * CASE assignment.`old_product_id` WHEN 304 THEN 3 WHEN 310 THEN 4 WHEN 313 THEN 2 ELSE 1 END),
+  MIN(assignment.`sort_order`)
+FROM `CatalogKitBatteryAssignments` assignment
+JOIN `ProductModels` pm ON pm.`model_code`=CASE assignment.`old_product_id`
+  WHEN 301 THEN 'WY-51.2V-100Ah(3U)'
+  WHEN 302 THEN 'WY-51.2V-100Ah(3U)'
+  WHEN 303 THEN 'WY-51.2V-200Ah(3U)'
+  WHEN 304 THEN 'WY-51.2V-100Ah(3U)'
+  WHEN 308 THEN 'WY-51.2V-100Ah(3U)'
+  WHEN 310 THEN 'WY-51.2V-100Ah(3U)'
+  WHEN 311 THEN 'WY-512V-100Ah(3U)'
+  WHEN 312 THEN 'WY-384V-280Ah(5U)'
+  WHEN 313 THEN 'WY-384V-280Ah(5U)' END
+GROUP BY assignment.`kit_id`, pm.`product_id`, pm.`id`;
+
+UPDATE `Kits` SET `name`='Rack Battery Backup Kit 10.24kWh', `description`='Residential backup kit combining a 10.24kWh 3U low-voltage LiFePO4 battery with a compatible hybrid inverter.' WHERE `id`=19;
+
+INSERT INTO `Kits` (`id`,`name`,`description`,`image_url`,`slug`,`is_featured`,`stock_status`,`technical_specs`) VALUES
+('30','All-in-One ESS 30kW / 61kWh','Integrated hybrid energy storage system combining a 61kWh LiFePO4 battery, 30kW bidirectional PCS, EMS, grid and microgrid operation, optional dual MPPT solar charging, protection, and air-cooled thermal management.',NULL,'all-in-one-ess-30kw-61kwh','0','in_stock','{"model_reference":"AI-VES61","grid_ac":{"output_power":"30kW","maximum_current":"136A","nominal_voltage":"400/230V","frequency":"50/60Hz","thd":"<3%","power_factor":"-1 to 1 adjustable","transfer_time":"20ms"},"microgrid_ac":{"nominal_voltage":"400/230V","maximum_power":"33kVA","frequency":"50Hz (47-52Hz) or 60Hz (57-62Hz)","thd":"<3% with resistive load"},"optional_solar":{"mppt":"19.2kW + 19.2kW","dc_voltage_range":"200-800V"},"battery":{"nominal_voltage":"307.2V","configuration":"51.2V 200Ah modules","capacity":"61kWh / 200Ah","voltage_range":"268.8-350.4V","maximum_charge_discharge_current":"200A","cooling":"Air cooled"},"system":{"dimensions":"1000 x 800 x 2200mm","charge_discharge_rate":"0.5C / 1C","depth_of_discharge":"95%","cycle_life":"3000+","protection":"IP54","efficiency":">=98%","weight":"1.14t","scalability":"1-6 units","battery_chemistry":"LiFePO4","communication":"CAN / RS485 / Ethernet / 4G","ambient_temperature":"-20C to 55C","relative_humidity":"0-95%, non-condensing"},"monitoring":{"display":"PC / control interface","communication":"RS485","protocol":"Modbus TCP/IP","remote_control":"EMS cloud platform"}}'),
+('31','AC-Coupled ESS 50kW / 107kWh','AC-coupled distributed energy storage system integrating a 107kWh LiFePO4 battery, 50kW bidirectional PCS, intelligent charge and discharge management, remote monitoring, fire protection, and forced-air converter cooling.',NULL,'ac-coupled-ess-50kw-107kwh','0','in_stock','{"model_reference":"AI-VES107","battery":{"cell":"3.2V 280Ah LiFePO4","rated_voltage":"384V","voltage_range":"324-432V","rated_power":"50kW","capacity":"107kWh","composition":"1P120S","charge_discharge_rate":"0.5C"},"system":{"ac_voltage":"400VAC","wiring":"3P+N+PE","cooling":"Battery air cooled; converter forced-air cooled","protection":"IP20","cycle_life":">=6000 cycles","weight":"Approximately 1.3t","dimensions":"1200 x 900 x 1650mm","installation":"Indoor or sheltered outdoor","altitude":"Up to 4000m; derating above 2000m","battery_chemistry":"LiFePO4","communication":"CAN / RS485 / Ethernet / 4G","ambient_temperature":"-20C to 55C","relative_humidity":"0-95%, non-condensing"}}'),
+('32','All-in-One ESS 50kW / 129kWh','Integrated hybrid energy storage system combining a 129kWh LiFePO4 battery, 50kW bidirectional PCS, EMS, optional dual MPPT solar charging, diesel-generator integration, protection, and air-cooled thermal management.',NULL,'all-in-one-ess-50kw-129kwh','0','in_stock','{"model_reference":"AI-VES129","grid_ac":{"output_power":"50kW","maximum_current":"150A","nominal_voltage":"400/230V","frequency":"50/60Hz","thd":"<3%","transfer_time":"20ms"},"microgrid_ac":{"nominal_voltage":"400/230V","maximum_power":"55kVA","frequency":"50Hz (47-52Hz) or 60Hz (57-62Hz)"},"optional_solar":{"mppt":"38.4kW + 38.4kW","dc_voltage_range":"200-800V"},"battery":{"nominal_voltage":"409.6V","configuration":"51.2V 314Ah modules","capacity":"129kWh / 314Ah","voltage_range":"358.4-467.2V","maximum_charge_discharge_current":"200A","cooling":"Air cooled"},"system":{"dimensions":"1000 x 1200 x 2360mm","charge_discharge_rate":"0.5C / 1C","depth_of_discharge":"95%","cycle_life":"6000+","protection":"IP54","efficiency":">=98%","weight":"1.6t","scalability":"1-6 units","battery_chemistry":"LiFePO4","communication":"CAN / RS485 / Ethernet / 4G","ambient_temperature":"-20C to 55C","relative_humidity":"0-95%, non-condensing"},"monitoring":{"display":"PC / control interface","communication":"RS485","protocol":"Modbus TCP/IP","remote_control":"EMS cloud platform"}}'),
+('33','Liquid-Cooled ESS 105kW / 233kWh','Flexible commercial energy storage cabinet integrating a 233kWh LiFePO4 battery, 105kW bidirectional PCS, liquid-cooled battery thermal management, forced-air converter cooling, advanced fire protection, and remote monitoring.',NULL,'liquid-cooled-ess-105kw-233kwh','0','in_stock','{"model_reference":"VES233","battery":{"cell":"3.2V 280Ah LiFePO4","rated_voltage":"832V","voltage_range":"650-949V","rated_power":"105kW","capacity":"233kWh","composition":"1P260S","charge_discharge_rate":"0.5C"},"system":{"ac_voltage":"400VAC","wiring":"3P+N+PE","cooling":"Intelligent liquid cooling; converter forced-air cooling","fire_protection":"Composite detection, alarms, cabinet and cluster spraying, clean-agent and water firefighting","protection":"IP54","cycle_life":">=6000 cycles","weight":"Approximately 2.7t","dimensions":"1000 x 1400 x 2415mm","installation":"Indoor or sheltered outdoor","altitude":"Up to 3000m","battery_chemistry":"LiFePO4","communication":"CAN / RS485 / Ethernet / 4G","ambient_temperature":"-20C to 55C","relative_humidity":"0-95%, non-condensing"}}'),
+('34','Air-Cooled ESS 125kW / 241kWh','Commercial energy storage cabinet integrating a 241kWh LiFePO4 battery, 125kW power conversion, air-cooled thermal management, fire protection, intelligent monitoring, and optional MPPT, static transfer switch, and transformer equipment.',NULL,'air-cooled-ess-125kw-241kwh','0','in_stock','{"model_reference":"VES241","battery":{"nominal_voltage":"768V","pack_configuration":"76.8V 314Ah","capacity":"241kWh / 314Ah","voltage_range":"672-876V","maximum_charge_discharge_current":"200A","cooling":"Air cooled"},"system":{"power":"125kW","dimensions":"1300 x 1200 x 2400mm","charge_discharge_rate":"0.5C / 0.5C","depth_of_discharge":">=95%","cycle_life":"8000+","protection":"IP54","efficiency":"98%","weight":"2.5t","scalability":"1-5 units","optional_accessories":"100kW MPPT, 200kVA STS, 125kVA transformer","battery_chemistry":"LiFePO4","communication":"CAN / RS485 / Ethernet / 4G","ambient_temperature":"-20C to 55C","relative_humidity":"0-95%, non-condensing"},"monitoring":{"communication":"RS485","protocol":"Modbus TCP/IP","remote_control":"EMS cloud platform"}}'),
+('35','Liquid-Cooled ESS 125kW / 261kWh','Commercial energy storage cabinet integrating a 261kWh LiFePO4 battery, 125kW power conversion, liquid-cooled battery thermal management, fire protection, intelligent monitoring, and optional grid-support equipment.',NULL,'liquid-cooled-ess-125kw-261kwh','0','in_stock','{"model_reference":"VES261","battery":{"nominal_voltage":"832V","pack_configuration":"166.4V 314Ah","capacity":"261kWh / 314Ah","voltage_range":"728-949V","maximum_charge_discharge_current":"200A","cooling":"Propylene-glycol water-based liquid cooling"},"system":{"power":"125kW","dimensions":"1300 x 1200 x 2400mm","charge_discharge_rate":"0.5C / 0.5C","depth_of_discharge":">=95%","cycle_life":"8000 cycles","protection":"IP54","efficiency":"98%","weight":"2.7t","scalability":"1-5 units","optional_accessories":"100kW MPPT, 200kVA STS, 125kVA transformer","battery_chemistry":"LiFePO4","communication":"CAN / RS485 / Ethernet / 4G","ambient_temperature":"-20C to 55C","relative_humidity":"0-95%, non-condensing"},"monitoring":{"communication":"RS485","protocol":"Modbus TCP/IP","interface":"PC / control interface"}}'),
+('36','Liquid-Cooled ESS 210kW / 418kWh','Expandable commercial and industrial energy storage cabinet integrating a 418kWh LiFePO4 battery, 210kW bidirectional PCS, cluster control, liquid cooling, multi-layer fire protection, cloud-edge monitoring, and unattended operation.',NULL,'liquid-cooled-ess-210kw-418kwh','0','in_stock','{"model_reference":"VES418","battery":{"cell":"3.2V 314Ah LiFePO4","rated_voltage":"1331.2V","voltage_range":"1040-1518.4V","rated_power":"210kW","capacity":"418kWh","composition":"1P416S","charge_discharge_rate":"0.5C"},"system":{"ac_voltage":"400VAC","wiring":"3P+N+PE","cooling":"Intelligent liquid cooling; converter forced-air cooling","fire_protection":"Composite detection, alarms, cabinet and cluster spraying, clean-agent and water firefighting","protection":"IP54","cycle_life":">=6000 cycles","weight":"Approximately 4.2t","dimensions":"1350 x 1400 x 2400mm","installation":"Indoor or sheltered outdoor","altitude":"Up to 3000m","battery_chemistry":"LiFePO4","communication":"CAN / RS485 / Ethernet / 4G","ambient_temperature":"-20C to 55C","relative_humidity":"0-95%, non-condensing"}}'),
+('37','Liquid-Cooled ESS 250kW / 522kWh','Outdoor energy storage cabinet integrating a 522kWh LiFePO4 battery, 250kW bidirectional PCS, BMS, fire protection, power distribution, optional solar regulation and MPPT, liquid cooling, and remote system control.',NULL,'liquid-cooled-ess-250kw-522kwh','0','in_stock','{"model_reference":"VES522","battery":{"cell":"3.2V 314Ah LiFePO4","rated_voltage":"832V","voltage_range":"650-949V","rated_power":"250kW","capacity":"522kWh","composition":"2P260S","charge_discharge_rate":"0.5C"},"system":{"ac_voltage":"400VAC","wiring":"3P+N+PE","cooling":"Intelligent liquid cooling; converter forced-air cooling","fire_protection":"Composite detection, alarms, cabinet and cluster spraying, clean-agent and water firefighting","protection":"IP54","cycle_life":">=6000 cycles","weight":"Approximately 5.4t","dimensions":"1940 x 1504 x 2555mm","installation":"Indoor or sheltered outdoor","altitude":"Up to 3000m","battery_chemistry":"LiFePO4","communication":"CAN / RS485 / Ethernet / 4G","ambient_temperature":"-20C to 55C","relative_humidity":"0-95%, non-condensing"}}'),
+('38','Containerized ESS 500kW / 1MWh','Containerized energy storage system integrating a 1MWh LiFePO4 battery, 500kW PCS, BMS, fire protection, power distribution, thermal management, and intelligent monitoring for industrial facilities and microgrids.',NULL,'containerized-ess-500kw-1mwh','0','in_stock','{"model_reference":"VES1000","grid_ac":{"output_power":"500kW","maximum_current":"1400A","voltage":"400V","frequency":"50/60Hz","thd":"<3%","transfer_time":"20ms"},"microgrid_ac":{"maximum_power":"550kW","voltage":"400V","frequency":"50/60Hz"},"battery":{"nominal_voltage":"768V","pack_configuration":"76.8V 314Ah","system_configuration":"768V 1256Ah","capacity":"1MWh","voltage_range":"672-876V","maximum_charge_discharge_current":"650A / 650A","cooling":"Air cooled"},"system":{"dimensions":"6058 x 2438 x 2896mm","depth_of_discharge":">=95%","cycle_life":"8000+","protection":"IP54","efficiency":"98%","weight":"11.8t","scalability":"1-4 units","optional_accessories":"500kW MPPT, 800kVA STS, 500kVA transformer","battery_chemistry":"LiFePO4","communication":"CAN / RS485 / Ethernet / 4G","ambient_temperature":"-20C to 55C","relative_humidity":"0-95%, non-condensing"},"monitoring":{"display":"PC / control interface","communication":"RS485","protocol":"Modbus TCP/IP","remote_control":"EMS cloud platform"}}'),
+('39','Containerized ESS 875kW / 2MWh','Containerized energy storage system integrating a 2MWh LiFePO4 battery, 875kW PCS, EMS, BMS, fire protection, power distribution, thermal management, and grid and microgrid operating modes.',NULL,'containerized-ess-875kw-2mwh','0','in_stock','{"model_reference":"VES2000","grid_ac":{"output_power":"875kW","maximum_current":"2600A","voltage":"400V","frequency":"50/60Hz","thd":"<3%","transfer_time":"3 minutes"},"microgrid_ac":{"maximum_power":"960kW","voltage":"400V","frequency":"50/60Hz"},"battery":{"nominal_voltage":"768V","pack_configuration":"76.8V 314Ah","system_configuration":"768V 2512Ah","capacity":"2MWh","voltage_range":"672-876V","maximum_charge_discharge_current":"1300A / 1300A","cooling":"Air cooled"},"system":{"dimensions":"6058 x 2438 x 2896mm","depth_of_discharge":">=95%","cycle_life":"8000+","protection":"IP54","efficiency":"98%","weight":"11.8t","scalability":"1-4 units","optional_accessories":"1MW on-grid inverter, 1.5MW ATS, 1000kVA transformer","battery_chemistry":"LiFePO4","communication":"CAN / RS485 / Ethernet / 4G","ambient_temperature":"-20C to 55C","relative_humidity":"0-95%, non-condensing"},"monitoring":{"display":"PC / control interface","communication":"RS485","protocol":"Modbus TCP/IP","remote_control":"EMS cloud platform"}}'),
+('40','Containerized ESS 1.25MW / 3.354MWh','Modular containerized energy storage system integrating a 3.354MWh LiFePO4 battery, 1.25MW PCS, liquid cooling, multi-level fire protection, distributed control, and parallel expansion for commercial and industrial storage.',NULL,'containerized-ess-1250kw-3354kwh','0','in_stock','{"model_reference":"VES3354","battery":{"cell":"3.2V 280Ah LiFePO4","rated_voltage":"1331.2V","voltage_range":"1040-1518.4V","rated_power":"1250kW","capacity":"3354kWh","composition":"9P416S","charge_discharge_rate":"0.33C"},"system":{"ac_voltage":"10kVAC","wiring":"Three-phase, three-wire","cooling":"Intelligent liquid cooling; converter forced-air cooling","fire_protection":"Pack and cabin detection, alarms, spraying, clean-agent and water firefighting","protection":"IP54","cycle_life":">=6000 cycles","weight":"Approximately 35t","dimensions":"6058 x 2600 x 2896mm","installation":"Outdoor","altitude":"2000m","battery_chemistry":"LiFePO4","communication":"CAN / RS485 / Ethernet / 4G","ambient_temperature":"-20C to 55C","relative_humidity":"0-95%, non-condensing"}}'),
+('41','Containerized ESS 1.25MW / 3.762MWh','Containerized energy storage system integrating a 3.762MWh LiFePO4 battery, 1.25MW PCS, liquid cooling, multi-level fire protection, IoT-enabled remote monitoring, and modular expansion for high-capacity industrial storage.',NULL,'containerized-ess-1250kw-3762kwh','0','in_stock','{"model_reference":"VES3762","battery":{"cell":"3.2V 314Ah LiFePO4","rated_voltage":"1331.2V","voltage_range":"1040-1518.4V","rated_power":"1250kW","capacity":"3762kWh","composition":"9P416S","charge_discharge_rate":"0.33C"},"system":{"ac_voltage":"10kVAC","wiring":"Three-phase, three-wire","cooling":"Intelligent liquid cooling; converter forced-air cooling","fire_protection":"Pack and cabin detection, alarms, spraying, clean-agent and water firefighting","protection":"IP54","cycle_life":">=6000 cycles","weight":"Approximately 34t","dimensions":"6058 x 2600 x 2896mm","installation":"Outdoor","altitude":"2000m","battery_chemistry":"LiFePO4","communication":"CAN / RS485 / Ethernet / 4G","ambient_temperature":"-20C to 55C","relative_humidity":"0-95%, non-condensing"}}'),
+('42','Containerized ESS 2.5MW / 5.016MWh','High-capacity containerized energy storage system integrating a 5.016MWh LiFePO4 battery, 2.5MW PCS, BMS, fire protection, power distribution, liquid cooling, and remote monitoring for peak management and emergency power.',NULL,'containerized-ess-2500kw-5016kwh','0','in_stock','{"model_reference":"VES5016","battery":{"cell":"3.2V 314Ah LiFePO4","rated_voltage":"1331.2V","voltage_range":"1040-1518.4V","rated_power":"2500kW","capacity":"5016kWh","composition":"12P416S","charge_discharge_rate":"0.5C"},"system":{"ac_voltage":"10kVAC","wiring":"Three-phase, three-wire","cooling":"Intelligent liquid cooling; converter forced-air cooling","fire_protection":"Pack and cabin detection, alarms, spraying, clean-agent and water firefighting","protection":"IP54","cycle_life":">=6000 cycles","weight":"Approximately 44t","dimensions":"6500 x 2700 x 2950mm","installation":"Outdoor","altitude":"2000m","battery_chemistry":"LiFePO4","communication":"CAN / RS485 / Ethernet / 4G","ambient_temperature":"-20C to 55C","relative_humidity":"0-95%, non-condensing"}}');
+
+INSERT INTO `KitProducts` (`kit_id`,`product_id`,`product_model_id`,`quantity`,`sort_order`) VALUES
+('30','311','410022','1','0'),
+('30','2601','430000','1','1'),
+('30','1701',NULL,'1','2'),
+('31','313','410033','1','0'),
+('31','2601','430001','1','1'),
+('31','1701',NULL,'1','2'),
+('32','313','410036','1','0'),
+('32','2601','430001','1','1'),
+('32','1701',NULL,'1','2'),
+('33','316','420000','1','0'),
+('33','2601','430002','1','1'),
+('33','1701',NULL,'1','2'),
+('34','316','420001','1','0'),
+('34','2601','430003','1','1'),
+('34','1701',NULL,'1','2'),
+('35','316','420002','1','0'),
+('35','2601','430003','1','1'),
+('35','1701',NULL,'1','2'),
+('36','316','420003','1','0'),
+('36','2601','430004','1','1'),
+('36','1701',NULL,'1','2'),
+('37','316','420004','1','0'),
+('37','2601','430005','1','1'),
+('37','1701',NULL,'1','2'),
+('38','316','420005','1','0'),
+('38','2601','430006','1','1'),
+('38','1701',NULL,'1','2'),
+('39','316','420006','1','0'),
+('39','2601','430007','1','1'),
+('39','1701',NULL,'1','2'),
+('40','316','420007','1','0'),
+('40','2601','430008','1','1'),
+('40','1701',NULL,'1','2'),
+('41','316','420008','1','0'),
+('41','2601','430008','1','1'),
+('41','1701',NULL,'1','2'),
+('42','316','420009','1','0'),
+('42','2601','430009','1','1'),
+('42','1701',NULL,'1','2');
+
+DROP TEMPORARY TABLE `CatalogKitBatteryAssignments`;
+-- END FINAL BATTERY CATALOG
+
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

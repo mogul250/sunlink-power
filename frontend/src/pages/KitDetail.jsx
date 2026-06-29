@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { Fragment, useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { FiMessageCircle } from 'react-icons/fi';
@@ -7,6 +7,30 @@ import { getImageUrl } from '../services/imageUtils';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import ErrorMessage from '../components/common/ErrorMessage';
 import WhatsAppButton from '../components/common/WhatsAppButton';
+
+const SpecificationRows = ({ values }) => Object.entries(values).map(([key, value]) => {
+  if (value && typeof value === 'object' && !Array.isArray(value)) {
+    return (
+      <Fragment key={key}>
+        <tr className="bg-gray-50">
+          <th colSpan="2" className="px-3 py-2 text-left text-xs font-bold uppercase text-gray-700">
+            {key.replace(/_/g, ' ')}
+          </th>
+        </tr>
+        <SpecificationRows values={value} />
+      </Fragment>
+    );
+  }
+
+  return (
+    <tr key={key} className="border-t border-gray-100">
+      <td className="w-2/5 border-r border-gray-100 px-3 py-2 font-medium capitalize text-gray-500">
+        {key.replace(/_/g, ' ')}
+      </td>
+      <td className="px-3 py-2 text-gray-900">{Array.isArray(value) ? value.join(', ') : String(value)}</td>
+    </tr>
+  );
+});
 
 const KitDetail = () => {
   const { slug } = useParams();
@@ -66,6 +90,10 @@ const KitDetail = () => {
       </div>
     );
   }
+
+  const technicalSpecs = typeof kit.technical_specs === 'string'
+    ? JSON.parse(kit.technical_specs)
+    : kit.technical_specs;
 
   return (
     <>
@@ -177,6 +205,19 @@ const KitDetail = () => {
                     <p className="text-xs text-gray-500 mt-2 font-medium">Qty: {product.quantity || 1}</p>
                   </Link>
                 ))}
+              </div>
+            </div>
+          )}
+
+          {technicalSpecs && Object.keys(technicalSpecs).length > 0 && (
+            <div className="mb-12 border-t border-gray-200 pt-8">
+              <h2 className="text-xl font-heading font-bold text-gray-900 mb-6">Technical Specifications</h2>
+              <div className="overflow-x-auto border border-gray-200 bg-white">
+                <table className="w-full min-w-[560px] text-xs sm:text-sm">
+                  <tbody>
+                    <SpecificationRows values={technicalSpecs} />
+                  </tbody>
+                </table>
               </div>
             </div>
           )}
