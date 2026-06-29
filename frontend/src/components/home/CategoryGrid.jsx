@@ -8,7 +8,10 @@ import { getImageUrl } from '../../services/imageUtils';
 
 const HOME_CATEGORY_PRIORITY = [
   'solar-panels',
-  'inverters',
+  'hybrid-inverters',
+  'string-inverters',
+  'off-grid-inverters',
+  'microinverters',
   'batteries',
   'energy-storage-systems',
   'solar-water-pumps',
