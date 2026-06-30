@@ -791,23 +791,20 @@ VALUES
   (510041,2806,'Monitoring','interface','Interface',NULL,'shared','EMS controller and display screen',NULL,2,'2026-06-30 11:30:00','2026-06-30 11:30:00');
 
 INSERT INTO `Kits`
-  (`id`,`name`,`description`,`image_url`,`slug`,`is_featured`,`stock_status`,`metadata`,`created_at`,`updated_at`)
+  (`id`,`name`,`description`,`image_url`,`slug`,`is_featured`,`stock_status`,`created_at`,`updated_at`)
 VALUES
-  (43,'Solar Charging Kit 241kWh / 120kW / 1 x 120kW EV','Commercial PV plus ESS plus EV charging kit pairing 241kWh integrated storage with 120kW charging for fleet yards, parking sites, and charging depots.',NULL,'solar-charging-kit-241kwh-120kw-1x120kw-ev',0,'in_stock','{"source":"(2)Integrated 120kW PV + 241kWh BESS+ 125kW Inverter+1X120kW EV Charging without racks.pdf","pv_total_kw":"120","panel_model_id":460057}', '2026-06-30 11:30:00','2026-06-30 11:30:00'),
-  (44,'Solar Charging Kit 241kWh / 120kW / 1 x 60kW EV','Commercial PV plus ESS plus EV charging kit pairing 241kWh integrated storage with a 60kW class charger for parking sites and light fleet charging.',NULL,'solar-charging-kit-241kwh-120kw-1x60kw-ev',0,'in_stock','{"source":"(2)Integrated 120kW PV + 241kWh BESS+ 125kW Inverter+ 1X60kW EV Charging without racks.pdf","pv_total_kw":"120","panel_model_id":460057}', '2026-06-30 11:30:00','2026-06-30 11:30:00'),
-  (45,'Solar Charging Kit 241kWh / 125kW / 2 x 60kW EV','Commercial PV plus ESS plus EV charging kit pairing 241kWh integrated storage with two 60kW class charging outputs for multi-bay charging sites.',NULL,'solar-charging-kit-241kwh-125kw-2x60kw-ev',0,'in_stock','{"source":"(4)Integrated 120kW PV + 241kWh BESS+ 125kW Inverter+ 2X60kW EV Charging without racks.pdf","pv_total_kw":"120","panel_model_id":460057}', '2026-06-30 11:30:00','2026-06-30 11:30:00'),
-  (46,'Solar Charging Kit 482kWh / 250kW / 2 x 120kW EV','Commercial PV plus ESS plus EV charging kit pairing two integrated 241kWh storage cabinets with dual 120kW charging for higher-throughput charging sites.',NULL,'solar-charging-kit-482kwh-250kw-2x120kw-ev',0,'in_stock','{"source":"(4)Integrated 120kW PV + 482kWh BESS+ 250kW Inverter+ 2X120kW EV Charging without racks.pdf","pv_total_kw":"120","panel_model_id":460057}', '2026-06-30 11:30:00','2026-06-30 11:30:00'),
-  (47,'Solar Charging Kit 261kWh / 125kW / 2 x 60kW EV','Commercial PV plus ESS plus EV charging kit pairing a 261kWh integrated storage cabinet with two 60kW class charging outputs.',NULL,'solar-charging-kit-261kwh-125kw-2x60kw-ev',0,'in_stock','{"source":"Integrated 120kW PV + 261kWh BESS+ 125kW Inverter+ 2X60kw EV Charging without racks.pdf","pv_total_kw":"120","panel_model_id":460057}', '2026-06-30 11:30:00','2026-06-30 11:30:00'),
-  (48,'Solar Charging Kit 482kWh / 250kW / 3 x 60kW EV','Commercial PV plus ESS plus EV charging kit pairing two integrated 241kWh storage cabinets with three 60kW class charging outputs for multi-bay charging sites.',NULL,'solar-charging-kit-482kwh-250kw-3x60kw-ev',0,'in_stock','{"source":"(6)Integrated 120kW PV + 482kWh BESS+ 250kW Inverter+ 3X60kW EV Charging without racks.pdf","pv_total_kw":"120","panel_model_id":460057}', '2026-06-30 11:30:00','2026-06-30 11:30:00'),
-  (49,'Solar Charging Kit 723kWh / 375kW / 3 x 120kW EV','Commercial PV plus ESS plus EV charging kit pairing three integrated 241kWh storage cabinets with three 120kW charging outputs for high-throughput charging depots.',NULL,'solar-charging-kit-723kwh-375kw-3x120kw-ev',0,'in_stock','{"source":"(6)Integrated 120kW PV + 723kWh BESS+ 375kW Inverter+ 3X120kW EV Charging without racks.pdf","pv_total_kw":"120","panel_model_id":460057}', '2026-06-30 11:30:00','2026-06-30 11:30:00');
+  (43,'Solar Charging Kit 241kWh / 120kW / 1 x 120kW EV','Commercial PV plus ESS plus EV charging kit pairing 241kWh integrated storage with 120kW charging for fleet yards, parking sites, and charging depots.',NULL,'solar-charging-kit-241kwh-120kw-1x120kw-ev',0,'in_stock', '2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (44,'Solar Charging Kit 241kWh / 120kW / 1 x 60kW EV','Commercial PV plus ESS plus EV charging kit pairing 241kWh integrated storage with a 60kW class charger for parking sites and light fleet charging.',NULL,'solar-charging-kit-241kwh-120kw-1x60kw-ev',0,'in_stock', '2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (45,'Solar Charging Kit 241kWh / 125kW / 2 x 60kW EV','Commercial PV plus ESS plus EV charging kit pairing 241kWh integrated storage with two 60kW class charging outputs for multi-bay charging sites.',NULL,'solar-charging-kit-241kwh-125kw-2x60kw-ev',0,'in_stock', '2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (46,'Solar Charging Kit 482kWh / 250kW / 2 x 120kW EV','Commercial PV plus ESS plus EV charging kit pairing two integrated 241kWh storage cabinets with dual 120kW charging for higher-throughput charging sites.',NULL,'solar-charging-kit-482kwh-250kw-2x120kw-ev',0,'in_stock', '2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (47,'Solar Charging Kit 261kWh / 125kW / 2 x 60kW EV','Commercial PV plus ESS plus EV charging kit pairing a 261kWh integrated storage cabinet with two 60kW class charging outputs.',NULL,'solar-charging-kit-261kwh-125kw-2x60kw-ev',0,'in_stock', '2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (48,'Solar Charging Kit 48２kWh / ２５０ｋＷ / ３ x ６０ｋＷ EV','Commercial PV plus ESS plus EV charging kit pairing two integrated ２４１ｋWh storage cabinets with three ６０ｋＷ class charging outputs for multi-bay charging sites.',NULL,'solar-charging-kit-４８２ｋwh-２５０ｋｗ-３x６０ｋｗ-ev',０,'in_stock', '２０２６－０６－３０ １１：３０：００','２０２６－０６－３０ １１：３０：００'),
+  (49,'Solar Charging Kit 723kWh / 375kW / 3 x 120kW EV','Commercial PV plus ESS plus EV charging kit pairing three integrated 241kWh storage cabinets with three 120kW charging outputs for high-throughput charging depots.',NULL,'solar-charging-kit-723kwh-375kw-3x120kw-ev',0,'in_stock', '2026-06-30 11:30:00','2026-06-30 11:30:00');
 
 INSERT INTO `KitProducts`
   (`id`,`kit_id`,`product_id`,`product_model_id`,`quantity`,`sort_order`,`created_at`)
 VALUES
   (313,43,2802,470002,1,0,'2026-06-30 11:30:00'),
-  (314,43,2806,470006,1,1,'2026-06-30 11:30:00'),
-  (315,43,2805,470005,1,2,'2026-06-30 11:30:00'),
-  (316,43,2712,460057,169,3,'2026-06-30 11:30:00'),
 
   (317,44,2802,470002,1,0,'2026-06-30 11:30:00'),
   (318,44,2806,470006,1,1,'2026-06-30 11:30:00'),
