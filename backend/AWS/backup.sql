@@ -710,4 +710,133 @@ DELETE FROM `Products` WHERE `category_id` = 1 AND `id` BETWEEN 101 AND 106;
 DROP TEMPORARY TABLE IF EXISTS `tmp_solar_models`;
 DROP TEMPORARY TABLE IF EXISTS `tmp_solar_catalog`;
 
+-- --------------------------------------------------------
+-- Integrated ESS / EV charging catalogue from Titan and PV+BESS+EV quote PDFs
+-- --------------------------------------------------------
+
+DELETE FROM `KitProducts` WHERE `id` BETWEEN 313 AND 340;
+DELETE FROM `Kits` WHERE `id` BETWEEN 43 AND 49;
+DELETE FROM `ProductSpecifications` WHERE `product_id` BETWEEN 2801 AND 2806;
+DELETE FROM `ProductModels` WHERE `product_id` BETWEEN 2801 AND 2806;
+DELETE FROM `Products` WHERE `id` BETWEEN 2801 AND 2806;
+
+INSERT INTO `Products`
+  (`id`,`category_id`,`name`,`price`,`description`,`wattage`,`durability_rating`,`battery_type`,`warranty_info`,`image_url`,`manual_pdf_url`,`video_url`,`metadata`,`is_featured`,`stock_status`,`created_at`,`updated_at`)
+VALUES
+  (2801,15,'Integrated Solar Charging System 241kWh / 120kW',0.00,'Integrated high-voltage solar charging system combining 241kWh LiFePO4 storage, 120kW power conversion, and dual-gun DC charging for commercial parking, fleet yards, logistics sites, and charging depots.','120kW / 241kWh','IP55 / Air Cooled','LiFePO4',NULL,NULL,NULL,NULL,'{"source":"Titan-241kWh+120kW_KUNETIC (1).pdf","catalogued_at":"2026-06-30","application":"solar charging system","dc_charging":"dual gun"}',0,'in_stock','2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (2802,3,'Integrated Outdoor ESS Cabinet 241kWh / 125kW',0.00,'Integrated outdoor ESS cabinet with 241kWh LiFePO4 battery storage, 125kW bidirectional conversion, 120kW MPPT input, fire suppression, metering, climate control, and cabinet-level monitoring for commercial and charging-site deployments.','125kW / 241kWh','IP54 Outdoor Cabinet','LiFePO4',NULL,NULL,NULL,NULL,'{"source":"Integrated 120kW PV + 241kWh BESS quote set","catalogued_at":"2026-06-30","application":"commercial ESS and EV charging support","mppt":"120kW"}',0,'in_stock','2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (2803,3,'Integrated Outdoor ESS Cabinet 261kWh / 125kW',0.00,'Integrated outdoor ESS cabinet with 261kWh LiFePO4 battery storage, 125kW bidirectional conversion, 120kW MPPT input, fire suppression, metering, climate control, and cabinet-level monitoring for commercial and charging-site deployments.','125kW / 261kWh','IP54 Outdoor Cabinet','LiFePO4',NULL,NULL,NULL,NULL,'{"source":"Integrated 120kW PV + 261kWh BESS quote set","catalogued_at":"2026-06-30","application":"commercial ESS and EV charging support","mppt":"120kW"}',0,'in_stock','2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (2804,15,'Dual-Gun DC EV Charger 60kW',0.00,'Dual-gun DC EV charger for commercial charging sites, fleet depots, and solar plus storage charging stations requiring 60kW class output with GB-standard charging configuration.','60kW','Commercial DC Charger',NULL,NULL,NULL,NULL,NULL,'{"source":"Integrated PV+BESS+EV charging quote set","catalogued_at":"2026-06-30","connector_standard":"GB","charger_format":"dual gun","rated_current":"100A"}',0,'in_stock','2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (2805,15,'Dual-Gun DC EV Charger 120kW',0.00,'Dual-gun DC EV charger for commercial charging sites, fleet depots, and solar plus storage charging stations requiring 120kW class output with GB-standard charging configuration.','120kW','Commercial DC Charger',NULL,NULL,NULL,NULL,NULL,'{"source":"Integrated PV+BESS+EV charging quote set","catalogued_at":"2026-06-30","connector_standard":"GB","charger_format":"dual gun"}',0,'in_stock','2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (2806,18,'Integrated EMS Controller and Cloud Platform',0.00,'Energy management controller with display interface and cloud monitoring platform for coordinating ESS, charging, metering, and cabinet-level system operation in commercial PV plus storage plus EV charging deployments.',NULL,'Cabinet-Integrated EMS',NULL,NULL,NULL,NULL,NULL,'{"source":"Integrated PV+BESS+EV charging quote set","catalogued_at":"2026-06-30","monitoring":"WiFi cloud platform","integration":"AC combiner cabinet"}',0,'in_stock','2026-06-30 11:30:00','2026-06-30 11:30:00');
+
+INSERT INTO `ProductModels`
+  (`id`,`product_id`,`model_code`,`display_name`,`nominal_power`,`price`,`stock_status`,`is_default`,`sort_order`,`created_at`,`updated_at`)
+VALUES
+  (470001,2801,'TITAN-241-120','Titan 241kWh / 120kW','120kW / 241kWh',NULL,'in_stock',1,0,'2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (470002,2802,'KEBANK-241F','241kWh / 125kW / 120kW MPPT','125kW / 241kWh',NULL,'in_stock',1,0,'2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (470003,2803,'KEBANK-261L','261kWh / 125kW / 120kW MPPT','125kW / 261kWh',NULL,'in_stock',1,0,'2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (470004,2804,'EV-DC-60-DUAL','60kW Dual-Gun DC Charger','60kW',NULL,'in_stock',1,0,'2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (470005,2805,'EV-DC-120-DUAL','120kW Dual-Gun DC Charger','120kW',NULL,'in_stock',1,0,'2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (470006,2806,'EMS-CLOUD-CABINET','Integrated EMS and Cloud Monitor',NULL,NULL,'in_stock',1,0,'2026-06-30 11:30:00','2026-06-30 11:30:00');
+
+INSERT INTO `ProductSpecifications`
+  (`id`,`product_id`,`section_name`,`spec_key`,`label`,`unit`,`value_mode`,`shared_value`,`model_values`,`sort_order`,`created_at`,`updated_at`)
+VALUES
+  (510001,2801,'System','battery_chemistry','Battery Chemistry',NULL,'shared','LiFePO4',NULL,0,'2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (510002,2801,'System','nominal_energy','Nominal Energy','kWh','shared','241.15',NULL,1,'2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (510003,2801,'System','dischargeable_energy','Dischargeable Energy','kWh','shared','231.5',NULL,2,'2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (510004,2801,'System','pcs_power','PCS Power','kW','shared','120',NULL,3,'2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (510005,2801,'System','charging_module_power','Charging Module Power','kW','shared','120 per gun',NULL,4,'2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (510006,2801,'Electrical','system_voltage','System Rated Voltage','V','shared','768',NULL,5,'2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (510007,2801,'Electrical','operating_voltage_range','Operating Voltage Range','V','shared','672-864',NULL,6,'2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (510008,2801,'Protection','protection_grade','Protection Grade',NULL,'shared','IP55',NULL,7,'2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (510009,2801,'Physical','dimensions','Dimensions','mm','shared','1646 x 1275 x 2468',NULL,8,'2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (510010,2801,'Lifecycle','cycle_life','Cycle Life',NULL,'shared','>=5000 cycles',NULL,9,'2026-06-30 11:30:00','2026-06-30 11:30:00'),
+
+  (510011,2802,'System','battery_chemistry','Battery Chemistry',NULL,'shared','LiFePO4',NULL,0,'2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (510012,2802,'System','nominal_energy','Nominal Energy','kWh','shared','241',NULL,1,'2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (510013,2802,'System','pcs_power','PCS Power','kW','shared','125',NULL,2,'2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (510014,2802,'System','mppt_power','MPPT Power','kW','shared','120',NULL,3,'2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (510015,2802,'Electrical','system_voltage','Battery Pack Voltage','V','shared','768',NULL,4,'2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (510016,2802,'Electrical','rated_capacity','Rated Capacity','Ah','shared','314',NULL,5,'2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (510017,2802,'Protection','protection_grade','Protection Grade',NULL,'shared','IP54',NULL,6,'2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (510018,2802,'Thermal','cooling','Cooling',NULL,'shared','Air conditioner, liquid/air cooling optional',NULL,7,'2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (510019,2802,'Protection','fire_suppression','Fire Suppression',NULL,'shared','Integrated fire suppression system',NULL,8,'2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (510020,2802,'Current','max_charge_discharge_current','Maximum Charge/Discharge Current','A','shared','140',NULL,9,'2026-06-30 11:30:00','2026-06-30 11:30:00'),
+
+  (510021,2803,'System','battery_chemistry','Battery Chemistry',NULL,'shared','LiFePO4',NULL,0,'2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (510022,2803,'System','nominal_energy','Nominal Energy','kWh','shared','261',NULL,1,'2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (510023,2803,'System','pcs_power','PCS Power','kW','shared','125',NULL,2,'2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (510024,2803,'System','mppt_power','MPPT Power','kW','shared','120',NULL,3,'2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (510025,2803,'Electrical','system_voltage','Battery Pack Voltage','V','shared','832',NULL,4,'2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (510026,2803,'Electrical','rated_capacity','Rated Capacity','Ah','shared','314',NULL,5,'2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (510027,2803,'Protection','protection_grade','Protection Grade',NULL,'shared','IP54',NULL,6,'2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (510028,2803,'Thermal','cooling','Cooling',NULL,'shared','Air conditioner, liquid/air cooling optional',NULL,7,'2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (510029,2803,'Protection','fire_suppression','Fire Suppression',NULL,'shared','Integrated fire suppression system',NULL,8,'2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (510030,2803,'Current','max_charge_discharge_current','Maximum Charge/Discharge Current','A','shared','140',NULL,9,'2026-06-30 11:30:00','2026-06-30 11:30:00'),
+
+  (510031,2804,'Output','rated_power','Rated Power','kW','shared','60',NULL,0,'2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (510032,2804,'Output','rated_current','Rated Current','A','shared','100',NULL,1,'2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (510033,2804,'Connector','connector_type','Charging Format',NULL,'shared','Dual gun',NULL,2,'2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (510034,2804,'Connector','connector_standard','Charging Standard',NULL,'shared','GB',NULL,3,'2026-06-30 11:30:00','2026-06-30 11:30:00'),
+
+  (510035,2805,'Output','rated_power','Rated Power','kW','shared','120',NULL,0,'2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (510036,2805,'Connector','connector_type','Charging Format',NULL,'shared','Dual gun',NULL,1,'2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (510037,2805,'Connector','connector_standard','Charging Standard',NULL,'shared','GB',NULL,2,'2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (510038,2805,'Output','gun_power','Power Per Gun','kW','shared','120',NULL,3,'2026-06-30 11:30:00','2026-06-30 11:30:00'),
+
+  (510039,2806,'Monitoring','integration','Integration',NULL,'shared','Integrated into AC combiner cabinet',NULL,0,'2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (510040,2806,'Monitoring','cloud_platform','Cloud Platform',NULL,'shared','WiFi cloud platform monitor',NULL,1,'2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (510041,2806,'Monitoring','interface','Interface',NULL,'shared','EMS controller and display screen',NULL,2,'2026-06-30 11:30:00','2026-06-30 11:30:00');
+
+INSERT INTO `Kits`
+  (`id`,`name`,`description`,`image_url`,`slug`,`is_featured`,`stock_status`,`metadata`,`created_at`,`updated_at`)
+VALUES
+  (43,'Solar Charging Kit 241kWh / 120kW / 1 x 120kW EV','Commercial PV plus ESS plus EV charging kit pairing 241kWh integrated storage with 120kW charging for fleet yards, parking sites, and charging depots.',NULL,'solar-charging-kit-241kwh-120kw-1x120kw-ev',0,'in_stock','{"source":"(2)Integrated 120kW PV + 241kWh BESS+ 125kW Inverter+1X120kW EV Charging without racks.pdf","pv_total_kw":"120","panel_model_id":460057}', '2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (44,'Solar Charging Kit 241kWh / 120kW / 1 x 60kW EV','Commercial PV plus ESS plus EV charging kit pairing 241kWh integrated storage with a 60kW class charger for parking sites and light fleet charging.',NULL,'solar-charging-kit-241kwh-120kw-1x60kw-ev',0,'in_stock','{"source":"(2)Integrated 120kW PV + 241kWh BESS+ 125kW Inverter+ 1X60kW EV Charging without racks.pdf","pv_total_kw":"120","panel_model_id":460057}', '2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (45,'Solar Charging Kit 241kWh / 125kW / 2 x 60kW EV','Commercial PV plus ESS plus EV charging kit pairing 241kWh integrated storage with two 60kW class charging outputs for multi-bay charging sites.',NULL,'solar-charging-kit-241kwh-125kw-2x60kw-ev',0,'in_stock','{"source":"(4)Integrated 120kW PV + 241kWh BESS+ 125kW Inverter+ 2X60kW EV Charging without racks.pdf","pv_total_kw":"120","panel_model_id":460057}', '2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (46,'Solar Charging Kit 482kWh / 250kW / 2 x 120kW EV','Commercial PV plus ESS plus EV charging kit pairing two integrated 241kWh storage cabinets with dual 120kW charging for higher-throughput charging sites.',NULL,'solar-charging-kit-482kwh-250kw-2x120kw-ev',0,'in_stock','{"source":"(4)Integrated 120kW PV + 482kWh BESS+ 250kW Inverter+ 2X120kW EV Charging without racks.pdf","pv_total_kw":"120","panel_model_id":460057}', '2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (47,'Solar Charging Kit 261kWh / 125kW / 2 x 60kW EV','Commercial PV plus ESS plus EV charging kit pairing a 261kWh integrated storage cabinet with two 60kW class charging outputs.',NULL,'solar-charging-kit-261kwh-125kw-2x60kw-ev',0,'in_stock','{"source":"Integrated 120kW PV + 261kWh BESS+ 125kW Inverter+ 2X60kw EV Charging without racks.pdf","pv_total_kw":"120","panel_model_id":460057}', '2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (48,'Solar Charging Kit 482kWh / 250kW / 3 x 60kW EV','Commercial PV plus ESS plus EV charging kit pairing two integrated 241kWh storage cabinets with three 60kW class charging outputs for multi-bay charging sites.',NULL,'solar-charging-kit-482kwh-250kw-3x60kw-ev',0,'in_stock','{"source":"(6)Integrated 120kW PV + 482kWh BESS+ 250kW Inverter+ 3X60kW EV Charging without racks.pdf","pv_total_kw":"120","panel_model_id":460057}', '2026-06-30 11:30:00','2026-06-30 11:30:00'),
+  (49,'Solar Charging Kit 723kWh / 375kW / 3 x 120kW EV','Commercial PV plus ESS plus EV charging kit pairing three integrated 241kWh storage cabinets with three 120kW charging outputs for high-throughput charging depots.',NULL,'solar-charging-kit-723kwh-375kw-3x120kw-ev',0,'in_stock','{"source":"(6)Integrated 120kW PV + 723kWh BESS+ 375kW Inverter+ 3X120kW EV Charging without racks.pdf","pv_total_kw":"120","panel_model_id":460057}', '2026-06-30 11:30:00','2026-06-30 11:30:00');
+
+INSERT INTO `KitProducts`
+  (`id`,`kit_id`,`product_id`,`product_model_id`,`quantity`,`sort_order`,`created_at`)
+VALUES
+  (313,43,2802,470002,1,0,'2026-06-30 11:30:00'),
+  (314,43,2806,470006,1,1,'2026-06-30 11:30:00'),
+  (315,43,2805,470005,1,2,'2026-06-30 11:30:00'),
+  (316,43,2712,460057,169,3,'2026-06-30 11:30:00'),
+
+  (317,44,2802,470002,1,0,'2026-06-30 11:30:00'),
+  (318,44,2806,470006,1,1,'2026-06-30 11:30:00'),
+  (319,44,2804,470004,1,2,'2026-06-30 11:30:00'),
+  (320,44,2712,460057,169,3,'2026-06-30 11:30:00'),
+
+  (321,45,2802,470002,1,0,'2026-06-30 11:30:00'),
+  (322,45,2806,470006,1,1,'2026-06-30 11:30:00'),
+  (323,45,2804,470004,2,2,'2026-06-30 11:30:00'),
+  (324,45,2712,460057,169,3,'2026-06-30 11:30:00'),
+
+  (325,46,2802,470002,2,0,'2026-06-30 11:30:00'),
+  (326,46,2806,470006,1,1,'2026-06-30 11:30:00'),
+  (327,46,2805,470005,2,2,'2026-06-30 11:30:00'),
+  (328,46,2712,460057,169,3,'2026-06-30 11:30:00'),
+
+  (329,47,2803,470003,1,0,'2026-06-30 11:30:00'),
+  (330,47,2806,470006,1,1,'2026-06-30 11:30:00'),
+  (331,47,2804,470004,2,2,'2026-06-30 11:30:00'),
+  (332,47,2712,460057,169,3,'2026-06-30 11:30:00'),
+
+  (333,48,2802,470002,2,0,'2026-06-30 11:30:00'),
+  (334,48,2806,470006,1,1,'2026-06-30 11:30:00'),
+  (335,48,2804,470004,3,2,'2026-06-30 11:30:00'),
+  (336,48,2712,460057,169,3,'2026-06-30 11:30:00'),
+
+  (337,49,2802,470002,3,0,'2026-06-30 11:30:00'),
+  (338,49,2806,470006,1,1,'2026-06-30 11:30:00'),
+  (339,49,2805,470005,3,2,'2026-06-30 11:30:00'),
+  (340,49,2712,460057,169,3,'2026-06-30 11:30:00');
+
 COMMIT;
