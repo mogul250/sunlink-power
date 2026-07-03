@@ -22,6 +22,7 @@ const Header = () => {
     { name: 'Home', path: '/' },
     { name: 'Products', path: '/browse' },
     { name: 'Kits', path: '/kits' },
+    { name: 'Downloads', path: '/resources' },
     { name: 'Agri Solar', path: '/kit/agri-solar' },
     { name: 'Solar EV Station', path: '/kit/solar-ev-station' },
     { name: 'Solar Lights', path: '/category/solar-street-lights' },

@@ -15,7 +15,7 @@ const ProductList = () => {
 
   const fetchProducts = async () => {
     try {
-      const res = await productAPI.getAll();
+      const res = await productAPI.getAll({ limit: 5000, offset: 0 });
       setProducts(res.data.data);
     } catch (err) {
       console.error('Failed to load products', err);

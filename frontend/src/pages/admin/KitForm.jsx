@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { FiSave, FiX } from 'react-icons/fi';
 import { kitAPI, productAPI } from '../../services/adminApi';
 import { getImageUrl } from '../../services/imageUtils';
+import SearchableSelect from '../../components/common/SearchableSelect';
 
 const KitForm = () => {
   const { id } = useParams();
@@ -34,7 +35,7 @@ const KitForm = () => {
   const fetchProducts = async () => {
     try {
       setProductsLoading(true);
-      const res = await productAPI.getAll();
+      const res = await productAPI.getAll({ limit: 5000, offset: 0 });
       setAllProducts(res.data.data);
     } catch (err) {
       setMessage({ type: 'error', text: 'Failed to load products' });
@@ -227,25 +228,26 @@ const KitForm = () => {
           {/* Add Products */}
           <div className="mb-6">
             <label className="label mb-2">Add Products to Kit</label>
-            <select
+            <SearchableSelect
               disabled={productsLoading || availableProducts.length === 0}
-              onChange={(e) => {
-                if (e.target.value) {
-                  handleAddProduct(parseInt(e.target.value));
-                  e.target.value = '';
+              options={availableProducts}
+              value=""
+              onChange={(selectedValue) => {
+                if (selectedValue) {
+                  handleAddProduct(parseInt(selectedValue));
                 }
               }}
-              className="w-full border p-2 rounded"
-            >
-              <option value="">
-                {productsLoading ? 'Loading...' : availableProducts.length === 0 ? 'All products added' : 'Select a product'}
-              </option>
-              {availableProducts.map(product => (
-                <option key={product.id} value={product.id}>
-                  {product.name}
-                </option>
-              ))}
-            </select>
+              placeholder={
+                productsLoading
+                  ? 'Loading products...'
+                  : availableProducts.length === 0
+                  ? 'All products added'
+                  : 'Search products to add'
+              }
+              emptyMessage="No matching products"
+              getOptionLabel={(product) => product.name}
+              getOptionDescription={(product) => product.category_name || ''}
+            />
           </div>
 
           {/* Selected Products */}

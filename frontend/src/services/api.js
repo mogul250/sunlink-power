@@ -30,6 +30,12 @@ export const kitAPI = {
   getFeatured: () => api.get('/kits?featured=true&limit=12'),
 };
 
+export const resourceAPI = {
+  getAll: (params) => api.get('/resources', { params }),
+  getDownloads: (params) => api.get('/resources/downloads', { params }),
+  getFeaturedVideos: () => api.get('/resources', { params: { featured: true, type: 'video' } }),
+};
+
 export const generateWhatsAppLink = (productName) => {
   const phone = '+8618617384878';
   const text = `Hi Sunlink, I'm interested in ${productName}`;

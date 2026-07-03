@@ -335,6 +335,50 @@ INSERT INTO `Products` VALUES (101,1,'Mono Half-Cell Solar Panel Grade A 300W',0
 UNLOCK TABLES;
 
 --
+-- Table structure for table `ResourceUploads`
+--
+
+DROP TABLE IF EXISTS `ResourceUploads`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ResourceUploads` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `resource_type` enum('file','video') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'file',
+  `file_url` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `youtube_url` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `original_file_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `mime_type` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `file_size` bigint DEFAULT NULL,
+  `product_id` int DEFAULT NULL,
+  `category_id` int DEFAULT NULL,
+  `kit_id` int DEFAULT NULL,
+  `is_featured` tinyint(1) NOT NULL DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_resource_type` (`resource_type`),
+  KEY `idx_featured` (`is_featured`),
+  KEY `idx_product_id` (`product_id`),
+  KEY `idx_category_id` (`category_id`),
+  KEY `idx_kit_id` (`kit_id`),
+  CONSTRAINT `fk_resource_category` FOREIGN KEY (`category_id`) REFERENCES `Categories` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `fk_resource_kit` FOREIGN KEY (`kit_id`) REFERENCES `Kits` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `fk_resource_product` FOREIGN KEY (`product_id`) REFERENCES `Products` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ResourceUploads`
+--
+
+LOCK TABLES `ResourceUploads` WRITE;
+/*!40000 ALTER TABLE `ResourceUploads` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ResourceUploads` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `Testimonials`
 --
 

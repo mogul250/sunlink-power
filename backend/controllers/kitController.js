@@ -35,6 +35,13 @@ const normalizeTechnicalSpecs = (value) => {
   return JSON.stringify(parsed);
 };
 
+const parseProductsPayload = (value, fallback = undefined) => {
+  if (value === undefined) return fallback;
+  if (value === null || value === '') return [];
+  if (typeof value === 'string') return JSON.parse(value);
+  return value;
+};
+
 // @desc    Get all kits
 // @route   GET /api/kits
 // @access  Public
@@ -138,12 +145,10 @@ const getKitById = async (req, res, next) => {
 // @access  Private/Admin
 const createKit = async (req, res, next) => {
   try {
-    let { name, description, slug, products = [] } = req.body;
+    let { name, description, slug } = req.body;
+    let products = parseProductsPayload(req.body.products, []);
     const technicalSpecs = normalizeTechnicalSpecs(req.body.technical_specs);
     let image_url = req.body.image_url;
-    if (typeof products == 'string') {
-      products = JSON.parse(products);
-    }
     // Handle main image upload
     if (req.files && req.files['image']) {
       image_url = `/uploads/kits/${req.files['image'][0].filename}`;
@@ -243,7 +248,8 @@ const createKit = async (req, res, next) => {
 const updateKit = async (req, res, next) => {
   try {
     const { id } = req.params;
-    let { name, description, slug, products = [] } = req.body;
+    let { name, description, slug } = req.body;
+    const products = parseProductsPayload(req.body.products);
     const technicalSpecs = normalizeTechnicalSpecs(req.body.technical_specs);
     let image_url = req.body.image_url;
 
@@ -252,9 +258,6 @@ const updateKit = async (req, res, next) => {
       image_url = `/uploads/kits/${req.files['image'][0].filename}`;
     } else if (req.file) { // Fallback for single upload
       image_url = `/uploads/kits/${req.file.filename}`;
-    }
-    if (typeof products == 'string') {
-      products = JSON.parse(products);
     }
     // Check if kit exists
     const [existing] = await promisePool.query(
@@ -303,7 +306,7 @@ const updateKit = async (req, res, next) => {
     }
 
     // Update kit products
-    if (products.length > 0) {
+    if (products !== undefined) {
       await validateSelectedModels(products);
       // Delete existing products
       await promisePool.query(
@@ -312,18 +315,20 @@ const updateKit = async (req, res, next) => {
       );
 
       // Insert new products
-      const productInserts = products.map((product, index) => [
-        id,
-        product.product_id,
-        product.product_model_id || null,
-        product.quantity || 1,
-        index
-      ]);
+      if (products.length > 0) {
+        const productInserts = products.map((product, index) => [
+          id,
+          product.product_id,
+          product.product_model_id || null,
+          product.quantity || 1,
+          index
+        ]);
 
-      await promisePool.query(
-        'INSERT INTO KitProducts (kit_id, product_id, product_model_id, quantity, sort_order) VALUES ?',
-        [productInserts]
-      );
+        await promisePool.query(
+          'INSERT INTO KitProducts (kit_id, product_id, product_model_id, quantity, sort_order) VALUES ?',
+          [productInserts]
+        );
+      }
     }
 
     // Add NEW gallery images if provided (append to existing)

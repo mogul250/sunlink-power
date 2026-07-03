@@ -15,6 +15,7 @@ import About from './pages/About';
 import Contact from './pages/Contact';
 import NotFound from './pages/NotFound';
 import Kits from './pages/Kits';
+import Downloads from './pages/Downloads';
 
 // Admin Pages
 import AdminLogin from './pages/admin/AdminLogin';
@@ -26,6 +27,7 @@ import KitList from './pages/admin/KitList';
 import KitForm from './pages/admin/KitForm';
 import TestimonialQueue from './pages/admin/TestimonialQueue';
 import Dashboard from './pages/admin/Dashboard';
+import ResourceManager from './pages/admin/ResourceManager';
 
 function App() {
   return (
@@ -71,6 +73,7 @@ function App() {
             <Route path="kits/new" element={<KitForm />} />
             <Route path="kits/edit/:id" element={<KitForm />} />
             <Route path="testimonials" element={<TestimonialQueue />} />
+            <Route path="resources" element={<ResourceManager />} />
           </Route>
 
           {/* Public Routes */}
@@ -81,6 +84,8 @@ function App() {
             <Route path="/product/:id" element={<ProductDetail />} />
             <Route path="/kits" element={<Kits />} />
             <Route path="/kit/:slug" element={<KitDetail />} />
+            <Route path="/resources" element={<Downloads />} />
+            <Route path="/downloads" element={<Downloads />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
           </Route>

@@ -1,15 +1,36 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   FiArrowRight,
   FiCpu,
   FiGlobe,
   FiHeadphones,
+  FiPlay,
   FiShield,
   FiSliders,
   FiTool,
 } from 'react-icons/fi';
+import { resourceAPI } from '../../services/api';
+import VideoModal from '../common/VideoModal';
+import { getYoutubeInfo } from '../../utils/media';
 
 const TrustSection = () => {
+  const [featuredVideos, setFeaturedVideos] = useState([]);
+  const [selectedVideo, setSelectedVideo] = useState(null);
+
+  useEffect(() => {
+    const fetchFeaturedVideos = async () => {
+      try {
+        const response = await resourceAPI.getFeaturedVideos();
+        setFeaturedVideos((response.data.data || []).filter((item) => item.resource_type === 'video'));
+      } catch (error) {
+        console.error('Failed to load featured videos', error);
+      }
+    };
+
+    fetchFeaturedVideos();
+  }, []);
+
   const strengths = [
     {
       icon: FiCpu,
@@ -47,28 +68,31 @@ const TrustSection = () => {
     {
       title: 'Solar Power Plant',
       description: 'Utility-scale solar project support for reliable clean energy supply.',
-      image: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?w=900',
+      image: '/solar-power-plan.png',
       path: '/browse',
     },
     {
       title: 'Commercial Solar System',
       description: 'Renewable energy systems for factories, offices, hotels, and malls.',
-      image: 'https://images.unsplash.com/photo-1497440001374-f26997328c1b?w=900',
+      image: '/commercial-solar-project.jpg',
       path: '/browse',
     },
     {
       title: 'Solar Street Lighting',
       description: 'Smart outdoor lighting for roads, communities, estates, and public spaces.',
-      image: 'https://images.unsplash.com/photo-1519608487953-e999c86e7455?w=900',
+      image: '/solar-street-light.jpg',
       path: '/category/solar-street-lights',
     },
     {
       title: 'Solar Water Pump System',
       description: 'Solar-powered pumping for agriculture, livestock, and rural water access.',
-      image: 'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=900',
+      image: '/water-pump-system.png',
       path: '/kit/agri-solar',
     },
   ];
+
+  const heroVideo = featuredVideos[0];
+  const heroVideoInfo = getYoutubeInfo(heroVideo?.youtube_url);
 
   return (
     <>
@@ -106,6 +130,79 @@ const TrustSection = () => {
           </div>
         </div>
       </section>
+
+      {heroVideo && heroVideoInfo && (
+        <section className="bg-gray-50 py-14 md:py-20">
+          <div className="container-custom">
+            <div className="mb-8 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+              <div>
+                <p className="text-sm font-bold uppercase tracking-wide text-[#094fa4]">Featured Videos</p>
+                <h2 className="mt-3 text-3xl font-bold text-gray-950 md:text-4xl">Project Highlights in Motion</h2>
+                <p className="mt-3 max-w-2xl text-gray-600">
+                  Explore selected project videos, product demonstrations, and field applications from our solar portfolio.
+                </p>
+              </div>
+              <Link to="/downloads" className="inline-flex items-center text-sm font-bold text-[#094fa4]">
+                Browse all downloads
+                <FiArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </div>
+
+            <div className="grid gap-6 lg:grid-cols-[1.3fr_0.9fr]">
+              <button
+                type="button"
+                onClick={() => setSelectedVideo(heroVideo)}
+                className="group overflow-hidden rounded-3xl bg-black text-left shadow-lg"
+              >
+                <div className="relative">
+                  <img
+                    src={heroVideoInfo.thumbnailUrl}
+                    alt={heroVideo.title}
+                    className="aspect-video w-full object-cover transition duration-500 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-black/35" />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="flex h-16 w-16 items-center justify-center rounded-full bg-white/90 text-[#094fa4] shadow-xl transition group-hover:scale-105">
+                      <FiPlay className="ml-1 h-7 w-7" />
+                    </span>
+                  </div>
+                </div>
+                <div className="bg-white p-6">
+                  <h3 className="text-xl font-bold text-gray-950">{heroVideo.title}</h3>
+                  {heroVideo.description && <p className="mt-3 text-sm leading-6 text-gray-600">{heroVideo.description}</p>}
+                </div>
+              </button>
+
+              <div className="space-y-4">
+                {featuredVideos.slice(1, 5).map((video) => {
+                  const info = getYoutubeInfo(video.youtube_url);
+                  if (!info) return null;
+
+                  return (
+                    <button
+                      key={video.id}
+                      type="button"
+                      onClick={() => setSelectedVideo(video)}
+                      className="flex w-full items-center gap-4 rounded-2xl border border-gray-200 bg-white p-4 text-left shadow-sm transition hover:border-[#094fa4]/30 hover:shadow-md"
+                    >
+                      <div className="relative h-20 w-32 shrink-0 overflow-hidden rounded-xl bg-gray-100">
+                        <img src={info.thumbnailUrl} alt={video.title} className="h-full w-full object-cover" />
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                          <FiPlay className="h-5 w-5 text-white" />
+                        </div>
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-gray-900">{video.title}</h3>
+                        {video.description && <p className="mt-1 line-clamp-2 text-sm leading-6 text-gray-600">{video.description}</p>}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       <section className="bg-[#094fa4] py-14 text-white md:py-20">
         <div className="container-custom">
@@ -154,6 +251,14 @@ const TrustSection = () => {
           </div>
         </div>
       </section>
+
+      {selectedVideo && (
+        <VideoModal
+          title={selectedVideo.title}
+          url={selectedVideo.youtube_url}
+          onClose={() => setSelectedVideo(null)}
+        />
+      )}
     </>
   );
 };

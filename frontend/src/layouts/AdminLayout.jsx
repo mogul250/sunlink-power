@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
-import { FiGrid, FiBox, FiList, FiUsers, FiLogOut, FiMenu, FiX } from 'react-icons/fi';
+import { FiGrid, FiBox, FiList, FiUsers, FiLogOut, FiMenu, FiX, FiFolder } from 'react-icons/fi';
 
 const AdminLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -25,6 +25,7 @@ const AdminLayout = () => {
     { name: 'Products', path: '/admin/products', icon: FiBox },
     { name: 'Kits', path: '/admin/kits', icon: FiBox },
     { name: 'Categories', path: '/admin/categories', icon: FiList },
+    { name: 'Resources', path: '/admin/resources', icon: FiFolder },
     { name: 'Testimonials', path: '/admin/testimonials', icon: FiUsers },
   ];
 

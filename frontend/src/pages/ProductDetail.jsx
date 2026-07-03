@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import { FiCheck, FiDownload, FiMessageCircle, FiPlay } from 'react-icons/fi';
 import { productAPI, categoryAPI } from '../services/api';
 import { getImageUrl } from '../services/imageUtils';
+import { getYoutubeInfo } from '../utils/media';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import ErrorMessage from '../components/common/ErrorMessage';
 import ProductCard from '../components/browse/ProductCard';
@@ -47,18 +48,6 @@ const ProductDetail = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const getYoutubeInfo = (url) => {
-    if (!url) return null;
-    // Handle standard YouTube URLs to convert to embed format
-    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
-    const match = url.match(regExp);
-    if (match && match[2]) {
-      const id = match[2].trim();
-      return { id, embedUrl: `https://www.youtube.com/embed/${id}` };
-    }
-    return null;
   };
 
   if (loading) return <div className="min-h-screen flex items-center justify-center"><LoadingSpinner size="lg" /></div>;

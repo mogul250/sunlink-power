@@ -57,7 +57,7 @@ export const testimonialAPI = {
 };
 
 export const kitAPI = {
-  getAll: () => adminApi.get('/kits'),
+  getAll: (params) => adminApi.get('/kits', { params }),
   getById: (id) => adminApi.get(`/kits/${id}`),
   create: (formData) => adminApi.post('/kits', formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
@@ -66,6 +66,17 @@ export const kitAPI = {
     headers: { 'Content-Type': 'multipart/form-data' },
   }),
   delete: (id) => adminApi.delete(`/kits/${id}`),
+};
+
+export const resourceAPI = {
+  getAll: (params) => adminApi.get('/resources', { params }),
+  create: (formData) => adminApi.post('/resources', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  }),
+  update: (id, formData) => adminApi.put(`/resources/${id}`, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  }),
+  delete: (id) => adminApi.delete(`/resources/${id}`),
 };
 
 export default adminApi;
