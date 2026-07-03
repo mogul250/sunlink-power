@@ -1,12 +1,46 @@
 import { promisePool } from '../config/db.js';
 
+const CATEGORY_PRIORITY_ORDER = [
+  'solar-panels',
+  'batteries',
+  'hybrid-inverters',
+  'string-inverters',
+  'off-grid-inverters',
+  'microinverters',
+  'solar-street-lights',
+  'solar-flood-lights',
+  'solar-garden-lights',
+  'solar-strip-lights',
+  'solar-batten-lights',
+  'solar-fans',
+  'solar-water-pumps',
+  'ev-chargers',
+  'charge-controllers',
+  'combiner-boxes',
+  'power-conversion-systems',
+  'bipv-carports',
+  'energy-management-systems',
+  'accessories'
+];
+
 // @desc    Get all categories
 // @route   GET /api/categories
 // @access  Public
 const getAllCategories = async (req, res, next) => {
   try {
+    const priorityCase = CATEGORY_PRIORITY_ORDER
+      .map((slug, index) => `WHEN '${slug}' THEN ${index}`)
+      .join(' ');
+
     const [categories] = await promisePool.query(
-      'SELECT * FROM Categories ORDER BY name ASC'
+      `SELECT *
+       FROM Categories
+       ORDER BY
+         CASE slug
+           ${priorityCase}
+           ELSE 999
+         END,
+         name ASC`
     );
 
     res.status(200).json({
