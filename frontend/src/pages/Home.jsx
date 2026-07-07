@@ -1,4 +1,5 @@
 import { Helmet } from 'react-helmet-async';
+import FeaturedVideosSection from '../components/home/FeaturedVideosSection';
 import Hero from '../components/home/Hero';
 import CategoryGrid from '../components/home/CategoryGrid';
 import ProductApplications from '../components/home/ProductApplications';
@@ -21,6 +22,7 @@ const Home = () => {
 
       <div className="min-h-screen">
         <Hero />
+        <FeaturedVideosSection />
         <CategoryGrid />
         <ProductApplications />
         <TrustSection />

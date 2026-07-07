@@ -289,7 +289,7 @@ const ResourceManager = () => {
               />
               <div>
                 <div className="font-semibold text-gray-900">Featured on home page</div>
-                <div className="text-sm text-gray-500">Featured videos appear below the Real Projects section.</div>
+                <div className="text-sm text-gray-500">Featured videos appear on the home page below the hero banner.</div>
               </div>
             </label>
 

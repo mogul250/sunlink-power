@@ -57,8 +57,8 @@ const Hero = () => {
     setCurrentSlide(index);
   };
 
-  const scrollToCategories = () => {
-    document.getElementById('browse-categories')?.scrollIntoView({
+  const scrollToFeaturedVideos = () => {
+    document.getElementById('featured-videos')?.scrollIntoView({
       behavior: 'smooth',
       block: 'start',
     });
@@ -122,9 +122,9 @@ const Hero = () => {
       {isAtTop && (
         <button
           type="button"
-          onClick={scrollToCategories}
+          onClick={scrollToFeaturedVideos}
           className="absolute bottom-4 left-1/2 z-40 flex h-11 w-11 -translate-x-1/2 items-center justify-center rounded-full border border-white/70 bg-black/35 text-white shadow-lg backdrop-blur-sm transition hover:bg-[#094fa4] focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-transparent md:h-12 md:w-12"
-          aria-label="Scroll to browse by category"
+          aria-label="Scroll to featured videos"
         >
           <FiChevronDown className="h-6 w-6 animate-bounce" />
         </button>
