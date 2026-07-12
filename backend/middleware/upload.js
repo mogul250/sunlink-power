@@ -6,6 +6,7 @@ import { dirname } from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+const DEFAULT_MAX_FILE_SIZE = 100 * 1024 * 1024;
 
 // Create uploads directory if it doesn't exist
 const uploadDir = process.env.UPLOAD_PATH || './uploads';
@@ -95,7 +96,7 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({
   storage: storage,
   limits: {
-    fileSize: parseInt(process.env.MAX_FILE_SIZE) || 5 * 1024 * 1024 // 5MB default
+    fileSize: parseInt(process.env.MAX_FILE_SIZE, 10) || DEFAULT_MAX_FILE_SIZE // 100MB default
   },
   fileFilter: fileFilter
 });
@@ -137,9 +138,10 @@ const uploadResourceFiles = upload.fields([
 const handleUploadError = (err, req, res, next) => {
   if (err instanceof multer.MulterError) {
     if (err.code === 'LIMIT_FILE_SIZE') {
+      const maxFileSizeMb = Math.round((parseInt(process.env.MAX_FILE_SIZE, 10) || DEFAULT_MAX_FILE_SIZE) / (1024 * 1024));
       return res.status(400).json({
         success: false,
-        message: 'File size too large. Maximum size is 5MB.'
+        message: `File size too large. Maximum size is ${maxFileSizeMb}MB.`
       });
     }
     return res.status(400).json({
