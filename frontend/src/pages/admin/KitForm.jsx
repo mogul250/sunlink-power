@@ -286,7 +286,6 @@ const KitForm = () => {
                       <input
                         type="number"
                         min="1"
-                        max="100"
                         className="w-16 border rounded p-1 text-center"
                         value={kitProduct.quantity}
                         onChange={(e) => handleQuantityChange(kitProduct.product_id, e.target.value)}
