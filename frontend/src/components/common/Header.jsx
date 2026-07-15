@@ -23,7 +23,7 @@ const Header = () => {
     { name: 'Products', path: '/browse' },
     { name: 'Kits', path: '/kits' },
     { name: 'Agri Solar', path: '/kit/agri-solar' },
-    { name: 'Solar EV Station', path: '/kit/solar-ev-station' },
+    { name: 'Solar EV Station', path: '/kit/solar-charging-kit-482kwh-250kw-2x120kw-ev' },
     { name: 'Solar Lights', path: '/category/solar-street-lights' },
     { name: 'Downloads', path: '/resources' },
     { name: 'About Us', path: '/about' },
