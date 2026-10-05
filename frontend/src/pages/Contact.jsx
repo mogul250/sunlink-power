@@ -8,8 +8,8 @@ const Contact = () => {
     {
       icon: FiPhone,
       title: 'Phone',
-      detail: '+86-186-1738-4878',
-      href: 'tel:+8618617384878',
+      detail: '+250 788 894 329',
+      href: 'tel:+250788894329',
     },
     {
       icon: FiMail,
@@ -21,7 +21,7 @@ const Contact = () => {
       icon: FaWhatsapp,
       title: 'WhatsApp',
       detail: 'Discuss products, pricing, and shipment planning',
-      href: 'https://wa.me/+8618617384878?text=Hi%20Sunlink%2C%20I%20would%20like%20to%20discuss%20a%20solar%20energy%20inquiry',
+      href: 'https://wa.me/+250781676857?text=Hi%20Sunlink%2C%20I%20would%20like%20to%20discuss%20a%20solar%20energy%20inquiry',
     },
   ];
 

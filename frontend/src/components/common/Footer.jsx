@@ -44,10 +44,10 @@ const Footer = () => {
               <img className="w-[180px] h-auto object-contain group-hover:scale-105 transition-transform bg-white rounded-lg px-2 py-1" src={logo} alt="Sunlink Power" />
             </Link>
             <p className="text-gray-400 mb-6 leading-relaxed">
-              Leading supplier of high-quality solar products across Africa. 
+              Leading supplier of high-quality solar products across Africa.
               We provide reliable, affordable renewable energy solutions for homes and businesses.
             </p>
-            
+
             {/* Contact Info */}
             <div className="space-y-3">
               <div className="flex items-center gap-3 text-sm">
@@ -56,8 +56,8 @@ const Footer = () => {
               </div>
               <div className="flex items-center gap-3 text-sm">
                 <FiPhone className="w-5 h-5 text-primary flex-shrink-0" />
-                <a href="tel:+8618617384878" className="hover:text-primary transition-colors">
-                  +86-186-1738-4878
+                <a href="tel:+250788894329" className="hover:text-primary transition-colors">
+                  +250-788-894-329
                 </a>
               </div>
               <div className="flex items-center gap-3 text-sm">
