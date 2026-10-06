@@ -80,3 +80,11 @@ export const resourceAPI = {
 };
 
 export default adminApi;
+
+export const projectAPI = {
+ getAll: (params) => adminApi.get('/projects', { params }),
+ getById: (id) => adminApi.get('/projects/' + id),
+ create: (data) => adminApi.post('/projects', data),
+ update: (id, data) => adminApi.put('/projects/' + id, data),
+ delete: (id) => adminApi.delete('/projects/' + id),
+};

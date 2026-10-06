@@ -6,6 +6,10 @@ import PublicLayout from './layouts/PublicLayout';
 import AdminLayout from './layouts/AdminLayout';
 
 // Pages
+import Projects from './pages/Projects';
+import ProjectDetail from './pages/ProjectDetail';
+import ProjectList from './pages/admin/ProjectList';
+import ProjectForm from './pages/admin/ProjectForm';
 import Home from './pages/Home';
 import Browse from './pages/Browse';
 import CategoryDetail from './pages/CategoryDetail';
@@ -74,11 +78,17 @@ function App() {
             <Route path="kits/edit/:id" element={<KitForm />} />
             <Route path="testimonials" element={<TestimonialQueue />} />
             <Route path="resources" element={<ResourceManager />} />
+            <Route path="projects" element={<ProjectList />} />
+            <Route path="projects/new" element={<ProjectForm />} />
+            <Route path="projects/edit/:id" element={<ProjectForm />} />
           </Route>
 
           {/* Public Routes */}
           <Route element={<PublicLayout />}>
             <Route path="/" element={<Home />} />
+            <Route path="/project/:id" element={<ProjectDetail />} />
+            <Route path="/projects" element={<Projects />} />
+            <Route path="/projects/:id" element={<ProjectDetail />} />
             <Route path="/browse" element={<Browse />} />
             <Route path="/category/:slug" element={<CategoryDetail />} />
             <Route path="/product/:id" element={<ProductDetail />} />

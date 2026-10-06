@@ -1,3 +1,4 @@
+import ProjectsSection from './ProjectsSection';
 import { Link } from 'react-router-dom';
 import {
   FiArrowRight,
@@ -43,69 +44,9 @@ const TrustSection = () => {
     },
   ];
 
-  const projects = [
-    {
-      title: 'Solar Power Plant',
-      description: 'Utility-scale solar project support for reliable clean energy supply.',
-      image: '/solar-power-plan.png',
-      path: '/browse',
-    },
-    {
-      title: 'Commercial Solar System',
-      description: 'Renewable energy systems for factories, offices, hotels, and malls.',
-      image: '/commercial-solar-project.jpg',
-      path: '/browse',
-    },
-    {
-      title: 'Solar Street Lighting',
-      description: 'Smart outdoor lighting for roads, communities, estates, and public spaces.',
-      image: '/solar-street-light.jpg',
-      path: '/category/solar-street-lights',
-    },
-    {
-      title: 'Solar Water Pump System',
-      description: 'Solar-powered pumping for agriculture, livestock, and rural water access.',
-      image: '/water-pump-system.png',
-      path: '/kit/agri-solar',
-    },
-  ];
-
   return (
     <>
-      <section className="bg-white py-14 md:py-20">
-        <div className="container-custom">
-          <div className="mb-9 text-center">
-            <p className="text-sm font-bold uppercase tracking-wide text-[#094fa4]">Our Projects</p>
-            <h2 className="mt-3 text-3xl font-bold text-gray-950 md:text-4xl">Real Projects. Real Impact.</h2>
-          </div>
-
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {projects.map((project) => (
-              <Link
-                key={project.title}
-                to={project.path}
-                className="group overflow-hidden border border-gray-200 bg-white shadow-sm transition hover:border-[#094fa4]/30 hover:shadow-md"
-              >
-                <div className="h-44 overflow-hidden bg-gray-100">
-                  <img
-                    src={project.image}
-                    alt={project.title}
-                    className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                  />
-                </div>
-                <div className="p-5">
-                  <h3 className="text-base font-bold text-gray-950">{project.title}</h3>
-                  <p className="mt-3 line-clamp-3 text-sm leading-6 text-gray-600">{project.description}</p>
-                  <div className="mt-5 flex items-center text-sm font-bold text-[#094fa4]">
-                    View Project
-                    <FiArrowRight className="ml-2 h-4 w-4 transition group-hover:translate-x-1" />
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
+      <ProjectsSection />
 
       <section className="bg-[#094fa4] py-14 text-white md:py-20">
         <div className="container-custom">

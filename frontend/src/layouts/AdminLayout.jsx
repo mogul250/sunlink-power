@@ -23,6 +23,7 @@ const AdminLayout = () => {
   const menuItems = [
     { name: 'Dashboard', path: '/admin/dashboard', icon: FiGrid },
     { name: 'Products', path: '/admin/products', icon: FiBox },
+    { name: 'Projects', path: '/admin/projects', icon: FiFolder },
     { name: 'Kits', path: '/admin/kits', icon: FiBox },
     { name: 'Categories', path: '/admin/categories', icon: FiList },
     { name: 'Resources', path: '/admin/resources', icon: FiFolder },

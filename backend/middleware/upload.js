@@ -18,7 +18,8 @@ const createUploadDirs = () => {
     path.join(uploadDir, 'testimonials'),
     path.join(uploadDir, 'kits'),
     path.join(uploadDir, 'manuals'),
-    path.join(uploadDir, 'resources')
+    path.join(uploadDir, 'resources'),
+    path.join(uploadDir, 'projects')
   ];
 
   dirs.forEach(dir => {
@@ -36,7 +37,9 @@ const storage = multer.diskStorage({
     let folder = 'products';
     
     // Determine folder based on file type or request path
-    if (req.originalUrl.includes('category') || req.originalUrl.includes('categories')) {
+    if (req.originalUrl.includes('/projects')) {
+      folder = 'projects';
+    } else if (req.originalUrl.includes('category') || req.originalUrl.includes('categories')) {
       folder = 'categories';
     } else if (req.originalUrl.includes('kits')) {
       folder = 'kits';
@@ -101,6 +104,13 @@ const upload = multer({
   fileFilter: fileFilter
 });
 
+const uploadProjectFiles = multer({
+ storage, limits: { fileSize: 10 * 1024 * 1024, files: 11 },
+ fileFilter: (req, file, cb) => {
+ const valid = /\.(jpe?g|png|webp|gif)$/i.test(file.originalname) && /^image\/(jpeg|png|webp|gif)$/.test(file.mimetype);
+ cb(valid ? null : new Error('Project uploads must be JPG, PNG, WebP or GIF images'), valid);
+ }
+}).fields([{ name: 'image', maxCount: 1 }, { name: 'gallery_images', maxCount: 10 }]);
 // Middleware for single image upload
 const uploadSingleImage = upload.single('image');
 
@@ -138,7 +148,7 @@ const uploadResourceFiles = upload.fields([
 const handleUploadError = (err, req, res, next) => {
   if (err instanceof multer.MulterError) {
     if (err.code === 'LIMIT_FILE_SIZE') {
-      const maxFileSizeMb = Math.round((parseInt(process.env.MAX_FILE_SIZE, 10) || DEFAULT_MAX_FILE_SIZE) / (1024 * 1024));
+      const maxFileSizeMb = req.originalUrl.includes('/projects') ? 10 : Math.round((parseInt(process.env.MAX_FILE_SIZE, 10) || DEFAULT_MAX_FILE_SIZE) / (1024 * 1024));
       return res.status(400).json({
         success: false,
         message: `File size too large. Maximum size is ${maxFileSizeMb}MB.`
@@ -158,6 +168,7 @@ const handleUploadError = (err, req, res, next) => {
 };
 
 export {
+  uploadProjectFiles,
   uploadSingleImage,
   uploadSinglePDF,
   uploadMultipleImages,

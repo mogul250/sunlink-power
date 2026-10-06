@@ -9,6 +9,8 @@ import { dirname } from 'path';
 import dotenv from 'dotenv';
 
 import { testConnection } from './config/db.js';
+import ensureProjectTables from './config/ensureProjectTables.js';
+import projectRoutes from './routes/projects.js';
 import ensureResourceTables from './config/ensureResourceTables.js';
 import { errorHandler, notFound } from './middleware/errorHandler.js';
 
@@ -87,6 +89,7 @@ app.use('/api/kits', kitRoutes);
 app.use('/api/testimonials', testimonialRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/resources', resourceRoutes);
+app.use('/api/projects', projectRoutes);
 
 // Root route
 app.get('/', (req, res) => {
@@ -125,6 +128,7 @@ const startServer = async () => {
     }
 
     await ensureResourceTables();
+    await ensureProjectTables();
 
     // Start listening
     app.listen(PORT, () => {

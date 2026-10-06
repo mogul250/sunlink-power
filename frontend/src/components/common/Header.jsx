@@ -42,7 +42,7 @@ const Header = () => {
       className={`${usesTransparentHeader ? 'fixed inset-x-0' : 'sticky'} top-0 z-50 transition-all duration-300 ${
         isTransparent
           ? 'bg-black/20 text-white backdrop-blur-[2px] border-b border-white/10'
-          : 'bg-white text-gray-900 shadow-md'
+          : 'bg-white text-gray-900'
       }`}
     >
       <nav className="max-w-[86rem] mx-auto px-4 sm:px-6 xl:px-8">

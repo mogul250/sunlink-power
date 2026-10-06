@@ -43,3 +43,9 @@ export const generateWhatsAppLink = (productName) => {
 };
 
 export default api;
+
+export const projectAPI = {
+ getAll: (params) => api.get('/projects', { params }),
+ getById: (id) => api.get('/projects/' + id),
+
+};
