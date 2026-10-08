@@ -40,6 +40,7 @@ const allowedOrigins = [
   'https://www.sunlink-power.com',
   'https://sunlink-power.com',
   'https://sunlinkpower.rw',
+  'https://www.sunlinkpower.rw',
   'http://localhost:5173'
 ];
 // CORS configuration
