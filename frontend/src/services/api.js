@@ -37,7 +37,7 @@ export const resourceAPI = {
 };
 
 export const generateWhatsAppLink = (productName) => {
-  const phone = '+250781676857';
+  const phone = '+8618617384878';
   const text = `Hi Sunlink, I'm interested in ${productName}`;
   return `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
 };
