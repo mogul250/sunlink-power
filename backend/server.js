@@ -37,24 +37,25 @@ app.use(helmet({
 }));
 const allowedOrigins = [
   process.env.CLIENT_URL,
-  'https://www.sunlink-power.com', 
-  'https://sunlink-power.com', 
+  'https://www.sunlink-power.com',
+  'https://sunlink-power.com',
+  'https://sunlinkpower.rw',
   'http://localhost:5173'
 ];
 // CORS configuration
-const  corsOptions = {
-   origin :  function  ( origin, callback )  {
-    if  (!origin)  return  callback( null ,  true );
-    
-    if  (allowedOrigins.indexOf(origin) !== - 1 ) {
-      callback( null ,  true );
-    }  else  {
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.indexOf(origin) !== - 1) {
+      callback(null, true);
+    } else {
       console.log('blocked url:', origin)
-      callback( new Error ( 'Not allowed by CORS' ));
+      callback(new Error('Not allowed by CORS'));
     }
   },
-   credentials :  true ,
-   optionsSuccessStatus :  200 
+  credentials: true,
+  optionsSuccessStatus: 200
 };
 app.use(cors(corsOptions));
 
@@ -121,7 +122,7 @@ const startServer = async () => {
   try {
     // Test database connection
     const dbConnected = await testConnection();
-    
+
     if (!dbConnected) {
       console.error('❌ Failed to connect to database. Please check your configuration.');
       process.exit(1);
